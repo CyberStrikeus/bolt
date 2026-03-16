@@ -136,6 +136,8 @@ if [ "$INSTALL_METHOD" = "native" ] && ! command -v bun >/dev/null 2>&1; then
     printf "   ${CYAN}i${NC} Installing Bun...\n"
     curl -fsSL https://bun.sh/install | bash >/dev/null 2>&1
     export PATH="$HOME/.bun/bin:$PATH"
+    # Copy to /usr/local/bin so systemd bolt user can access it
+    cp "$HOME/.bun/bin/bun" /usr/local/bin/bun 2>/dev/null || true
     printf "   ${GREEN}+${NC} Bun installed\n"
 fi
 
@@ -203,6 +205,10 @@ else
         go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest >/dev/null 2>&1 || true
         go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest >/dev/null 2>&1 || true
         go install -v github.com/ffuf/ffuf/v2@latest >/dev/null 2>&1 || true
+        # Copy Go binaries to /usr/local/bin so bolt user can access them
+        for bin in subfinder nuclei httpx ffuf; do
+            [ -f "$GOPATH/bin/$bin" ] && cp "$GOPATH/bin/$bin" /usr/local/bin/ 2>/dev/null || true
+        done
         printf "   ${GREEN}+${NC} Go tools installed\n"
     fi
 
