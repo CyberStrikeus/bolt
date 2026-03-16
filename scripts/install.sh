@@ -16,7 +16,7 @@ NC='\033[0m'
 
 BOLT_IMAGE="ghcr.io/cyberstrikeus/bolt:latest"
 BOLT_PORT="${BOLT_PORT:-3001}"
-BOLT_NPM="@cyberstrike/bolt"
+BOLT_NPM="@cyberstrike-io/bolt"
 
 printf "${BLUE}"
 cat << 'BANNER'

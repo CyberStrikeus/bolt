@@ -1,5 +1,5 @@
 {
-  "name": "@cyberstrike/bolt",
+  "name": "@cyberstrike-io/bolt",
   "version": "0.1.0",
   "description": "Docker-based Kali Linux security tools via MCP — 100+ pre-installed penetration testing tools",
   "type": "module",
