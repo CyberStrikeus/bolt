@@ -1,0 +1,110 @@
+name: steghide
+category: stego
+description: Steganography tool for hiding data in image and audio files.
+keywords:
+  - steganography
+  - hide
+  - image
+  - audio
+  - ctf
+  - forensics
+
+parameters:
+  mode:
+    type: enum
+    required: true
+    options:
+      - value: "embed"
+        description: "Hide data in file"
+      - value: "extract"
+        description: "Extract hidden data"
+      - value: "info"
+        description: "Display file info"
+    description: Operation mode
+
+  cover_file:
+    type: string
+    flag: "-cf"
+    description: Cover file (image/audio)
+
+  embed_file:
+    type: string
+    flag: "-ef"
+    description: File to embed
+
+  stego_file:
+    type: string
+    flag: "-sf"
+    description: Output stego file
+
+  extract_file:
+    type: string
+    flag: "-xf"
+    description: Extracted file name
+
+  passphrase:
+    type: string
+    flag: "-p"
+    description: Passphrase
+
+  encryption:
+    type: enum
+    flag: "-e"
+    options: ["rijndael-128", "rijndael-192", "rijndael-256", "serpent", "twofish", "rc2", "none"]
+    description: Encryption algorithm
+
+  compression:
+    type: integer
+    flag: "-z"
+    description: "Compression level (1-9)"
+
+  no_compression:
+    type: boolean
+    flag: "-Z"
+    description: Disable compression
+
+  force:
+    type: boolean
+    flag: "-f"
+    description: Overwrite existing files
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "steghide embed -cf cover.jpg -ef secret.txt"
+  - "steghide extract -sf stego.jpg"
+  - "steghide info image.jpg"
+  - "steghide embed -cf cover.jpg -ef secret.txt -p 'password'"
+  - "steghide extract -sf stego.jpg -xf output.txt -p 'password'"
+
+notes: |
+  Supported formats:
+  - Images: JPEG, BMP
+  - Audio: WAV, AU
+
+  Embedding workflow:
+  1. Choose cover file
+  2. Prepare secret file
+  3. Set passphrase
+  4. Embed and save
+
+  Extraction workflow:
+  1. steghide info file.jpg
+  2. steghide extract -sf file.jpg
+  3. Enter passphrase
+
+  CTF tips:
+  - Try empty passphrase first
+  - Common passwords: password, 123456
+  - Use stegcracker for brute force
+
+  Detection:
+  - stegdetect tool
+  - Visual analysis
+  - Histogram analysis

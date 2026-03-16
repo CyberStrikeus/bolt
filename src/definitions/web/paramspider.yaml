@@ -1,0 +1,76 @@
+name: paramspider
+category: web
+description: Mining parameters from dark corners of web archives.
+keywords:
+  - parameter
+  - mining
+  - archive
+  - discovery
+  - web
+
+parameters:
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain
+
+  exclude:
+    type: string
+    flag: "-e"
+    description: "Extensions to exclude (e.g., css,jpg)"
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  level:
+    type: enum
+    flag: "-l"
+    options: ["low", "medium", "high"]
+    description: Parameter depth level
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  placeholder:
+    type: string
+    flag: "-p"
+    default: "FUZZ"
+    description: Placeholder for values
+
+  subs:
+    type: boolean
+    flag: "-s"
+    description: Include subdomains
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "paramspider -d target.com"
+  - "paramspider -d target.com -e css,jpg,png"
+  - "paramspider -d target.com -o params.txt -s"
+  - "paramspider -d target.com -p FUZZ | httpx"
+
+notes: |
+  Sources:
+  - Wayback Machine
+  - Common Crawl
+  - VirusTotal
+  - URL scan
+
+  Output:
+  - URLs with FUZZ placeholder
+  - Ready for fuzzing
+
+  Pipeline:
+  paramspider -d target | ffuf -w wordlist
+
+  Use cases:
+  - Find hidden params
+  - Discover endpoints
+  - Prepare for fuzzing

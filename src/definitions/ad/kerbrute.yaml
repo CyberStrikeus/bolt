@@ -1,0 +1,104 @@
+name: kerbrute
+category: ad
+description: Kerberos brute force and user enumeration tool.
+keywords:
+  - kerberos
+  - active directory
+  - brute
+  - user
+  - enumeration
+  - password
+
+parameters:
+  mode:
+    type: enum
+    required: true
+    options:
+      - value: "userenum"
+        description: "Enumerate valid usernames"
+      - value: "passwordspray"
+        description: "Password spray attack"
+      - value: "bruteuser"
+        description: "Brute force single user"
+      - value: "bruteforce"
+        description: "Brute force with user:pass list"
+    description: Attack mode
+
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain
+
+  dc:
+    type: string
+    flag: "--dc"
+    description: Domain controller IP
+
+  users:
+    type: string
+    description: Username list file
+
+  passwords:
+    type: string
+    description: Password list file
+
+  password:
+    type: string
+    description: Password for spray attack
+
+  username:
+    type: string
+    description: Username for brute force
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 10
+    description: Number of threads
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  safe:
+    type: boolean
+    flag: "--safe"
+    description: Safe mode (slower, avoids lockout)
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "kerbrute userenum -d domain.local --dc 192.168.1.1 users.txt"
+  - "kerbrute passwordspray -d domain.local --dc 192.168.1.1 users.txt 'Password123'"
+  - "kerbrute bruteuser -d domain.local --dc 192.168.1.1 passwords.txt admin"
+  - "kerbrute userenum -d domain.local users.txt -o valid_users.txt"
+
+notes: |
+  Modes explained:
+  - userenum: Find valid usernames (no lockout risk)
+  - passwordspray: One password, many users
+  - bruteuser: Many passwords, one user
+  - bruteforce: User:pass combinations
+
+  Advantages:
+  - Fast Kerberos-based enumeration
+  - No account lockout for userenum
+  - Doesn't generate Windows event logs
+
+  Username lists:
+  - /usr/share/seclists/Usernames/
+  - Custom lists from OSINT
+
+  Password spray tips:
+  - Use common passwords
+  - Respect lockout policies
+  - Wait between attempts
+  - Season + Year patterns

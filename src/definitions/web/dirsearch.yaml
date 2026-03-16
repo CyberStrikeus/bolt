@@ -1,0 +1,146 @@
+name: dirsearch
+category: web
+description: Web path scanner for discovering hidden directories and files.
+keywords:
+  - directory
+  - discovery
+  - brute
+  - web
+  - hidden
+  - path
+  - file
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: Target URL
+
+  url_list:
+    type: string
+    flag: "-l"
+    description: File containing URLs
+
+  extensions:
+    type: string
+    flag: "-e"
+    description: "Extensions to scan (e.g., php,html,js)"
+
+  wordlist:
+    type: string
+    flag: "-w"
+    description: Custom wordlist
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 25
+    description: Number of threads
+
+  recursive:
+    type: boolean
+    flag: "-r"
+    description: Recursive scanning
+
+  recursion_depth:
+    type: integer
+    flag: "--max-recursion-depth"
+    description: Maximum recursion depth
+
+  exclude_status:
+    type: string
+    flag: "-x"
+    description: "Status codes to exclude (e.g., 404,403)"
+
+  include_status:
+    type: string
+    flag: "-i"
+    description: "Status codes to include"
+
+  exclude_sizes:
+    type: string
+    flag: "--exclude-sizes"
+    description: Response sizes to exclude
+
+  exclude_texts:
+    type: string
+    flag: "--exclude-texts"
+    description: Response texts to exclude
+
+  random_agent:
+    type: boolean
+    flag: "--random-agent"
+    description: Use random User-Agent
+
+  header:
+    type: string
+    flag: "-H"
+    description: "HTTP header (e.g., 'Authorization: Bearer token')"
+
+  cookie:
+    type: string
+    flag: "--cookie"
+    description: Cookie string
+
+  proxy:
+    type: string
+    flag: "--proxy"
+    description: Proxy URL
+
+  timeout:
+    type: integer
+    flag: "--timeout"
+    default: 10
+    description: Connection timeout
+
+  delay:
+    type: integer
+    flag: "--delay"
+    description: Delay between requests (seconds)
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  format:
+    type: enum
+    flag: "--format"
+    options: ["simple", "plain", "json", "xml", "md", "csv", "html"]
+    description: Output format
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  full_url:
+    type: boolean
+    flag: "--full-url"
+    description: Print full URL in output
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "dirsearch -u http://target.com -e php,html,txt"
+  - "dirsearch -u http://target.com -w /path/to/wordlist.txt -t 50"
+  - "dirsearch -u http://target.com -e php -r --max-recursion-depth=3"
+  - "dirsearch -l urls.txt -e php,html -x 404,403"
+
+notes: |
+  Default wordlist locations:
+  - Built-in: db/dicc.txt
+  - Custom: specify with -w
+
+  Tips:
+  - Use -e for specific extensions
+  - Use -r for recursive scanning
+  - Use -x to exclude common errors
+  - Use --random-agent to avoid detection
+
+  Comparison with other tools:
+  - dirsearch: Python, feature-rich
+  - gobuster: Go, fast
+  - ffuf: Go, flexible fuzzing

@@ -1,0 +1,96 @@
+name: airodump-ng
+category: wireless
+description: Wireless packet capture and network discovery tool.
+keywords:
+  - wifi
+  - wireless
+  - scan
+  - capture
+  - monitor
+  - handshake
+  - packet
+
+parameters:
+  interface:
+    type: string
+    required: true
+    description: Monitor mode interface (e.g., wlan0mon)
+
+  channel:
+    type: integer
+    flag: "-c"
+    description: Lock to specific channel
+
+  bssid:
+    type: string
+    flag: "--bssid"
+    description: Filter by BSSID
+
+  essid:
+    type: string
+    flag: "--essid"
+    description: Filter by ESSID
+
+  write:
+    type: string
+    flag: "-w"
+    description: Output file prefix
+
+  output_format:
+    type: string
+    flag: "--output-format"
+    description: "Output format (pcap, csv, kismet, netxml)"
+
+  band:
+    type: string
+    flag: "--band"
+    description: "Band to use (a, b, g)"
+
+  manufacturer:
+    type: boolean
+    flag: "--manufacturer"
+    description: Show manufacturer
+
+  wps:
+    type: boolean
+    flag: "--wps"
+    description: Show WPS info
+
+  uptime:
+    type: boolean
+    flag: "--uptime"
+    description: Show AP uptime
+
+requires_root: true
+timeout: 0
+interactive: true
+
+examples:
+  - "airodump-ng wlan0mon"
+  - "airodump-ng -c 6 --bssid AA:BB:CC:DD:EE:FF -w capture wlan0mon"
+  - "airodump-ng --wps --manufacturer wlan0mon"
+  - "airodump-ng --band abg wlan0mon"
+
+notes: |
+  Setup monitor mode:
+  airmon-ng start wlan0
+
+  Column meanings:
+  - BSSID: Access point MAC
+  - PWR: Signal strength
+  - Beacons: Beacon frames
+  - #Data: Data packets
+  - CH: Channel
+  - ENC: Encryption type
+  - ESSID: Network name
+
+  For handshake capture:
+  1. Find target channel
+  2. Lock to channel with -c
+  3. Specify --bssid
+  4. Wait for handshake or deauth
+
+  Output files:
+  - .cap: Packet capture
+  - .csv: Network list
+  - .kismet.csv: Kismet format

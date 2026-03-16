@@ -1,0 +1,207 @@
+name: sqlmap
+category: web
+description: Automatic SQL injection and database takeover tool. Detects and exploits SQL injection flaws.
+keywords:
+  - sql
+  - injection
+  - sqli
+  - database
+  - dump
+  - exploit
+  - mysql
+  - postgres
+  - mssql
+  - oracle
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: "Target URL with vulnerable parameter (e.g., http://site.com/page?id=1)"
+
+  data:
+    type: string
+    flag: "--data"
+    description: "POST data string (e.g., username=admin&password=test)"
+
+  cookie:
+    type: string
+    flag: "--cookie"
+    description: HTTP Cookie header value
+
+  method:
+    type: enum
+    flag: "--method"
+    options:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    description: HTTP method to use
+
+  level:
+    type: integer
+    flag: "--level"
+    default: 1
+    description: "Level of tests to perform (1-5). Higher = more tests"
+
+  risk:
+    type: integer
+    flag: "--risk"
+    default: 1
+    description: "Risk of tests to perform (1-3). Higher = more risky tests"
+
+  dbms:
+    type: enum
+    flag: "--dbms"
+    options:
+      - mysql
+      - postgresql
+      - mssql
+      - oracle
+      - sqlite
+    description: Force specific DBMS
+
+  technique:
+    type: string
+    flag: "--technique"
+    description: "SQL injection techniques (B=Boolean, E=Error, U=Union, S=Stacked, T=Time, Q=Inline)"
+
+  dbs:
+    type: boolean
+    flag: "--dbs"
+    description: Enumerate databases
+
+  tables:
+    type: boolean
+    flag: "--tables"
+    description: Enumerate tables
+
+  columns:
+    type: boolean
+    flag: "--columns"
+    description: Enumerate columns
+
+  dump:
+    type: boolean
+    flag: "--dump"
+    description: Dump database table entries
+
+  dump_all:
+    type: boolean
+    flag: "--dump-all"
+    description: Dump all database tables
+
+  database:
+    type: string
+    flag: "-D"
+    description: Database to enumerate
+
+  table:
+    type: string
+    flag: "-T"
+    description: Table to enumerate
+
+  column:
+    type: string
+    flag: "-C"
+    description: Column(s) to enumerate
+
+  batch:
+    type: boolean
+    flag: "--batch"
+    default: true
+    description: Non-interactive mode (use defaults)
+
+  random_agent:
+    type: boolean
+    flag: "--random-agent"
+    description: Use random User-Agent header
+
+  tamper:
+    type: string
+    flag: "--tamper"
+    description: "Tamper scripts for WAF bypass (e.g., space2comment,between)"
+
+  os_shell:
+    type: boolean
+    flag: "--os-shell"
+    description: Prompt for OS shell
+
+  sql_shell:
+    type: boolean
+    flag: "--sql-shell"
+    description: Prompt for SQL shell
+
+  file_read:
+    type: string
+    flag: "--file-read"
+    description: Read a file from the server
+
+  file_write:
+    type: string
+    flag: "--file-write"
+    description: Write a local file to the server
+
+  threads:
+    type: integer
+    flag: "--threads"
+    default: 1
+    description: Number of concurrent threads
+
+  timeout:
+    type: integer
+    flag: "--timeout"
+    default: 30
+    description: Seconds before timeout
+
+  proxy:
+    type: string
+    flag: "--proxy"
+    description: "Proxy to use (e.g., http://127.0.0.1:8080)"
+
+  tor:
+    type: boolean
+    flag: "--tor"
+    description: Use Tor anonymity network
+
+  forms:
+    type: boolean
+    flag: "--forms"
+    description: Parse and test forms on target URL
+
+  crawl:
+    type: integer
+    flag: "--crawl"
+    description: Crawl depth for collecting URLs
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "sqlmap -u 'http://target.com/page?id=1' --batch --dbs"
+  - "sqlmap -u 'http://target.com/page?id=1' -D database -T users --dump"
+  - "sqlmap -u 'http://target.com/login' --data='user=admin&pass=test' --level=5 --risk=3"
+  - "sqlmap -u 'http://target.com/page?id=1' --os-shell"
+  - "sqlmap -u 'http://target.com/page?id=1' --tamper=space2comment --random-agent"
+
+notes: |
+  Technique characters:
+  - B: Boolean-based blind
+  - E: Error-based
+  - U: Union query-based
+  - S: Stacked queries
+  - T: Time-based blind
+  - Q: Inline queries
+
+  Common tamper scripts:
+  - space2comment: Replaces spaces with /**/
+  - between: Replaces > with NOT BETWEEN 0 AND
+  - randomcase: Random case for keywords
+  - charencode: URL encode characters
+
+  Level/Risk guide:
+  - Level 1, Risk 1: Fast, basic tests
+  - Level 3, Risk 2: Thorough testing
+  - Level 5, Risk 3: Comprehensive, may cause issues

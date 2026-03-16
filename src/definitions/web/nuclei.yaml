@@ -1,0 +1,215 @@
+name: nuclei
+category: web
+description: Fast vulnerability scanner based on YAML templates. Detects CVEs, misconfigurations, and security issues.
+keywords:
+  - vulnerability
+  - scanner
+  - template
+  - cve
+  - exploit
+  - security
+  - automated
+
+parameters:
+  target:
+    type: string
+    flag: "-u"
+    description: Target URL to scan
+
+  list:
+    type: string
+    flag: "-l"
+    description: File containing list of target URLs
+
+  templates:
+    type: string
+    flag: "-t"
+    description: "Templates or template directory to run"
+
+  template_url:
+    type: string
+    flag: "-tu"
+    description: URL to template
+
+  workflows:
+    type: string
+    flag: "-w"
+    description: Workflow or workflow directory to run
+
+  tags:
+    type: string
+    flag: "-tags"
+    description: "Tags to run (e.g., cve,rce,sqli,xss)"
+
+  exclude_tags:
+    type: string
+    flag: "-etags"
+    description: Tags to exclude
+
+  include_tags:
+    type: string
+    flag: "-itags"
+    description: Tags to include even if excluded
+
+  severity:
+    type: string
+    flag: "-s"
+    description: "Severities to run (critical,high,medium,low,info,unknown)"
+
+  exclude_severity:
+    type: string
+    flag: "-es"
+    description: Severities to exclude
+
+  author:
+    type: string
+    flag: "-author"
+    description: Filter by template author
+
+  type:
+    type: string
+    flag: "-type"
+    description: "Protocol types to run (http,dns,file,network,headless)"
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  json:
+    type: boolean
+    flag: "-json"
+    description: JSON output
+
+  jsonl:
+    type: boolean
+    flag: "-jsonl"
+    description: JSONL output (one JSON per line)
+
+  markdown_export:
+    type: string
+    flag: "-me"
+    description: Export results in markdown to directory
+
+  rate_limit:
+    type: integer
+    flag: "-rl"
+    description: Requests per second
+
+  rate_limit_minute:
+    type: integer
+    flag: "-rlm"
+    description: Requests per minute
+
+  bulk_size:
+    type: integer
+    flag: "-bs"
+    description: Bulk size for parallel template processing
+
+  concurrency:
+    type: integer
+    flag: "-c"
+    default: 25
+    description: Number of templates to run in parallel
+
+  headless:
+    type: boolean
+    flag: "-headless"
+    description: Enable headless browser for templates
+
+  system_resolvers:
+    type: boolean
+    flag: "-sr"
+    description: Use system DNS resolvers
+
+  timeout:
+    type: integer
+    flag: "-timeout"
+    default: 10
+    description: Request timeout in seconds
+
+  retries:
+    type: integer
+    flag: "-retries"
+    default: 1
+    description: Number of retries
+
+  proxy:
+    type: string
+    flag: "-proxy"
+    description: Proxy URL
+
+  header:
+    type: string
+    flag: "-H"
+    description: Custom header
+
+  interactsh_server:
+    type: string
+    flag: "-iserver"
+    description: Interactsh server URL
+
+  silent:
+    type: boolean
+    flag: "-silent"
+    description: Silent mode (only results)
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  debug:
+    type: boolean
+    flag: "-debug"
+    description: Debug mode
+
+  update:
+    type: boolean
+    flag: "-update"
+    description: Update nuclei to latest version
+
+  update_templates:
+    type: boolean
+    flag: "-ut"
+    description: Update nuclei templates
+
+  new_templates:
+    type: boolean
+    flag: "-nt"
+    description: Run only new templates
+
+requires_root: false
+timeout: 900
+
+examples:
+  - "nuclei -u http://target.com -tags cve"
+  - "nuclei -l urls.txt -s critical,high"
+  - "nuclei -u http://target.com -tags sqli,xss,rce"
+  - "nuclei -u http://target.com -t /path/to/custom-template.yaml"
+  - "nuclei -u http://target.com -w workflows/wordpress-workflow.yaml"
+  - "nuclei -l targets.txt -tags cve -s critical -o results.json -json"
+
+notes: |
+  Template tags:
+  - cve: CVE vulnerabilities
+  - rce: Remote code execution
+  - sqli: SQL injection
+  - xss: Cross-site scripting
+  - lfi: Local file inclusion
+  - ssrf: Server-side request forgery
+  - redirect: Open redirects
+  - exposure: Information exposure
+  - tech: Technology detection
+  - misconfiguration: Misconfigurations
+  - default-login: Default credentials
+
+  Severity levels:
+  - critical: Critical vulnerabilities
+  - high: High severity
+  - medium: Medium severity
+  - low: Low severity
+  - info: Informational
+
+  Templates are auto-updated from:
+  https://github.com/projectdiscovery/nuclei-templates

@@ -1,0 +1,166 @@
+name: httpx
+category: recon
+description: Fast HTTP toolkit for probing, title extraction, and technology detection.
+keywords:
+  - http
+  - probe
+  - title
+  - status
+  - technology
+  - web
+  - alive
+
+parameters:
+  target:
+    type: string
+    flag: "-u"
+    description: Single target URL
+
+  list:
+    type: string
+    flag: "-l"
+    description: File containing list of targets
+
+  ports:
+    type: string
+    flag: "-p"
+    description: "Ports to probe (e.g., 80,443,8080)"
+
+  path:
+    type: string
+    flag: "-path"
+    description: Path to append to URLs
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 50
+    description: Number of threads
+
+  rate_limit:
+    type: integer
+    flag: "-rl"
+    description: Rate limit per second
+
+  timeout:
+    type: integer
+    flag: "-timeout"
+    default: 10
+    description: Request timeout in seconds
+
+  retries:
+    type: integer
+    flag: "-retries"
+    default: 0
+    description: Number of retries
+
+  title:
+    type: boolean
+    flag: "-title"
+    description: Display page title
+
+  status_code:
+    type: boolean
+    flag: "-status-code"
+    description: Display status code
+
+  content_length:
+    type: boolean
+    flag: "-content-length"
+    description: Display content length
+
+  content_type:
+    type: boolean
+    flag: "-content-type"
+    description: Display content type
+
+  location:
+    type: boolean
+    flag: "-location"
+    description: Display redirect location
+
+  web_server:
+    type: boolean
+    flag: "-web-server"
+    description: Display web server name
+
+  tech_detect:
+    type: boolean
+    flag: "-tech-detect"
+    description: Display technologies
+
+  ip:
+    type: boolean
+    flag: "-ip"
+    description: Display IP address
+
+  cname:
+    type: boolean
+    flag: "-cname"
+    description: Display CNAME record
+
+  cdn:
+    type: boolean
+    flag: "-cdn"
+    description: Display CDN in use
+
+  response_time:
+    type: boolean
+    flag: "-response-time"
+    description: Display response time
+
+  follow_redirects:
+    type: boolean
+    flag: "-follow-redirects"
+    description: Follow redirects
+
+  match_code:
+    type: string
+    flag: "-mc"
+    description: Match status codes
+
+  filter_code:
+    type: string
+    flag: "-fc"
+    description: Filter status codes
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  json:
+    type: boolean
+    flag: "-json"
+    description: JSON output
+
+  silent:
+    type: boolean
+    flag: "-silent"
+    description: Silent mode
+
+  verbose:
+    type: boolean
+    flag: "-verbose"
+    description: Verbose output
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "httpx -u http://target.com -title -status-code -tech-detect"
+  - "httpx -l urls.txt -title -status-code -web-server"
+  - "cat subdomains.txt | httpx -silent -status-code"
+  - "httpx -l hosts.txt -p 80,443,8080,8443 -title"
+
+notes: |
+  Common use cases:
+  1. Probe alive hosts from subdomain list
+  2. Extract page titles for analysis
+  3. Detect technologies and servers
+  4. Find specific status codes
+  5. Mass HTTP probing
+
+  Works great with:
+  - subfinder | httpx
+  - cat subs.txt | httpx -title -tech-detect

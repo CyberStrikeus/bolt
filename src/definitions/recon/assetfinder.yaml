@@ -1,0 +1,45 @@
+name: assetfinder
+category: recon
+description: Find domains and subdomains related to a given domain.
+keywords:
+  - subdomain
+  - domain
+  - discovery
+  - asset
+  - osint
+
+parameters:
+  subs_only:
+    type: boolean
+    flag: "--subs-only"
+    description: Only subdomains
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "assetfinder target.com"
+  - "assetfinder --subs-only target.com"
+  - "assetfinder target.com | httprobe"
+  - "echo target.com | assetfinder"
+
+notes: |
+  Sources:
+  - crt.sh
+  - certspotter
+  - hackertarget
+  - threatcrowd
+  - wayback
+  - dns.bufferover.run
+  - facebook
+
+  Output:
+  - Related domains
+  - Subdomains (--subs-only)
+
+  Pipeline:
+  assetfinder target.com | httprobe | nuclei
+
+  Combine with:
+  - subfinder for more
+  - amass for comprehensive

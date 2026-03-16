@@ -1,0 +1,155 @@
+name: hping3
+category: network
+description: TCP/IP packet assembler and analyzer with advanced features.
+keywords:
+  - packet
+  - tcp
+  - udp
+  - icmp
+  - scan
+  - firewall
+  - traceroute
+
+parameters:
+  host:
+    type: string
+    required: true
+    description: Target host
+
+  port:
+    type: integer
+    flag: "-p"
+    description: Destination port
+
+  syn:
+    type: boolean
+    flag: "-S"
+    description: SYN flag
+
+  ack:
+    type: boolean
+    flag: "-A"
+    description: ACK flag
+
+  fin:
+    type: boolean
+    flag: "-F"
+    description: FIN flag
+
+  push:
+    type: boolean
+    flag: "-P"
+    description: PUSH flag
+
+  rst:
+    type: boolean
+    flag: "-R"
+    description: RST flag
+
+  urg:
+    type: boolean
+    flag: "-U"
+    description: URG flag
+
+  count:
+    type: integer
+    flag: "-c"
+    description: Packet count
+
+  interval:
+    type: string
+    flag: "-i"
+    description: "Interval between packets (u100 = 100 microseconds)"
+
+  data:
+    type: integer
+    flag: "-d"
+    description: Data size
+
+  file:
+    type: string
+    flag: "-E"
+    description: Data from file
+
+  traceroute:
+    type: boolean
+    flag: "-T"
+    description: Traceroute mode
+
+  ttl:
+    type: integer
+    flag: "-t"
+    description: TTL value
+
+  source_port:
+    type: integer
+    flag: "-s"
+    description: Source port
+
+  spoof:
+    type: string
+    flag: "-a"
+    description: Spoof source IP
+
+  rand_source:
+    type: boolean
+    flag: "--rand-source"
+    description: Random source IP
+
+  icmp:
+    type: boolean
+    flag: "-1"
+    description: ICMP mode
+
+  udp:
+    type: boolean
+    flag: "-2"
+    description: UDP mode
+
+  flood:
+    type: boolean
+    flag: "--flood"
+    description: Flood mode (fast as possible)
+
+requires_root: true
+timeout: 120
+
+examples:
+  - "hping3 -S -p 80 target.com"
+  - "hping3 -S -p 80 -c 3 target.com"
+  - "hping3 -1 target.com"
+  - "hping3 -S -p 80 --traceroute target.com"
+  - "hping3 -S -p 80 -s 53 target.com"
+  - "hping3 -2 -p 53 target.com"
+
+notes: |
+  Use cases:
+  - Firewall testing
+  - Advanced port scanning
+  - Traceroute through firewalls
+  - OS fingerprinting
+  - Path MTU discovery
+
+  Firewall bypass:
+  - Use -s 53 (DNS source port)
+  - Use ACK scan (-A)
+  - Fragment packets
+
+  Scan types:
+  - SYN scan: -S -p port
+  - ACK scan: -A -p port
+  - FIN scan: -F -p port
+  - UDP scan: -2 -p port
+
+  TCP flags:
+  - S: SYN
+  - A: ACK
+  - F: FIN
+  - P: PUSH
+  - R: RST
+  - U: URG
+
+  Tips:
+  - Combine flags for custom packets
+  - Use -c to limit packets
+  - Use --traceroute for path discovery

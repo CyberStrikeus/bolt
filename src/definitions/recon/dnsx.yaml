@@ -1,0 +1,115 @@
+name: dnsx
+category: recon
+description: Fast multi-purpose DNS toolkit with retries and wildcards.
+keywords:
+  - dns
+  - resolver
+  - fast
+  - enumeration
+
+parameters:
+  list:
+    type: string
+    flag: "-l"
+    description: File with domains/subdomains
+
+  domain:
+    type: string
+    flag: "-d"
+    description: Target domain
+
+  wordlist:
+    type: string
+    flag: "-w"
+    description: Wordlist for brute force
+
+  resolver:
+    type: string
+    flag: "-r"
+    description: Resolver file
+
+  a:
+    type: boolean
+    flag: "-a"
+    description: Query A records
+
+  aaaa:
+    type: boolean
+    flag: "-aaaa"
+    description: Query AAAA records
+
+  cname:
+    type: boolean
+    flag: "-cname"
+    description: Query CNAME records
+
+  mx:
+    type: boolean
+    flag: "-mx"
+    description: Query MX records
+
+  ns:
+    type: boolean
+    flag: "-ns"
+    description: Query NS records
+
+  txt:
+    type: boolean
+    flag: "-txt"
+    description: Query TXT records
+
+  resp:
+    type: boolean
+    flag: "-resp"
+    description: Show response
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  json:
+    type: boolean
+    flag: "-json"
+    description: JSON output
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 100
+    description: Number of threads
+
+  silent:
+    type: boolean
+    flag: "-silent"
+    description: Silent mode
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "echo target.com | dnsx -a -resp"
+  - "subfinder -d target.com | dnsx -a -cname"
+  - "dnsx -l subdomains.txt -a -resp -o resolved.txt"
+  - "dnsx -d target.com -w wordlist.txt -a"
+  - "cat domains.txt | dnsx -a -aaaa -mx -ns -json"
+
+notes: |
+  Features:
+  - Wildcard detection
+  - Auto retry
+  - Multiple record types
+  - Custom resolvers
+
+  Pipeline:
+  subfinder | dnsx | httpx | nuclei
+
+  vs dig/nslookup:
+  - Bulk processing
+  - Faster
+  - Better output
+
+  Common usage:
+  1. Validate subdomains
+  2. Get IP addresses
+  3. Find CNAMEs

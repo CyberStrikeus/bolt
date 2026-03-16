@@ -1,0 +1,88 @@
+name: rustscan
+category: network
+description: Modern port scanner - fast as lightning with nmap integration.
+keywords:
+  - port
+  - scan
+  - fast
+  - rust
+  - nmap
+
+parameters:
+  addresses:
+    type: string
+    required: true
+    flag: "-a"
+    description: Target addresses
+
+  ports:
+    type: string
+    flag: "-p"
+    description: Ports to scan
+
+  range:
+    type: string
+    flag: "-r"
+    description: Port range
+
+  batch_size:
+    type: integer
+    flag: "-b"
+    default: 4500
+    description: Batch size
+
+  timeout:
+    type: integer
+    flag: "-t"
+    default: 1500
+    description: Timeout in ms
+
+  ulimit:
+    type: integer
+    flag: "--ulimit"
+    default: 5000
+    description: Max open files
+
+  greppable:
+    type: boolean
+    flag: "-g"
+    description: Greppable output
+
+  no_nmap:
+    type: boolean
+    flag: "--no-nmap"
+    description: Skip nmap scan
+
+  scripts:
+    type: string
+    flag: "--scripts"
+    description: Nmap scripts to run
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "rustscan -a 192.168.1.1"
+  - "rustscan -a 192.168.1.0/24 --ulimit 5000"
+  - "rustscan -a target.com -p 22,80,443"
+  - "rustscan -a target.com -- -A -sV"
+  - "rustscan -a target.com --scripts vuln"
+
+notes: |
+  Speed:
+  - Scans 65535 ports in 3 seconds
+  - Uses async I/O
+  - Adjust batch size for network
+
+  Nmap integration:
+  - Auto-runs nmap on open ports
+  - Pass nmap flags after --
+  - Use --no-nmap to skip
+
+  Recommended:
+  rustscan -a target -- -A -sV -sC
+
+  vs nmap:
+  - Much faster discovery
+  - Same nmap accuracy
+  - Best of both worlds

@@ -1,0 +1,116 @@
+name: binwalk
+category: forensics
+description: Firmware analysis tool for extracting embedded files and code.
+keywords:
+  - firmware
+  - binary
+  - extract
+  - analysis
+  - embedded
+  - reverse
+
+parameters:
+  file:
+    type: string
+    required: true
+    description: Target file to analyze
+
+  extract:
+    type: boolean
+    flag: "-e"
+    description: Extract files
+
+  matryoshka:
+    type: boolean
+    flag: "-M"
+    description: Recursively extract
+
+  directory:
+    type: string
+    flag: "-C"
+    description: Extract to directory
+
+  signature:
+    type: boolean
+    flag: "-B"
+    description: Scan for signatures
+
+  raw:
+    type: boolean
+    flag: "-R"
+    description: Raw bytes search
+
+  entropy:
+    type: boolean
+    flag: "-E"
+    description: Entropy analysis
+
+  hexdump:
+    type: boolean
+    flag: "-W"
+    description: Hexdump of results
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  offset:
+    type: integer
+    flag: "-o"
+    description: Start offset
+
+  length:
+    type: integer
+    flag: "-l"
+    description: Bytes to scan
+
+  include:
+    type: string
+    flag: "-y"
+    description: Include only these signatures
+
+  exclude:
+    type: string
+    flag: "-x"
+    description: Exclude these signatures
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "binwalk firmware.bin"
+  - "binwalk -e firmware.bin"
+  - "binwalk -Me firmware.bin"
+  - "binwalk -E firmware.bin"
+  - "binwalk -B -v firmware.bin"
+
+notes: |
+  Common findings:
+  - Compressed archives
+  - Filesystems (squashfs, jffs2)
+  - Certificates and keys
+  - Executable code
+  - Configuration files
+
+  Analysis workflow:
+  1. binwalk file.bin (scan)
+  2. binwalk -E file.bin (entropy)
+  3. binwalk -Me file.bin (extract)
+  4. Analyze extracted files
+
+  Entropy analysis:
+  - High entropy = compressed/encrypted
+  - Low entropy = text/code
+  - Useful for finding sections
+
+  IoT/embedded targets:
+  - Router firmware
+  - IP cameras
+  - Smart devices
+  - Industrial controllers

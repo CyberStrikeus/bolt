@@ -1,0 +1,95 @@
+name: wafw00f
+category: web
+description: Web Application Firewall detection tool.
+keywords:
+  - waf
+  - firewall
+  - detection
+  - bypass
+  - web
+  - protection
+
+parameters:
+  url:
+    type: string
+    required: true
+    description: Target URL
+
+  input_file:
+    type: string
+    flag: "-i"
+    description: File with URLs
+
+  list:
+    type: boolean
+    flag: "-l"
+    description: List all WAFs
+
+  all:
+    type: boolean
+    flag: "-a"
+    description: Test all WAF modules
+
+  headers:
+    type: string
+    flag: "-H"
+    description: "Custom headers (Header:Value)"
+
+  proxy:
+    type: string
+    flag: "-p"
+    description: Proxy URL
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  format:
+    type: enum
+    flag: "-f"
+    options: ["csv", "json", "text"]
+    description: Output format
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "wafw00f http://target.com"
+  - "wafw00f -a http://target.com"
+  - "wafw00f -i urls.txt -o results.json -f json"
+  - "wafw00f -l"
+  - "wafw00f http://target.com -p http://127.0.0.1:8080"
+
+notes: |
+  Detection methods:
+  - Response headers analysis
+  - Cookie inspection
+  - Error page patterns
+  - Request blocking behavior
+
+  Common WAFs detected:
+  - Cloudflare
+  - AWS WAF
+  - Akamai Kona
+  - ModSecurity
+  - F5 BIG-IP ASM
+  - Imperva SecureSphere
+  - Barracuda
+  - Fortinet FortiWeb
+
+  After detection:
+  - Research WAF-specific bypasses
+  - Adjust payloads accordingly
+  - Use encoding techniques
+  - Try HTTP parameter pollution
+
+  Tips:
+  - Run before other scans
+  - Adjust attack strategy
+  - Document in report

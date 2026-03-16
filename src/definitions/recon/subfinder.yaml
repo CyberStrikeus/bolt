@@ -1,0 +1,136 @@
+name: subfinder
+category: recon
+description: Fast passive subdomain discovery tool using various online sources.
+keywords:
+  - subdomain
+  - discovery
+  - dns
+  - enumeration
+  - passive
+  - osint
+  - recon
+
+parameters:
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain to enumerate
+
+  domain_list:
+    type: string
+    flag: "-dL"
+    description: File containing list of domains
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  output_json:
+    type: boolean
+    flag: "-oJ"
+    description: Write output in JSON format
+
+  silent:
+    type: boolean
+    flag: "-silent"
+    description: Silent mode (only subdomains in output)
+
+  recursive:
+    type: boolean
+    flag: "-recursive"
+    description: Recursive subdomain enumeration
+
+  all:
+    type: boolean
+    flag: "-all"
+    description: Use all sources (slow but comprehensive)
+
+  sources:
+    type: string
+    flag: "-sources"
+    description: "Specific sources to use (comma-separated)"
+
+  exclude_sources:
+    type: string
+    flag: "-es"
+    description: Sources to exclude
+
+  resolver_list:
+    type: string
+    flag: "-rL"
+    description: File containing resolvers
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 10
+    description: Number of concurrent goroutines
+
+  timeout:
+    type: integer
+    flag: "-timeout"
+    default: 30
+    description: Timeout in seconds
+
+  max_time:
+    type: integer
+    flag: "-max-time"
+    description: Maximum time to run
+
+  nw:
+    type: boolean
+    flag: "-nW"
+    description: Remove wildcard subdomains
+
+  active:
+    type: boolean
+    flag: "-active"
+    description: Verify subdomains via DNS resolution
+
+  ip:
+    type: boolean
+    flag: "-ip"
+    description: Include IP addresses in output
+
+  config:
+    type: string
+    flag: "-config"
+    description: Config file path
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "subfinder -d target.com -silent"
+  - "subfinder -d target.com -all -o subs.txt"
+  - "subfinder -d target.com -recursive -silent"
+  - "subfinder -dL domains.txt -o all_subs.txt"
+  - "subfinder -d target.com -ip -active"
+
+notes: |
+  Default sources:
+  - Alienvault, Anubis, BufferOver
+  - Certspotter, Chaos, Crtsh
+  - DNSdumpster, Hackertarget
+  - Shodan, Threatcrowd, Virustotal
+  - And many more...
+
+  For best results:
+  - Configure API keys in config file
+  - Use -all for comprehensive scan
+  - Use -recursive for deeper enumeration
+
+  Config file location:
+  $HOME/.config/subfinder/provider-config.yaml
+
+  API keys can be added for:
+  - Shodan, SecurityTrails, Chaos
+  - Censys, Fofa, Hunter
+  - Binaryedge, Zoomeye, etc.

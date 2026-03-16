@@ -1,0 +1,122 @@
+name: cewl
+category: password
+description: Custom wordlist generator by spidering target websites.
+keywords:
+  - wordlist
+  - password
+  - spider
+  - crawl
+  - custom
+  - dictionary
+
+parameters:
+  url:
+    type: string
+    required: true
+    description: Target URL to spider
+
+  depth:
+    type: integer
+    flag: "-d"
+    default: 2
+    description: Spider depth
+
+  min_length:
+    type: integer
+    flag: "-m"
+    default: 3
+    description: Minimum word length
+
+  output:
+    type: string
+    flag: "-w"
+    description: Output wordlist file
+
+  offsite:
+    type: boolean
+    flag: "-o"
+    description: Allow offsite links
+
+  lowercase:
+    type: boolean
+    flag: "--lowercase"
+    description: Lowercase all words
+
+  with_numbers:
+    type: boolean
+    flag: "--with-numbers"
+    description: Include words with numbers
+
+  email:
+    type: boolean
+    flag: "-e"
+    description: Include emails
+
+  email_file:
+    type: string
+    flag: "--email_file"
+    description: Output emails to file
+
+  count:
+    type: boolean
+    flag: "-c"
+    description: Show word count
+
+  meta:
+    type: boolean
+    flag: "-a"
+    description: Include metadata words
+
+  meta_file:
+    type: string
+    flag: "--meta_file"
+    description: Output metadata to file
+
+  user_agent:
+    type: string
+    flag: "-u"
+    description: Custom User-Agent
+
+  auth:
+    type: string
+    flag: "--auth_user"
+    description: HTTP auth username
+
+  proxy:
+    type: string
+    flag: "--proxy"
+    description: Proxy URL
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "cewl http://target.com -w wordlist.txt"
+  - "cewl http://target.com -d 3 -m 5 -w wordlist.txt"
+  - "cewl http://target.com -e --email_file emails.txt -w wordlist.txt"
+  - "cewl http://target.com --with-numbers -a -w wordlist.txt"
+  - "cewl http://target.com --lowercase -c -w wordlist.txt"
+
+notes: |
+  Use cases:
+  - Generate target-specific wordlists
+  - Password policy compliance
+  - Username enumeration
+  - Email harvesting
+
+  Combine with:
+  - john --rules: Add variations
+  - hashcat rules: Mutations
+  - Custom rules for seasons/years
+
+  Common modifications:
+  - Add numbers: word123
+  - Add years: word2024
+  - Capitalize: Word, WORD
+  - L33t speak: w0rd
+
+  Tips:
+  - Higher depth = more words
+  - Include metadata (-a)
+  - Filter by min length
+  - Process with --lowercase

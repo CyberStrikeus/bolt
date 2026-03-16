@@ -1,0 +1,99 @@
+name: dalfox
+category: web
+description: Parameter analysis and XSS scanner written in Go.
+keywords:
+  - xss
+  - scanner
+  - parameter
+  - fast
+  - go
+
+parameters:
+  url:
+    type: string
+    flag: "-u"
+    description: Target URL
+
+  file:
+    type: string
+    flag: "-f"
+    description: File with URLs
+
+  data:
+    type: string
+    flag: "-d"
+    description: POST data
+
+  cookie:
+    type: string
+    flag: "-c"
+    description: Cookie string
+
+  header:
+    type: string
+    flag: "-H"
+    description: Custom header
+
+  blind:
+    type: string
+    flag: "-b"
+    description: Blind XSS callback
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  format:
+    type: enum
+    flag: "--format"
+    options: ["plain", "json"]
+    description: Output format
+
+  worker:
+    type: integer
+    flag: "-w"
+    default: 100
+    description: Number of workers
+
+  mining_dict:
+    type: boolean
+    flag: "--mining-dict"
+    description: Find params via dictionary
+
+  deep_domxss:
+    type: boolean
+    flag: "--deep-domxss"
+    description: Deep DOM XSS scan
+
+  follow_redirect:
+    type: boolean
+    flag: "--follow-redirects"
+    description: Follow redirects
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "dalfox url http://target.com/page?param=value"
+  - "dalfox file urls.txt"
+  - "dalfox url http://target.com/page -b https://your.xss.ht"
+  - "dalfox url http://target.com/page --mining-dict"
+  - "dalfox url http://target.com/page --deep-domxss"
+
+notes: |
+  Modes:
+  - url: Single URL
+  - file: Multiple URLs
+  - pipe: Read from stdin
+  - sxss: Stored XSS
+
+  Features:
+  - Parameter mining
+  - DOM XSS detection
+  - Blind XSS support
+  - WAF evasion
+
+  Blind XSS:
+  - Use with XSS Hunter
+  - Custom callback server

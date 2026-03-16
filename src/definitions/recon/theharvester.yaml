@@ -1,0 +1,96 @@
+name: theHarvester
+category: recon
+description: Gather emails, names, subdomains, IPs, and URLs using multiple public sources.
+keywords:
+  - email
+  - subdomain
+  - osint
+  - harvester
+  - gathering
+  - names
+
+parameters:
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain to search
+
+  source:
+    type: string
+    flag: "-b"
+    default: "all"
+    description: "Data source (all, bing, google, linkedin, twitter, etc.)"
+
+  limit:
+    type: integer
+    flag: "-l"
+    default: 500
+    description: Limit results
+
+  start:
+    type: integer
+    flag: "-S"
+    description: Start result number
+
+  output_html:
+    type: string
+    flag: "-f"
+    description: Save to HTML and XML files
+
+  dns_lookup:
+    type: boolean
+    flag: "-n"
+    description: Perform DNS lookup
+
+  dns_brute:
+    type: boolean
+    flag: "-c"
+    description: Perform DNS brute force
+
+  dns_tld:
+    type: boolean
+    flag: "-t"
+    description: Perform DNS TLD expansion
+
+  virtual_host:
+    type: boolean
+    flag: "-v"
+    description: Verify host via DNS resolution
+
+  shodan:
+    type: boolean
+    flag: "-s"
+    description: Use Shodan to query discovered hosts
+
+  screenshot:
+    type: boolean
+    flag: "-r"
+    description: Take screenshots of discovered websites
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "theHarvester -d target.com -b all"
+  - "theHarvester -d target.com -b google,bing,linkedin -l 200"
+  - "theHarvester -d target.com -b all -n -c"
+
+notes: |
+  Data sources:
+  - anubis, baidu, bing, bingapi
+  - bufferoverun, censys, certspotter
+  - crtsh, dnsdumpster, duckduckgo
+  - fullhunt, github-code, google
+  - hackertarget, hunter, intelx
+  - linkedin, linkedin_links
+  - netlas, otx, pentesttools
+  - projectdiscovery, rapiddns
+  - rocketreach, securityTrails
+  - shodan, spyse, sublist3r
+  - threatcrowd, threatminer
+  - trello, twitter, urlscan
+  - virustotal, yahoo, zoomeye
+
+  API keys needed for some sources.
+  Configure in /etc/theHarvester/api-keys.yaml

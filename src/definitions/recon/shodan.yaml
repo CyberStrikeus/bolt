@@ -1,0 +1,89 @@
+name: shodan
+category: recon
+description: Shodan CLI for searching internet-connected devices.
+keywords:
+  - shodan
+  - iot
+  - search
+  - osint
+  - devices
+  - scan
+
+parameters:
+  command:
+    type: enum
+    required: true
+    options:
+      - value: "search"
+        description: "Search Shodan"
+      - value: "host"
+        description: "Get host info"
+      - value: "scan"
+        description: "Scan IP/network"
+      - value: "stats"
+        description: "Get statistics"
+      - value: "count"
+        description: "Count results"
+      - value: "download"
+        description: "Download results"
+    description: Shodan command
+
+  query:
+    type: string
+    description: Search query or IP address
+
+  limit:
+    type: integer
+    description: Result limit
+
+  facets:
+    type: string
+    description: "Facets for stats (e.g., country,port)"
+
+  fields:
+    type: string
+    description: Fields to return
+
+  separator:
+    type: string
+    description: Field separator
+
+requires_root: false
+timeout: 120
+
+command_template: "shodan {command} {query?} {limit?}"
+
+examples:
+  - "shodan search 'apache'"
+  - "shodan host 8.8.8.8"
+  - "shodan stats --facets country,port 'nginx'"
+  - "shodan count 'port:22'"
+  - "shodan search 'org:\"Target Company\"'"
+  - "shodan search 'ssl.cert.subject.cn:target.com'"
+
+notes: |
+  Setup:
+  shodan init <API_KEY>
+
+  Common queries:
+  - port:22 country:US
+  - org:"Company Name"
+  - hostname:target.com
+  - ssl.cert.subject.cn:target.com
+  - product:apache version:2.4
+  - vuln:CVE-2021-44228
+
+  Filters:
+  - port: Open port
+  - country: Country code
+  - city: City name
+  - org: Organization
+  - hostname: Hostname
+  - os: Operating system
+  - product: Software product
+  - version: Software version
+  - vuln: CVE identifier
+
+  API limits:
+  - Free: 100 queries/month
+  - Membership: More queries

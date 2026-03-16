@@ -1,0 +1,175 @@
+name: crackmapexec
+category: ad
+description: Swiss army knife for pentesting Windows/Active Directory environments.
+keywords:
+  - active directory
+  - smb
+  - winrm
+  - lateral movement
+  - password spray
+  - hash
+  - windows
+
+parameters:
+  protocol:
+    type: enum
+    required: true
+    options:
+      - smb
+      - winrm
+      - ssh
+      - ldap
+      - mssql
+      - rdp
+      - wmi
+      - ftp
+    description: Protocol to use
+
+  target:
+    type: string
+    required: true
+    description: Target host, CIDR, or file
+
+  username:
+    type: string
+    flag: "-u"
+    description: Username or file with usernames
+
+  password:
+    type: string
+    flag: "-p"
+    description: Password or file with passwords
+
+  hash:
+    type: string
+    flag: "-H"
+    description: NTLM hash (LM:NT or just NT)
+
+  domain:
+    type: string
+    flag: "-d"
+    description: Domain name
+
+  local_auth:
+    type: boolean
+    flag: "--local-auth"
+    description: Authenticate locally
+
+  shares:
+    type: boolean
+    flag: "--shares"
+    description: Enumerate shares
+
+  sessions:
+    type: boolean
+    flag: "--sessions"
+    description: Enumerate sessions
+
+  users:
+    type: boolean
+    flag: "--users"
+    description: Enumerate users
+
+  groups:
+    type: boolean
+    flag: "--groups"
+    description: Enumerate groups
+
+  loggedon_users:
+    type: boolean
+    flag: "--loggedon-users"
+    description: Enumerate logged on users
+
+  rid_brute:
+    type: integer
+    flag: "--rid-brute"
+    description: RID brute force (max RID)
+
+  pass_pol:
+    type: boolean
+    flag: "--pass-pol"
+    description: Get password policy
+
+  sam:
+    type: boolean
+    flag: "--sam"
+    description: Dump SAM hashes
+
+  lsa:
+    type: boolean
+    flag: "--lsa"
+    description: Dump LSA secrets
+
+  ntds:
+    type: string
+    flag: "--ntds"
+    description: "Dump NTDS.dit (vss or drsuapi)"
+
+  execute:
+    type: string
+    flag: "-x"
+    description: Execute command
+
+  powershell:
+    type: string
+    flag: "-X"
+    description: Execute PowerShell command
+
+  module:
+    type: string
+    flag: "-M"
+    description: Module to use
+
+  module_options:
+    type: string
+    flag: "-o"
+    description: Module options
+
+  continue_on_success:
+    type: boolean
+    flag: "--continue-on-success"
+    description: Continue after success (spray)
+
+  no_bruteforce:
+    type: boolean
+    flag: "--no-bruteforce"
+    description: No brute force (user:pass pairs)
+
+  gen_relay_list:
+    type: string
+    flag: "--gen-relay-list"
+    description: Generate relay target list
+
+requires_root: false
+timeout: 600
+
+command_template: "crackmapexec {protocol} {target} {username?} {password?} {hash?} {domain?} {local_auth?} {shares?} {sessions?} {users?} {groups?} {loggedon_users?} {pass_pol?} {sam?} {lsa?} {execute?} {module?} {continue_on_success?}"
+
+examples:
+  - "crackmapexec smb 192.168.1.0/24 -u user -p pass"
+  - "crackmapexec smb target -u admin -p pass --shares"
+  - "crackmapexec smb target -u admin -H hash -x 'whoami'"
+  - "crackmapexec smb target -u admin -p pass -M mimikatz"
+  - "crackmapexec smb target -u users.txt -p passwords.txt --continue-on-success"
+
+notes: |
+  Common modules:
+  - mimikatz: Dump credentials
+  - lsassy: Parse lsass remotely
+  - met_inject: Inject meterpreter
+  - petitpotam: Coerce authentication
+  - zerologon: CVE-2020-1472
+
+  Output legend:
+  - [+] Success
+  - [-] Failure
+  - [*] Info
+  - Pwn3d!: Admin access
+
+  Pass-the-hash:
+  crackmapexec smb target -u user -H NTHASH
+
+  Password spraying:
+  crackmapexec smb targets.txt -u users.txt -p 'Password1' --continue-on-success
+
+  NetExec is the successor to CrackMapExec

@@ -1,0 +1,52 @@
+name: gophish
+category: social
+description: Open-source phishing framework for security awareness.
+keywords:
+  - phishing
+  - social engineering
+  - awareness
+  - email
+  - campaign
+
+parameters:
+  config:
+    type: string
+    description: Configuration file path
+
+requires_root: false
+timeout: 0
+interactive: true
+
+examples:
+  - "gophish"
+  - "./gophish"
+
+notes: |
+  Default access:
+  - Admin: https://127.0.0.1:3333
+  - User: admin / gophish (change!)
+
+  Setup workflow:
+  1. Configure SMTP profile
+  2. Create landing page
+  3. Create email template
+  4. Import users
+  5. Launch campaign
+
+  Features:
+  - Email templates
+  - Landing pages
+  - User tracking
+  - Campaign statistics
+  - Credential harvesting
+
+  Landing page:
+  - Clone existing sites
+  - Custom HTML
+  - Capture credentials
+
+  Reporting:
+  - Email opens
+  - Link clicks
+  - Submitted data
+  - Timeline view

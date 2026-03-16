@@ -1,0 +1,114 @@
+name: dirb
+category: web
+description: Web content scanner for finding hidden directories and files.
+keywords:
+  - directory
+  - brute
+  - web
+  - scanner
+  - hidden
+  - files
+  - enumeration
+
+parameters:
+  url:
+    type: string
+    required: true
+    description: Target URL
+
+  wordlist:
+    type: string
+    description: "Wordlist path (default: /usr/share/dirb/wordlists/common.txt)"
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  user_agent:
+    type: string
+    flag: "-a"
+    description: Custom User-Agent
+
+  cookie:
+    type: string
+    flag: "-c"
+    description: Cookie string
+
+  header:
+    type: string
+    flag: "-H"
+    description: Custom header
+
+  auth:
+    type: string
+    flag: "-u"
+    description: "HTTP auth (user:password)"
+
+  proxy:
+    type: string
+    flag: "-p"
+    description: Proxy URL
+
+  extensions:
+    type: string
+    flag: "-X"
+    description: "Extensions to check (e.g., .php,.txt)"
+
+  ignore_code:
+    type: string
+    flag: "-N"
+    description: Ignore responses with this code
+
+  case_insensitive:
+    type: boolean
+    flag: "-i"
+    description: Case-insensitive search
+
+  not_recursive:
+    type: boolean
+    flag: "-r"
+    description: Don't recurse
+
+  silent:
+    type: boolean
+    flag: "-S"
+    description: Silent mode
+
+  stop_on_warning:
+    type: boolean
+    flag: "-w"
+    description: Don't stop on warning
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "dirb http://target.com"
+  - "dirb http://target.com /usr/share/dirb/wordlists/big.txt"
+  - "dirb http://target.com -X .php,.html,.txt"
+  - "dirb http://target.com -a 'Mozilla/5.0' -c 'session=abc'"
+  - "dirb http://target.com -o results.txt"
+
+notes: |
+  Default wordlists:
+  - /usr/share/dirb/wordlists/common.txt
+  - /usr/share/dirb/wordlists/big.txt
+  - /usr/share/dirb/wordlists/small.txt
+
+  Common extensions:
+  - .php, .asp, .aspx, .jsp
+  - .html, .htm, .txt
+  - .bak, .old, .backup
+  - .conf, .config
+
+  vs other tools:
+  - Slower than ffuf/gobuster
+  - More verbose output
+  - Auto-recursion
+  - Good for simple scans
+
+  Tips:
+  - Use -X for extension checking
+  - Use -r to prevent deep recursion
+  - Combine with other tools

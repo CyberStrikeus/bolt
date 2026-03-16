@@ -1,0 +1,121 @@
+name: snmpwalk
+category: network
+description: SNMP enumeration tool for walking MIB trees and extracting data.
+keywords:
+  - snmp
+  - enumeration
+  - mib
+  - network
+  - community
+  - discovery
+
+parameters:
+  host:
+    type: string
+    required: true
+    description: Target host
+
+  community:
+    type: string
+    flag: "-c"
+    default: "public"
+    description: Community string
+
+  version:
+    type: enum
+    flag: "-v"
+    options:
+      - value: "1"
+        description: "SNMP v1"
+      - value: "2c"
+        description: "SNMP v2c"
+      - value: "3"
+        description: "SNMP v3"
+    default: "2c"
+    description: SNMP version
+
+  oid:
+    type: string
+    description: "OID to start from (default: entire tree)"
+
+  username:
+    type: string
+    flag: "-u"
+    description: SNMPv3 username
+
+  auth_protocol:
+    type: enum
+    flag: "-a"
+    options: ["MD5", "SHA"]
+    description: SNMPv3 auth protocol
+
+  auth_password:
+    type: string
+    flag: "-A"
+    description: SNMPv3 auth password
+
+  priv_protocol:
+    type: enum
+    flag: "-x"
+    options: ["DES", "AES"]
+    description: SNMPv3 privacy protocol
+
+  priv_password:
+    type: string
+    flag: "-X"
+    description: SNMPv3 privacy password
+
+  security_level:
+    type: enum
+    flag: "-l"
+    options: ["noAuthNoPriv", "authNoPriv", "authPriv"]
+    description: SNMPv3 security level
+
+  timeout:
+    type: integer
+    flag: "-t"
+    description: Timeout in seconds
+
+  numeric:
+    type: boolean
+    flag: "-On"
+    description: Print OIDs numerically
+
+  quiet:
+    type: boolean
+    flag: "-Oq"
+    description: Quick print
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "snmpwalk -v 2c -c public 192.168.1.1"
+  - "snmpwalk -v 2c -c public 192.168.1.1 system"
+  - "snmpwalk -v 3 -u admin -l authPriv -a SHA -A authpass -x AES -X privpass 192.168.1.1"
+  - "snmpwalk -v 2c -c public 192.168.1.1 1.3.6.1.2.1.1"
+  - "snmpwalk -v 2c -c public -On 192.168.1.1"
+
+notes: |
+  Common OIDs:
+  - system (1.3.6.1.2.1.1): System info
+  - interfaces (1.3.6.1.2.1.2): Network interfaces
+  - hrSWRunName: Running processes
+  - hrSWInstalledName: Installed software
+
+  Community strings to try:
+  - public, private
+  - admin, manager
+  - [hostname], [company]
+
+  Useful information:
+  - System description
+  - Hostnames
+  - Network interfaces
+  - Running services
+  - User accounts
+
+  SNMPv3 security:
+  - noAuthNoPriv: No auth, no privacy
+  - authNoPriv: Auth only
+  - authPriv: Auth + encryption

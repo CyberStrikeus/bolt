@@ -1,0 +1,95 @@
+name: enum4linux-ng
+category: ad
+description: Next generation Windows/SMB enumeration tool.
+keywords:
+  - smb
+  - windows
+  - enumeration
+  - shares
+  - users
+  - domain
+
+parameters:
+  host:
+    type: string
+    required: true
+    flag: "-A"
+    description: Target host
+
+  username:
+    type: string
+    flag: "-u"
+    description: Username
+
+  password:
+    type: string
+    flag: "-p"
+    description: Password
+
+  domain:
+    type: string
+    flag: "-d"
+    description: Domain
+
+  output:
+    type: string
+    flag: "-oA"
+    description: Output file base
+
+  users:
+    type: boolean
+    flag: "-U"
+    description: Enumerate users
+
+  shares:
+    type: boolean
+    flag: "-S"
+    description: Enumerate shares
+
+  groups:
+    type: boolean
+    flag: "-G"
+    description: Enumerate groups
+
+  policies:
+    type: boolean
+    flag: "-P"
+    description: Get password policy
+
+  all:
+    type: boolean
+    flag: "-A"
+    description: All enumeration
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "enum4linux-ng -A 192.168.1.1"
+  - "enum4linux-ng -U -S 192.168.1.1"
+  - "enum4linux-ng -u admin -p password -A 192.168.1.1"
+  - "enum4linux-ng -A 192.168.1.1 -oA results"
+
+notes: |
+  vs enum4linux:
+  - Python rewrite
+  - Better output
+  - More features
+  - JSON export
+
+  Enumerates:
+  - Users and groups
+  - Shares and policies
+  - OS information
+  - Printers
+  - RID cycling
+
+  Output formats:
+  - Text
+  - JSON
+  - YAML
+
+  Requirements:
+  - smbclient
+  - rpcclient
+  - nmblookup

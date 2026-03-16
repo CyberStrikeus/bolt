@@ -1,0 +1,67 @@
+name: hashid
+category: password
+description: Identify hash types from hash strings.
+keywords:
+  - hash
+  - identify
+  - type
+  - crack
+  - password
+
+parameters:
+  hash:
+    type: string
+    description: Hash to identify
+
+  file:
+    type: string
+    flag: "-f"
+    description: File with hashes
+
+  extended:
+    type: boolean
+    flag: "-e"
+    description: Extended output
+
+  mode:
+    type: boolean
+    flag: "-m"
+    description: Show hashcat mode
+
+  john:
+    type: boolean
+    flag: "-j"
+    description: Show John format
+
+requires_root: false
+timeout: 30
+
+examples:
+  - "hashid 5f4dcc3b5aa765d61d8327deb882cf99"
+  - "hashid -m 5f4dcc3b5aa765d61d8327deb882cf99"
+  - "hashid -j '$1$salt$hash'"
+  - "hashid -f hashes.txt"
+  - "hashid -e -m hash_value"
+
+notes: |
+  Common hashes:
+  - MD5: 32 hex chars
+  - SHA1: 40 hex chars
+  - SHA256: 64 hex chars
+  - NTLM: 32 hex chars
+  - bcrypt: $2a$/$2b$/$2y$
+
+  Output:
+  - Possible hash types
+  - Hashcat mode (-m)
+  - John format (-j)
+
+  Similar tools:
+  - hash-identifier
+  - name-that-hash
+
+  Workflow:
+  1. Identify hash type
+  2. Choose tool (hashcat/john)
+  3. Select mode/format
+  4. Run cracking

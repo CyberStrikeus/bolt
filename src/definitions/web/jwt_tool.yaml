@@ -1,0 +1,96 @@
+name: jwt_tool
+category: web
+description: JWT token testing and exploitation toolkit.
+keywords:
+  - jwt
+  - token
+  - authentication
+  - exploit
+  - web
+
+parameters:
+  token:
+    type: string
+    required: true
+    description: JWT token to analyze
+
+  target:
+    type: string
+    flag: "-t"
+    description: Target URL
+
+  mode:
+    type: enum
+    flag: "-M"
+    options:
+      - value: "at"
+        description: "All tests"
+      - value: "pb"
+        description: "Playbook"
+    description: Test mode
+
+  exploit:
+    type: enum
+    flag: "-X"
+    options:
+      - value: "a"
+        description: "alg:none"
+      - value: "n"
+        description: "null signature"
+      - value: "k"
+        description: "key confusion"
+      - value: "s"
+        description: "JWKS spoof"
+    description: Exploit type
+
+  key:
+    type: string
+    flag: "-k"
+    description: Key for signing
+
+  inject:
+    type: string
+    flag: "-I"
+    description: Inject claims
+
+  crack:
+    type: string
+    flag: "-C"
+    description: Crack secret with wordlist
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "jwt_tool eyJ0eXAiOiJKV1Q..."
+  - "jwt_tool -t http://target.com eyJ... -M at"
+  - "jwt_tool eyJ... -X a"
+  - "jwt_tool eyJ... -C -d /usr/share/wordlists/rockyou.txt"
+  - "jwt_tool eyJ... -I -pc name -pv admin"
+
+notes: |
+  Attacks:
+  - alg:none bypass
+  - Null signature
+  - Key confusion (RS256->HS256)
+  - JWKS injection
+  - Kid injection
+
+  Analysis:
+  - Decode token
+  - Check signature
+  - Identify weaknesses
+
+  Claim tampering:
+  - Modify payload
+  - Change roles/perms
+  - Extend expiry
+
+  Secret cracking:
+  - Dictionary attack
+  - Brute force

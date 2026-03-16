@@ -1,0 +1,100 @@
+name: skipfish
+category: vuln
+description: Active web application security reconnaissance tool.
+keywords:
+  - web
+  - scanner
+  - reconnaissance
+  - security
+  - fast
+
+parameters:
+  output:
+    type: string
+    required: true
+    flag: "-o"
+    description: Output directory
+
+  url:
+    type: string
+    required: true
+    description: Target URL (at end)
+
+  wordlist:
+    type: string
+    flag: "-W"
+    description: Read-only wordlist
+
+  write_wordlist:
+    type: string
+    flag: "-S"
+    description: Read-write wordlist
+
+  cookie:
+    type: string
+    flag: "-C"
+    description: Cookie value
+
+  auth:
+    type: string
+    flag: "-A"
+    description: HTTP auth credentials
+
+  max_depth:
+    type: integer
+    flag: "-d"
+    description: Maximum crawl depth
+
+  max_children:
+    type: integer
+    flag: "-c"
+    description: Max children per node
+
+  max_total:
+    type: integer
+    flag: "-x"
+    description: Max total requests
+
+  timeout:
+    type: integer
+    flag: "-t"
+    description: Request timeout
+
+  rate:
+    type: integer
+    flag: "-r"
+    description: Max requests per second
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "skipfish -o output http://target.com"
+  - "skipfish -o output -W /usr/share/skipfish/dictionaries/complete.wl http://target.com"
+  - "skipfish -o output -d 3 -c 20 http://target.com"
+  - "skipfish -o output -C 'session=abc' http://target.com"
+
+notes: |
+  Features:
+  - Fast crawling
+  - Dictionary attacks
+  - Security checks
+  - HTML report
+
+  Dictionaries:
+  /usr/share/skipfish/dictionaries/
+  - minimal.wl
+  - medium.wl
+  - complete.wl
+
+  Checks:
+  - XSS vectors
+  - SQL injection
+  - File inclusion
+  - Command injection
+  - Many more
+
+  Output:
+  - HTML report
+  - Detailed findings
+  - Risk ratings

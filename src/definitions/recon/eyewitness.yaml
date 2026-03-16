@@ -1,0 +1,113 @@
+name: eyewitness
+category: recon
+description: Web application screenshot tool for large-scale assessments.
+keywords:
+  - screenshot
+  - web
+  - reconnaissance
+  - visual
+  - assessment
+  - http
+
+parameters:
+  web:
+    type: boolean
+    flag: "--web"
+    description: HTTP screenshot mode
+
+  single:
+    type: string
+    flag: "--single"
+    description: Single URL to screenshot
+
+  file:
+    type: string
+    flag: "-f"
+    description: File with URLs
+
+  xml:
+    type: string
+    flag: "-x"
+    description: Nmap XML file
+
+  threads:
+    type: integer
+    flag: "--threads"
+    default: 10
+    description: Number of threads
+
+  timeout:
+    type: integer
+    flag: "--timeout"
+    default: 7
+    description: Web timeout
+
+  output:
+    type: string
+    flag: "-d"
+    description: Output directory
+
+  results:
+    type: integer
+    flag: "--results"
+    description: Results per page
+
+  jitter:
+    type: integer
+    flag: "--jitter"
+    description: Random delay
+
+  user_agent:
+    type: string
+    flag: "--user-agent"
+    description: Custom User-Agent
+
+  no_prompt:
+    type: boolean
+    flag: "--no-prompt"
+    description: Don't prompt for confirmation
+
+  proxy:
+    type: string
+    flag: "--proxy-ip"
+    description: Proxy IP
+
+  active_scan:
+    type: boolean
+    flag: "--active-scan"
+    description: Active recon mode
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "eyewitness --web --single http://target.com -d output"
+  - "eyewitness --web -f urls.txt -d output"
+  - "eyewitness --web -x nmap_scan.xml -d output"
+  - "eyewitness --web -f urls.txt --threads 20 -d output"
+  - "eyewitness --web -f urls.txt --active-scan -d output"
+
+notes: |
+  Output:
+  - HTML report with screenshots
+  - Response headers
+  - Page titles
+  - Default credentials check
+
+  Input sources:
+  - Single URL (--single)
+  - URL list (-f)
+  - Nmap XML (-x)
+  - Nessus file (--nessus)
+
+  Use cases:
+  - Large network assessments
+  - Identify interesting targets
+  - Find default pages
+  - Categorize web apps
+
+  Tips:
+  - Use nmap XML for efficiency
+  - Active scan for more info
+  - Review report for targets
+  - Sort by similarity

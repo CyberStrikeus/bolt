@@ -1,0 +1,83 @@
+name: foremost
+category: forensics
+description: File carving tool for recovering files from disk images.
+keywords:
+  - carving
+  - recovery
+  - forensics
+  - disk
+  - image
+  - files
+
+parameters:
+  input:
+    type: string
+    required: true
+    flag: "-i"
+    description: Input file or device
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output directory
+
+  config:
+    type: string
+    flag: "-c"
+    description: Configuration file
+
+  type:
+    type: string
+    flag: "-t"
+    description: "File types (e.g., jpg,pdf,doc)"
+
+  all:
+    type: boolean
+    flag: "-a"
+    description: All file types
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  indirect:
+    type: boolean
+    flag: "-d"
+    description: Indirect block detection
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "foremost -i disk.dd -o output/"
+  - "foremost -t jpg,png,gif -i image.raw -o recovered/"
+  - "foremost -a -i /dev/sda -o /mnt/output/"
+  - "foremost -v -t pdf,doc -i disk.img -o docs/"
+
+notes: |
+  Supported types:
+  - Images: jpg, gif, png, bmp
+  - Documents: pdf, doc, ppt, xls
+  - Archives: zip, rar, tar
+  - Media: avi, mpg, wav
+  - Others: exe, htm, ole
+
+  Config file:
+  - /etc/foremost.conf
+  - Add custom signatures
+
+  Similar tools:
+  - scalpel: Faster carving
+  - photorec: More file types
+  - bulk_extractor: Specialized
+
+  Tips:
+  - Use on unmounted disks
+  - Large output expected
+  - Review audit.txt

@@ -1,0 +1,112 @@
+name: responder
+category: network
+description: LLMNR, NBT-NS, and MDNS poisoner for capturing credentials on local network.
+keywords:
+  - llmnr
+  - netbios
+  - poison
+  - credentials
+  - ntlm
+  - hash
+  - mitm
+
+parameters:
+  interface:
+    type: string
+    required: true
+    flag: "-I"
+    description: Network interface to use
+
+  analyze:
+    type: boolean
+    flag: "-A"
+    description: Analyze mode (no poisoning)
+
+  basic_auth:
+    type: boolean
+    flag: "-b"
+    description: Return basic HTTP auth
+
+  wredir:
+    type: boolean
+    flag: "-r"
+    description: Enable WPAD rogue proxy
+
+  force_wpad:
+    type: boolean
+    flag: "-F"
+    description: Force WPAD authentication
+
+  wpad_proxy:
+    type: boolean
+    flag: "-w"
+    description: Start WPAD proxy server
+
+  dhcp:
+    type: boolean
+    flag: "-d"
+    description: Enable DHCP listener
+
+  fingerprint:
+    type: boolean
+    flag: "-f"
+    description: Fingerprint hosts
+
+  lm:
+    type: boolean
+    flag: "--lm"
+    description: Force LM hashing downgrade
+
+  disable_ess:
+    type: boolean
+    flag: "--disable-ess"
+    description: Force ESS downgrade
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  machine_account:
+    type: boolean
+    flag: "-P"
+    description: Respond to machine account queries
+
+requires_root: true
+timeout: 0
+interactive: true
+
+examples:
+  - "responder -I eth0"
+  - "responder -I eth0 -wrf"
+  - "responder -I eth0 -A"
+  - "responder -I eth0 -wFb"
+
+notes: |
+  Attack types:
+  - LLMNR poisoning
+  - NBT-NS poisoning
+  - MDNS poisoning
+  - WPAD spoofing
+  - DHCP poisoning
+
+  Captured credentials saved to:
+  /usr/share/responder/logs/
+
+  Hash types captured:
+  - NTLMv1
+  - NTLMv2
+  - HTTP NTLM
+  - SMB NTLM
+
+  Crack captured hashes:
+  hashcat -m 5600 hash.txt wordlist.txt
+
+  Analysis mode (-A):
+  - Only listens, no poisoning
+  - Good for recon
+
+  IMPORTANT:
+  - Only use in authorized assessments
+  - Can disrupt network services
+  - May trigger security alerts

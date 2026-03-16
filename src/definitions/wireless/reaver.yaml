@@ -1,0 +1,108 @@
+name: reaver
+category: wireless
+description: WPS brute force attack tool for WiFi networks.
+keywords:
+  - wps
+  - wifi
+  - brute force
+  - pin
+  - wireless
+
+parameters:
+  interface:
+    type: string
+    required: true
+    flag: "-i"
+    description: Monitor mode interface
+
+  bssid:
+    type: string
+    required: true
+    flag: "-b"
+    description: Target BSSID
+
+  channel:
+    type: integer
+    flag: "-c"
+    description: Target channel
+
+  essid:
+    type: string
+    flag: "-e"
+    description: Target ESSID
+
+  delay:
+    type: integer
+    flag: "-d"
+    description: Delay between attempts
+
+  lock_delay:
+    type: integer
+    flag: "-l"
+    description: Lock delay (seconds)
+
+  fail_wait:
+    type: integer
+    flag: "-x"
+    description: Wait after failures
+
+  timeout:
+    type: integer
+    flag: "-T"
+    description: Receive timeout
+
+  pin:
+    type: string
+    flag: "-p"
+    description: Starting/known PIN
+
+  no_associate:
+    type: boolean
+    flag: "-A"
+    description: Don't associate
+
+  fixed:
+    type: boolean
+    flag: "-f"
+    description: Disable channel hopping
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  very_verbose:
+    type: boolean
+    flag: "-vv"
+    description: Very verbose
+
+requires_root: true
+timeout: 0
+interactive: true
+
+examples:
+  - "reaver -i wlan0mon -b AA:BB:CC:DD:EE:FF -vv"
+  - "reaver -i wlan0mon -b AA:BB:CC:DD:EE:FF -c 6 -vv"
+  - "reaver -i wlan0mon -b AA:BB:CC:DD:EE:FF -d 3 -l 60"
+  - "reaver -i wlan0mon -b AA:BB:CC:DD:EE:FF -p 12345670"
+
+notes: |
+  WPS attack:
+  - Brute forces 8-digit PIN
+  - ~11,000 combinations
+  - Takes 4-10 hours typically
+
+  Requirements:
+  - WPS enabled AP
+  - Monitor mode adapter
+  - Signal strength
+
+  Rate limiting:
+  - Some APs lock after attempts
+  - Use -d and -l flags
+  - Try PixieWPS first
+
+  Alternatives:
+  - bully: Similar tool
+  - pixiewps: Offline attack
+  - wifite: Automated

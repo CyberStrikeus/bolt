@@ -1,0 +1,92 @@
+name: nbtscan
+category: network
+description: NetBIOS name scanner for discovering Windows hosts and shares.
+keywords:
+  - netbios
+  - windows
+  - smb
+  - scan
+  - enumeration
+  - name
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: "Target IP, range, or CIDR"
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  human_readable:
+    type: boolean
+    flag: "-h"
+    description: Human-readable output
+
+  timeout:
+    type: integer
+    flag: "-t"
+    description: Timeout per host (ms)
+
+  bandwidth:
+    type: integer
+    flag: "-b"
+    description: Bandwidth throttling
+
+  retries:
+    type: integer
+    flag: "-m"
+    description: Max retries
+
+  port:
+    type: integer
+    flag: "-p"
+    description: UDP port
+
+  file:
+    type: string
+    flag: "-f"
+    description: Read targets from file
+
+  separator:
+    type: string
+    flag: "-s"
+    description: Field separator
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "nbtscan 192.168.1.0/24"
+  - "nbtscan -v 192.168.1.1"
+  - "nbtscan -h 192.168.1.0/24"
+  - "nbtscan -f targets.txt"
+  - "nbtscan 192.168.1.1-192.168.1.254"
+
+notes: |
+  NetBIOS name types:
+  - <00>: Workstation
+  - <03>: Messenger service
+  - <20>: Server service
+  - <1B>: Domain master
+  - <1C>: Domain controller
+  - <1D>: Master browser
+
+  Output columns:
+  - IP address
+  - NetBIOS name
+  - Server type
+  - MAC address
+
+  Use cases:
+  - Find Windows hosts
+  - Identify domain controllers
+  - Discover shared resources
+  - Map network topology
+
+  Combined with:
+  - enum4linux for detailed SMB enum
+  - smbclient for share access
+  - crackmapexec for exploitation

@@ -1,0 +1,123 @@
+name: medusa
+category: password
+description: Parallel network login brute-forcer supporting multiple protocols.
+keywords:
+  - brute
+  - password
+  - login
+  - parallel
+  - ssh
+  - ftp
+  - smb
+
+parameters:
+  host:
+    type: string
+    flag: "-h"
+    description: Target host
+
+  host_file:
+    type: string
+    flag: "-H"
+    description: File with target hosts
+
+  user:
+    type: string
+    flag: "-u"
+    description: Single username
+
+  user_file:
+    type: string
+    flag: "-U"
+    description: File with usernames
+
+  password:
+    type: string
+    flag: "-p"
+    description: Single password
+
+  password_file:
+    type: string
+    flag: "-P"
+    description: File with passwords
+
+  combo_file:
+    type: string
+    flag: "-C"
+    description: "Combo file (user:pass)"
+
+  module:
+    type: string
+    required: true
+    flag: "-M"
+    description: Module to use (ssh, ftp, smb, etc.)
+
+  port:
+    type: integer
+    flag: "-n"
+    description: Target port
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 4
+    description: Threads per host
+
+  timeout:
+    type: integer
+    flag: "-T"
+    description: Timeout in seconds
+
+  output:
+    type: string
+    flag: "-O"
+    description: Output file
+
+  verbose:
+    type: integer
+    flag: "-v"
+    description: "Verbosity level (0-6)"
+
+  stop_on_success:
+    type: boolean
+    flag: "-f"
+    description: Stop after first success
+
+  module_options:
+    type: string
+    flag: "-m"
+    description: Module-specific options
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "medusa -h 192.168.1.1 -u admin -P passwords.txt -M ssh"
+  - "medusa -H hosts.txt -U users.txt -p 'Password123' -M smb"
+  - "medusa -h 192.168.1.1 -u admin -P passwords.txt -M ftp -f"
+  - "medusa -h 192.168.1.1 -C combos.txt -M rdp"
+
+notes: |
+  Supported modules:
+  - ssh, telnet, rlogin
+  - ftp, sftp
+  - smb, smbnt
+  - http, https
+  - mysql, mssql, postgres
+  - rdp, vnc
+  - pop3, imap, smtp
+  - And more...
+
+  List modules:
+  medusa -d
+
+  Module options (-m):
+  - ssh: BANNER:TRUE
+  - http: DIR:/admin
+  - smb: DOMAIN:domain.local
+
+  Tips:
+  - Use -f to stop on success
+  - Use -t for parallel attempts
+  - Use -T for slow networks
+  - Combo files for efficiency

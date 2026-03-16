@@ -1,0 +1,77 @@
+name: chaos-client
+category: recon
+description: Chaos subdomain discovery client for ProjectDiscovery data.
+keywords:
+  - subdomain
+  - chaos
+  - projectdiscovery
+  - data
+  - osint
+
+parameters:
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain
+
+  key:
+    type: string
+    flag: "-key"
+    description: Chaos API key
+
+  count:
+    type: boolean
+    flag: "-count"
+    description: Show subdomain count only
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  json:
+    type: boolean
+    flag: "-json"
+    description: JSON output
+
+  silent:
+    type: boolean
+    flag: "-silent"
+    description: Silent mode
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 60
+
+examples:
+  - "chaos -d target.com"
+  - "chaos -d target.com -key YOUR_API_KEY"
+  - "chaos -d target.com -count"
+  - "chaos -d target.com -o subs.txt"
+  - "chaos -d target.com -json"
+
+notes: |
+  ProjectDiscovery Chaos:
+  - Massive subdomain database
+  - Regularly updated
+  - Free API access
+
+  API Key:
+  - Get from chaos.projectdiscovery.io
+  - Set CHAOS_KEY env var
+
+  Data source:
+  - Active DNS data
+  - Certificate transparency
+  - Web archives
+  - And more
+
+  Combine with:
+  - subfinder for more
+  - dnsx for validation
+  - httpx for probing

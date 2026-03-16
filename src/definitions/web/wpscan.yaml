@@ -1,0 +1,138 @@
+name: wpscan
+category: web
+description: WordPress security scanner for vulnerabilities, plugins, themes, and users.
+keywords:
+  - wordpress
+  - cms
+  - scanner
+  - plugin
+  - theme
+  - vulnerability
+  - wp
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "--url"
+    description: Target WordPress URL
+
+  enumerate:
+    type: string
+    flag: "-e"
+    description: "Enumeration (u=users, p=plugins, t=themes, vp=vuln plugins, vt=vuln themes, ap=all plugins, at=all themes, cb=config backups, dbe=db exports)"
+
+  api_token:
+    type: string
+    flag: "--api-token"
+    description: WPScan API token for vulnerability data
+
+  passwords:
+    type: string
+    flag: "-P"
+    description: Password wordlist for brute force
+
+  usernames:
+    type: string
+    flag: "-U"
+    description: Username(s) for brute force
+
+  max_threads:
+    type: integer
+    flag: "-t"
+    default: 5
+    description: Maximum threads
+
+  throttle:
+    type: integer
+    flag: "--throttle"
+    description: Milliseconds between requests
+
+  detection_mode:
+    type: enum
+    flag: "--detection-mode"
+    options: ["mixed", "passive", "aggressive"]
+    default: "mixed"
+    description: Detection mode
+
+  plugins_detection:
+    type: enum
+    flag: "--plugins-detection"
+    options: ["mixed", "passive", "aggressive"]
+    description: Plugins detection mode
+
+  plugins_version_detection:
+    type: enum
+    flag: "--plugins-version-detection"
+    options: ["mixed", "passive", "aggressive"]
+    description: Plugin version detection mode
+
+  stealthy:
+    type: boolean
+    flag: "--stealthy"
+    description: Stealthy mode (alias for passive detection)
+
+  random_user_agent:
+    type: boolean
+    flag: "--random-user-agent"
+    description: Use random User-Agent
+
+  force:
+    type: boolean
+    flag: "--force"
+    description: Don't check if target is WordPress
+
+  update:
+    type: boolean
+    flag: "--update"
+    description: Update WPScan database
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  format:
+    type: enum
+    flag: "-f"
+    options: ["cli", "json", "cli-no-color"]
+    description: Output format
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "wpscan --url http://target.com -e vp,vt,u"
+  - "wpscan --url http://target.com -e ap --api-token TOKEN"
+  - "wpscan --url http://target.com -U admin -P passwords.txt"
+  - "wpscan --url http://target.com --stealthy"
+
+notes: |
+  Enumeration options:
+  - u: User enumeration
+  - p: Popular plugins
+  - vp: Vulnerable plugins
+  - ap: All plugins
+  - t: Popular themes
+  - vt: Vulnerable themes
+  - at: All themes
+  - cb: Config backups
+  - dbe: Database exports
+  - m: Media enumeration
+
+  API token:
+  - Required for vulnerability data
+  - Free tier: 25 requests/day
+  - Get token at wpscan.com
+
+  Common vulnerabilities found:
+  - Outdated WordPress core
+  - Vulnerable plugins/themes
+  - Weak passwords
+  - User enumeration
+  - XML-RPC attacks

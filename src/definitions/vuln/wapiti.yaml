@@ -1,0 +1,108 @@
+name: wapiti
+category: vuln
+description: Web application vulnerability scanner.
+keywords:
+  - web
+  - vulnerability
+  - scanner
+  - xss
+  - sqli
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: Target URL
+
+  scope:
+    type: enum
+    flag: "-s"
+    options:
+      - value: "url"
+        description: "Only scan target URL"
+      - value: "page"
+        description: "Scan page"
+      - value: "folder"
+        description: "Scan folder"
+      - value: "domain"
+        description: "Scan domain"
+    description: Scan scope
+
+  modules:
+    type: string
+    flag: "-m"
+    description: "Modules to use (comma-separated)"
+
+  exclude:
+    type: string
+    flag: "-x"
+    description: Exclude URL patterns
+
+  cookie:
+    type: string
+    flag: "-c"
+    description: Cookie file
+
+  auth:
+    type: string
+    flag: "-a"
+    description: "Credentials (user:password)"
+
+  proxy:
+    type: string
+    flag: "-p"
+    description: Proxy URL
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output directory
+
+  format:
+    type: enum
+    flag: "-f"
+    options: ["html", "json", "xml", "txt"]
+    description: Report format
+
+  color:
+    type: boolean
+    flag: "--color"
+    description: Colored output
+
+  verbose:
+    type: integer
+    flag: "-v"
+    description: "Verbosity level (0-2)"
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "wapiti -u http://target.com"
+  - "wapiti -u http://target.com -s domain -o report -f html"
+  - "wapiti -u http://target.com -m sql,xss,exec"
+  - "wapiti -u http://target.com -a admin:password"
+
+notes: |
+  Modules:
+  - sql: SQL injection
+  - xss: Cross-site scripting
+  - exec: Command execution
+  - file: File inclusion
+  - ssrf: Server-side request forgery
+  - xxe: XML external entity
+  - crlf: Header injection
+
+  List modules:
+  wapiti --list-modules
+
+  Report:
+  - HTML with details
+  - Vulnerabilities found
+  - Remediation advice
+
+  vs nikto:
+  - More vuln focus
+  - Active testing
+  - Better reports

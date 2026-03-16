@@ -1,0 +1,112 @@
+name: wifite
+category: wireless
+description: Automated wireless attack tool for capturing WEP/WPA/WPS handshakes.
+keywords:
+  - wifi
+  - wireless
+  - automated
+  - wep
+  - wpa
+  - wps
+  - handshake
+  - capture
+
+parameters:
+  interface:
+    type: string
+    flag: "-i"
+    description: Wireless interface
+
+  channel:
+    type: integer
+    flag: "-c"
+    description: Target channel
+
+  bssid:
+    type: string
+    flag: "-b"
+    description: Target BSSID
+
+  essid:
+    type: string
+    flag: "-e"
+    description: Target ESSID
+
+  wpa:
+    type: boolean
+    flag: "--wpa"
+    description: Only target WPA networks
+
+  wep:
+    type: boolean
+    flag: "--wep"
+    description: Only target WEP networks
+
+  wps:
+    type: boolean
+    flag: "--wps"
+    description: Only target WPS networks
+
+  wordlist:
+    type: string
+    flag: "--dict"
+    description: Wordlist for cracking
+
+  kill:
+    type: boolean
+    flag: "--kill"
+    description: Kill conflicting processes
+
+  no_reaver:
+    type: boolean
+    flag: "--no-reaver"
+    description: Disable Reaver WPS attacks
+
+  no_pmkid:
+    type: boolean
+    flag: "--no-pmkid"
+    description: Disable PMKID capture
+
+  power:
+    type: integer
+    flag: "--power"
+    description: Minimum signal strength
+
+  clients:
+    type: integer
+    flag: "--clients-only"
+    description: Only attack networks with clients
+
+requires_root: true
+timeout: 0
+interactive: true
+
+examples:
+  - "wifite"
+  - "wifite --wpa --dict /usr/share/wordlists/rockyou.txt"
+  - "wifite -i wlan0 --kill"
+  - "wifite --wps --no-reaver"
+  - "wifite -b AA:BB:CC:DD:EE:FF --wpa"
+
+notes: |
+  Attack flow:
+  1. Scans for networks
+  2. Deauths clients (for handshake)
+  3. Captures handshake/PMKID
+  4. Attempts WPS PIN if available
+  5. Cracks with wordlist
+
+  Requirements:
+  - Monitor mode capable adapter
+  - aircrack-ng suite
+  - reaver (for WPS)
+  - hashcat (optional)
+
+  Recommended options:
+  - --kill: Prevents interference
+  - --dict: Custom wordlist
+  - --power: Filter weak signals
+
+  Output:
+  - Saves handshakes in ./hs/
+  - Cracked passwords displayed

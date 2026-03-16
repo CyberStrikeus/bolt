@@ -1,0 +1,83 @@
+name: masscan
+category: recon
+description: Fast TCP port scanner. Can scan the entire Internet in under 6 minutes. Best for large-scale port scanning.
+keywords:
+  - port
+  - scan
+  - fast
+  - mass
+  - network
+  - tcp
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: Target IP or CIDR range (e.g., 192.168.1.0/24)
+
+  ports:
+    type: string
+    required: true
+    flag: "-p"
+    description: "Port specification (e.g., 80,443 or 1-65535 or 0-65535)"
+
+  rate:
+    type: integer
+    flag: "--rate"
+    default: 1000
+    description: Packets per second (max ~25000000)
+
+  banners:
+    type: boolean
+    flag: "--banners"
+    description: Grab banners from services
+
+  output_json:
+    type: string
+    flag: "-oJ"
+    description: Output in JSON format
+
+  output_xml:
+    type: string
+    flag: "-oX"
+    description: Output in XML format
+
+  output_list:
+    type: string
+    flag: "-oL"
+    description: Output in list format
+
+  interface:
+    type: string
+    flag: "-e"
+    description: Network interface to use
+
+  source_ip:
+    type: string
+    flag: "--source-ip"
+    description: Source IP address to use
+
+  wait:
+    type: integer
+    flag: "--wait"
+    description: Seconds to wait after sending last packet
+
+requires_root: true
+timeout: 600
+
+examples:
+  - "masscan -p1-65535 192.168.1.0/24 --rate=10000"
+  - "masscan -p80,443,8080 10.0.0.0/8 --rate=100000 -oJ scan.json"
+  - "masscan -p22 0.0.0.0/0 --rate=1000000 --banners"
+
+notes: |
+  Rate recommendations:
+  - 1000: Safe for most networks
+  - 10000: Fast, may trigger alerts
+  - 100000: Very fast, aggressive
+  - 1000000+: Extremely fast, may cause issues
+
+  Masscan vs Nmap:
+  - Masscan: Fast scanning, basic results
+  - Nmap: Detailed scanning, service detection
+  - Best practice: Use masscan for discovery, nmap for details

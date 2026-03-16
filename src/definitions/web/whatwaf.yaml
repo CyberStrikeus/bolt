@@ -1,0 +1,103 @@
+name: whatwaf
+category: web
+description: Advanced WAF detection and bypass tool.
+keywords:
+  - waf
+  - bypass
+  - detection
+  - payload
+  - tamper
+  - firewall
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: Target URL
+
+  burp:
+    type: string
+    flag: "-b"
+    description: Burp request file
+
+  post:
+    type: boolean
+    flag: "--pa"
+    description: Send POST request
+
+  data:
+    type: string
+    flag: "-d"
+    description: POST data
+
+  headers:
+    type: string
+    flag: "--headers"
+    description: Custom headers file
+
+  proxy:
+    type: string
+    flag: "--proxy"
+    description: Proxy URL
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  format:
+    type: enum
+    flag: "-F"
+    options: ["json", "yaml", "csv"]
+    description: Output format
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  tampers:
+    type: boolean
+    flag: "--tampers"
+    description: Find bypass payloads
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 4
+    description: Number of threads
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "whatwaf -u 'http://target.com/page?id=1'"
+  - "whatwaf -u 'http://target.com/page?id=1' --tampers"
+  - "whatwaf -u 'http://target.com' -v"
+  - "whatwaf -b burp_request.txt"
+  - "whatwaf -u 'http://target.com/page?id=1' -o results.json -F json"
+
+notes: |
+  Features:
+  - WAF fingerprinting
+  - Bypass payload generation
+  - Tamper script detection
+  - Multiple output formats
+
+  Tamper scripts:
+  - URL encoding
+  - Case switching
+  - Comment injection
+  - Space alternatives
+
+  Workflow:
+  1. Detect WAF type
+  2. Run --tampers
+  3. Note working bypasses
+  4. Apply in manual testing
+
+  vs wafw00f:
+  - More bypass focused
+  - Generates payloads
+  - Better for exploitation

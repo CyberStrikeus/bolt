@@ -1,0 +1,104 @@
+name: ldapsearch
+category: ad
+description: LDAP query tool for Active Directory enumeration.
+keywords:
+  - ldap
+  - active directory
+  - enumeration
+  - query
+  - domain
+  - users
+  - groups
+
+parameters:
+  host:
+    type: string
+    required: true
+    flag: "-H"
+    description: "LDAP URI (ldap://host or ldaps://host)"
+
+  base:
+    type: string
+    required: true
+    flag: "-b"
+    description: Search base DN
+
+  bind_dn:
+    type: string
+    flag: "-D"
+    description: Bind DN for authentication
+
+  password:
+    type: string
+    flag: "-w"
+    description: Bind password
+
+  password_file:
+    type: string
+    flag: "-y"
+    description: Read password from file
+
+  filter:
+    type: string
+    description: "LDAP filter (default: objectClass=*)"
+
+  attributes:
+    type: string
+    description: Attributes to return
+
+  scope:
+    type: enum
+    flag: "-s"
+    options:
+      - value: "base"
+        description: "Search base only"
+      - value: "one"
+        description: "One level"
+      - value: "sub"
+        description: "Subtree search"
+    description: Search scope
+
+  anonymous:
+    type: boolean
+    flag: "-x"
+    description: Simple authentication
+
+  page_size:
+    type: integer
+    flag: "-E pr="
+    description: Paged results
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "ldapsearch -x -H ldap://192.168.1.1 -b 'DC=domain,DC=local'"
+  - "ldapsearch -x -H ldap://192.168.1.1 -D 'user@domain.local' -w 'password' -b 'DC=domain,DC=local' '(objectClass=user)'"
+  - "ldapsearch -x -H ldap://192.168.1.1 -b 'DC=domain,DC=local' '(objectClass=computer)' cn operatingSystem"
+  - "ldapsearch -x -H ldap://192.168.1.1 -b 'DC=domain,DC=local' '(memberOf=CN=Domain Admins,CN=Users,DC=domain,DC=local)'"
+
+notes: |
+  Common filters:
+  - (objectClass=user): All users
+  - (objectClass=computer): All computers
+  - (objectClass=group): All groups
+  - (adminCount=1): Privileged accounts
+  - (userAccountControl:1.2.840.113556.1.4.803:=2): Disabled accounts
+
+  Useful attributes:
+  - sAMAccountName: Username
+  - memberOf: Group membership
+  - servicePrincipalName: SPNs (Kerberoasting)
+  - userAccountControl: Account flags
+  - pwdLastSet: Password age
+
+  Anonymous bind:
+  Some DCs allow anonymous queries
+
+  With credentials:
+  Use -D and -w for authenticated queries
+
+  Alternative tools:
+  - ldapdomaindump
+  - windapsearch
+  - ad-ldap-enum

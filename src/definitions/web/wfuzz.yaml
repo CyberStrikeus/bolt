@@ -1,0 +1,133 @@
+name: wfuzz
+category: web
+description: Web application fuzzer for directories, parameters, and payloads.
+keywords:
+  - fuzz
+  - web
+  - directory
+  - parameter
+  - brute
+  - injection
+  - payload
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: "Target URL with FUZZ placeholder"
+
+  wordlist:
+    type: string
+    required: true
+    flag: "-w"
+    description: Wordlist file
+
+  cookie:
+    type: string
+    flag: "-b"
+    description: Cookie string
+
+  header:
+    type: string
+    flag: "-H"
+    description: "Custom header (Header: Value)"
+
+  data:
+    type: string
+    flag: "-d"
+    description: POST data
+
+  hide_code:
+    type: string
+    flag: "--hc"
+    description: "Hide responses with code (e.g., 404,403)"
+
+  show_code:
+    type: string
+    flag: "--sc"
+    description: "Show only responses with code"
+
+  hide_lines:
+    type: string
+    flag: "--hl"
+    description: Hide responses with line count
+
+  hide_words:
+    type: string
+    flag: "--hw"
+    description: Hide responses with word count
+
+  hide_chars:
+    type: string
+    flag: "--hh"
+    description: Hide responses with char count
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 10
+    description: Number of threads
+
+  delay:
+    type: string
+    flag: "-s"
+    description: "Delay between requests (e.g., 0.5)"
+
+  timeout:
+    type: integer
+    flag: "--conn-delay"
+    description: Connection timeout
+
+  follow:
+    type: boolean
+    flag: "-L"
+    description: Follow redirects
+
+  proxy:
+    type: string
+    flag: "-p"
+    description: Proxy URL
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  colorless:
+    type: boolean
+    flag: "--no-color"
+    description: Disable colors
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "wfuzz -w wordlist.txt --hc 404 http://target.com/FUZZ"
+  - "wfuzz -w wordlist.txt -d 'user=FUZZ&pass=test' http://target.com/login"
+  - "wfuzz -w users.txt -w passwords.txt --hc 401 http://target.com/login?user=FUZZ&pass=FUZ2Z"
+  - "wfuzz -w wordlist.txt -H 'Cookie: session=abc' --hc 404,403 http://target.com/FUZZ"
+  - "wfuzz -w sqli.txt --hh 1234 http://target.com/page?id=FUZZ"
+
+notes: |
+  FUZZ placeholder:
+  - FUZZ: First wordlist
+  - FUZ2Z: Second wordlist
+  - FUZ3Z: Third wordlist
+
+  Filter options:
+  - --hc: Hide by status code
+  - --hl: Hide by line count
+  - --hw: Hide by word count
+  - --hh: Hide by char count
+  - --sc/sl/sw/sh: Show only
+
+  Common uses:
+  - Directory brute force
+  - Parameter fuzzing
+  - SQL injection testing
+  - Credential brute force
+
+  Encoders:
+  - wfuzz -e encoders
+  - urlencode, base64, md5, etc.

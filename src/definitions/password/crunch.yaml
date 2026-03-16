@@ -1,0 +1,90 @@
+name: crunch
+category: password
+description: Wordlist generator with pattern support.
+keywords:
+  - wordlist
+  - generator
+  - password
+  - pattern
+  - brute
+
+parameters:
+  min:
+    type: integer
+    required: true
+    description: Minimum length
+
+  max:
+    type: integer
+    required: true
+    description: Maximum length
+
+  charset:
+    type: string
+    description: Character set to use
+
+  pattern:
+    type: string
+    flag: "-t"
+    description: "Pattern (@ = lower, , = upper, % = number, ^ = symbol)"
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  start:
+    type: string
+    flag: "-s"
+    description: Start string
+
+  count:
+    type: integer
+    flag: "-c"
+    description: Lines per file
+
+  invert:
+    type: boolean
+    flag: "-i"
+    description: Invert output
+
+  literal:
+    type: string
+    flag: "-l"
+    description: Literal characters
+
+  duplicate:
+    type: boolean
+    flag: "-d"
+    description: Limit duplicates
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "crunch 6 8 abc123"
+  - "crunch 8 8 -t @@@@%%%% -o wordlist.txt"
+  - "crunch 4 4 0123456789 -o pins.txt"
+  - "crunch 8 8 -t Pass%%%% -o passwords.txt"
+  - "crunch 6 6 -f /usr/share/crunch/charset.lst mixalpha-numeric"
+
+notes: |
+  Pattern symbols:
+  - @: Lowercase letters
+  - ,: Uppercase letters
+  - %: Numbers
+  - ^: Symbols
+
+  Charset files:
+  /usr/share/crunch/charset.lst
+
+  Built-in charsets:
+  - lalpha: lowercase
+  - ualpha: uppercase
+  - numeric: 0-9
+  - symbols: special chars
+  - mixalpha-numeric: mixed
+
+  Size warning:
+  - Calculate size first
+  - Large wordlists = huge files

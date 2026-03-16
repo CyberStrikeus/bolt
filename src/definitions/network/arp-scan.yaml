@@ -1,0 +1,110 @@
+name: arp-scan
+category: network
+description: ARP scanner for discovering hosts on local network.
+keywords:
+  - arp
+  - scan
+  - local
+  - network
+  - discovery
+  - mac
+  - host
+
+parameters:
+  interface:
+    type: string
+    flag: "-I"
+    description: Network interface
+
+  target:
+    type: string
+    description: "Target range (default: local network)"
+
+  localnet:
+    type: boolean
+    flag: "-l"
+    description: Scan local network
+
+  file:
+    type: string
+    flag: "-f"
+    description: Read targets from file
+
+  random:
+    type: boolean
+    flag: "-R"
+    description: Randomize host order
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  numeric:
+    type: boolean
+    flag: "-N"
+    description: Don't resolve hostnames
+
+  plain:
+    type: boolean
+    flag: "-x"
+    description: Plain output
+
+  source_ip:
+    type: string
+    flag: "-S"
+    description: Source IP address
+
+  source_mac:
+    type: string
+    flag: "--srcaddr"
+    description: Source MAC address
+
+  dest_mac:
+    type: string
+    flag: "--destaddr"
+    description: Destination MAC address
+
+  bandwidth:
+    type: string
+    flag: "-B"
+    description: "Bandwidth limit (e.g., 256K)"
+
+  retry:
+    type: integer
+    flag: "--retry"
+    description: Number of retries
+
+requires_root: true
+timeout: 60
+
+examples:
+  - "arp-scan -l"
+  - "arp-scan -I eth0 192.168.1.0/24"
+  - "arp-scan -l -I wlan0"
+  - "arp-scan -l --random"
+  - "arp-scan -f targets.txt"
+
+notes: |
+  Output columns:
+  - IP address
+  - MAC address
+  - Vendor (from OUI database)
+
+  Advantages over ping:
+  - Works when ICMP blocked
+  - Faster on local network
+  - Gets MAC addresses
+  - Identifies vendors
+
+  Common uses:
+  - Host discovery on LAN
+  - Identify device types
+  - Find rogue devices
+  - Network inventory
+
+  Tips:
+  - Use -l for quick local scan
+  - Use -R to avoid detection
+  - Compare with known inventory
+  - Note unusual vendors

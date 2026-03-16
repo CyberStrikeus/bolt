@@ -1,0 +1,116 @@
+name: enum4linux
+category: network
+description: Tool for enumerating information from Windows and Samba systems via SMB.
+keywords:
+  - smb
+  - windows
+  - samba
+  - enumeration
+  - shares
+  - users
+  - netbios
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: Target IP address
+
+  username:
+    type: string
+    flag: "-u"
+    description: Username for authentication
+
+  password:
+    type: string
+    flag: "-p"
+    description: Password for authentication
+
+  all:
+    type: boolean
+    flag: "-a"
+    description: Do all simple enumeration
+
+  users:
+    type: boolean
+    flag: "-U"
+    description: Get user list
+
+  machines:
+    type: boolean
+    flag: "-M"
+    description: Get machine list
+
+  shares:
+    type: boolean
+    flag: "-S"
+    description: Get share list
+
+  password_policy:
+    type: boolean
+    flag: "-P"
+    description: Get password policy
+
+  groups:
+    type: boolean
+    flag: "-G"
+    description: Get group list
+
+  detailed:
+    type: boolean
+    flag: "-d"
+    description: Detailed output for users and shares
+
+  rid_range:
+    type: string
+    flag: "-r"
+    description: "RID range for user enumeration (e.g., 500-550)"
+
+  wordlist:
+    type: string
+    flag: "-R"
+    description: Wordlist for RID cycling
+
+  os_info:
+    type: boolean
+    flag: "-o"
+    description: Get OS information
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 300
+
+command_template: "enum4linux {all?} {users?} {machines?} {shares?} {password_policy?} {groups?} {detailed?} {rid_range?} {os_info?} {username?} {password?} {verbose?} {target}"
+
+examples:
+  - "enum4linux -a 192.168.1.100"
+  - "enum4linux -U -S 192.168.1.100"
+  - "enum4linux -u admin -p pass123 -a 192.168.1.100"
+  - "enum4linux -r 500-550,1000-1050 192.168.1.100"
+
+notes: |
+  Enumeration capabilities:
+  - User listing via RID cycling
+  - Share enumeration
+  - Password policy information
+  - Group membership
+  - OS information
+  - Workgroup/domain info
+
+  Common ports:
+  - 139/tcp (NetBIOS Session)
+  - 445/tcp (SMB)
+
+  Null session requirements:
+  - Many options work with null sessions
+  - Use -u/-p for authenticated access
+
+  Alternative tools:
+  - enum4linux-ng (newer Python version)
+  - smbclient
+  - rpcclient
+  - crackmapexec

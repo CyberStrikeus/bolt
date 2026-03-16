@@ -1,0 +1,81 @@
+name: strings
+category: forensics
+description: Extract printable strings from binary files.
+keywords:
+  - strings
+  - binary
+  - analysis
+  - extract
+  - forensics
+
+parameters:
+  file:
+    type: string
+    required: true
+    description: Input file
+
+  min_length:
+    type: integer
+    flag: "-n"
+    default: 4
+    description: Minimum string length
+
+  encoding:
+    type: enum
+    flag: "-e"
+    options:
+      - value: "s"
+        description: "7-bit ASCII"
+      - value: "S"
+        description: "8-bit chars"
+      - value: "b"
+        description: "16-bit big-endian"
+      - value: "l"
+        description: "16-bit little-endian"
+      - value: "B"
+        description: "32-bit big-endian"
+      - value: "L"
+        description: "32-bit little-endian"
+    description: Encoding type
+
+  offset:
+    type: boolean
+    flag: "-t"
+    description: Show offset
+
+  all:
+    type: boolean
+    flag: "-a"
+    description: Scan entire file
+
+requires_root: false
+timeout: 60
+
+examples:
+  - "strings binary.exe"
+  - "strings -n 10 binary.exe"
+  - "strings -e l binary.exe"
+  - "strings -a -t x binary.exe"
+  - "strings malware.exe | grep -i password"
+
+notes: |
+  Use cases:
+  - Malware analysis
+  - Binary reverse engineering
+  - Finding hardcoded secrets
+  - CTF challenges
+
+  Common patterns:
+  - URLs and IPs
+  - Error messages
+  - Function names
+  - File paths
+  - Passwords/keys
+
+  Unicode:
+  - Use -e l for Windows Unicode
+  - Use -e b for big-endian
+
+  Combine with:
+  - grep for filtering
+  - sort -u for unique

@@ -1,0 +1,82 @@
+name: wmiexec.py
+category: ad
+description: WMI-based remote command execution via Impacket.
+keywords:
+  - wmi
+  - remote
+  - execution
+  - windows
+  - stealthy
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: "Target (domain/user:password@host)"
+
+  command:
+    type: string
+    description: Command to execute
+
+  hashes:
+    type: string
+    flag: "-hashes"
+    description: "NTLM hashes (LMHASH:NTHASH)"
+
+  no_pass:
+    type: boolean
+    flag: "-no-pass"
+    description: No password prompt
+
+  no_output:
+    type: boolean
+    flag: "-nooutput"
+    description: Don't retrieve output
+
+  share:
+    type: string
+    flag: "-share"
+    default: "ADMIN$"
+    description: Share to use
+
+  codec:
+    type: string
+    flag: "-codec"
+    description: Output encoding
+
+  shell_type:
+    type: enum
+    flag: "-shell-type"
+    options: ["cmd", "powershell"]
+    description: Shell type
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "wmiexec.py domain/admin:password@192.168.1.1"
+  - "wmiexec.py -hashes :ntlm_hash domain/admin@192.168.1.1"
+  - "wmiexec.py admin:password@192.168.1.1 'whoami'"
+  - "wmiexec.py -shell-type powershell domain/admin:password@192.168.1.1"
+
+notes: |
+  Advantages:
+  - No service creation
+  - Stealthier than PSExec
+  - Uses WMI (port 135)
+
+  How it works:
+  1. Connect via WMI
+  2. Execute command
+  3. Store output to file
+  4. Retrieve via SMB
+  5. Clean up
+
+  Requirements:
+  - ADMIN$ share access
+  - WMI enabled
+  - Proper permissions
+
+  Detection:
+  - WMI activity logged
+  - Less obvious than PSExec

@@ -1,0 +1,135 @@
+name: dnsrecon
+category: recon
+description: DNS enumeration tool for zone transfers, brute force, and record enumeration.
+keywords:
+  - dns
+  - enumeration
+  - zone transfer
+  - subdomain
+  - records
+  - mx
+  - ns
+
+parameters:
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain
+
+  type:
+    type: enum
+    flag: "-t"
+    options:
+      - value: "std"
+        description: "Standard enumeration"
+      - value: "rvl"
+        description: "Reverse lookup of IP range"
+      - value: "brt"
+        description: "Brute force subdomains"
+      - value: "srv"
+        description: "SRV record enumeration"
+      - value: "axfr"
+        description: "Zone transfer"
+      - value: "goo"
+        description: "Google search enumeration"
+      - value: "snoop"
+        description: "DNS cache snooping"
+      - value: "tld"
+        description: "TLD expansion"
+      - value: "zonewalk"
+        description: "DNSSEC zone walking"
+    default: "std"
+    description: Enumeration type
+
+  nameserver:
+    type: string
+    flag: "-n"
+    description: Nameserver to use
+
+  range:
+    type: string
+    flag: "-r"
+    description: IP range for reverse lookup
+
+  dictionary:
+    type: string
+    flag: "-D"
+    description: Dictionary file for brute force
+
+  filter:
+    type: boolean
+    flag: "-f"
+    description: Filter wildcard records
+
+  threads:
+    type: integer
+    flag: "--threads"
+    description: Number of threads
+
+  lifetime:
+    type: integer
+    flag: "--lifetime"
+    description: Query timeout
+
+  output_xml:
+    type: string
+    flag: "-x"
+    description: XML output file
+
+  output_json:
+    type: string
+    flag: "-j"
+    description: JSON output file
+
+  output_csv:
+    type: string
+    flag: "-c"
+    description: CSV output file
+
+  db:
+    type: string
+    flag: "--db"
+    description: SQLite database file
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "dnsrecon -d target.com -t std"
+  - "dnsrecon -d target.com -t axfr"
+  - "dnsrecon -d target.com -t brt -D wordlist.txt"
+  - "dnsrecon -d target.com -t srv"
+  - "dnsrecon -r 192.168.1.0/24 -t rvl"
+
+notes: |
+  Enumeration types:
+  - std: A, AAAA, MX, NS, SOA, TXT, SRV
+  - axfr: Attempt zone transfer
+  - brt: Subdomain brute force
+  - srv: Common SRV records
+  - rvl: Reverse lookup
+  - snoop: Cache snooping
+  - tld: Check other TLDs
+  - zonewalk: DNSSEC walk
+
+  Zone transfer (AXFR):
+  - Often misconfigured
+  - Reveals all DNS records
+  - Try against all NS servers
+
+  SRV records to check:
+  - _ldap._tcp
+  - _kerberos._tcp
+  - _gc._tcp
+  - _sip._tcp
+  - _autodiscover._tcp
+
+  Output formats:
+  - XML, JSON, CSV, SQLite
+  - Useful for integration

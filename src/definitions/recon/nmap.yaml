@@ -1,0 +1,146 @@
+name: nmap
+category: recon
+description: Network exploration tool and security/port scanner. The most essential tool for network reconnaissance.
+keywords:
+  - port
+  - scan
+  - network
+  - discovery
+  - service
+  - version
+  - script
+  - nse
+  - tcp
+  - udp
+  - host
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: Target IP, hostname, CIDR range, or file with -iL
+
+  scan_type:
+    type: enum
+    flag: ""
+    options:
+      - value: "-sS"
+        description: "SYN scan (stealth, default, requires root)"
+      - value: "-sT"
+        description: "TCP connect scan (no root needed)"
+      - value: "-sU"
+        description: "UDP scan"
+      - value: "-sV"
+        description: "Version detection"
+      - value: "-sC"
+        description: "Default script scan"
+      - value: "-sn"
+        description: "Ping scan only (no port scan)"
+      - value: "-sA"
+        description: "ACK scan (firewall detection)"
+    default: "-sS"
+    description: Type of scan to perform
+
+  ports:
+    type: string
+    flag: "-p"
+    description: "Port specification. Examples: -p22, -p1-65535, -p- (all), -pU:53,T:21-25"
+
+  top_ports:
+    type: integer
+    flag: "--top-ports"
+    description: Scan the N most common ports
+
+  timing:
+    type: enum
+    flag: ""
+    options:
+      - value: "-T0"
+        description: "Paranoid (IDS evasion)"
+      - value: "-T1"
+        description: "Sneaky"
+      - value: "-T2"
+        description: "Polite"
+      - value: "-T3"
+        description: "Normal (default)"
+      - value: "-T4"
+        description: "Aggressive"
+      - value: "-T5"
+        description: "Insane (fast network)"
+    default: "-T4"
+    description: Timing template (higher is faster)
+
+  scripts:
+    type: string
+    flag: "--script"
+    description: "NSE scripts to run (e.g., vuln, default, http-enum, smb-vuln-*)"
+
+  os_detect:
+    type: boolean
+    flag: "-O"
+    description: Enable OS detection
+
+  aggressive:
+    type: boolean
+    flag: "-A"
+    description: Aggressive scan (OS detection + version + scripts + traceroute)
+
+  no_ping:
+    type: boolean
+    flag: "-Pn"
+    description: Skip host discovery (treat all hosts as online)
+
+  version_intensity:
+    type: integer
+    flag: "--version-intensity"
+    description: Version detection intensity (0-9)
+
+  min_rate:
+    type: integer
+    flag: "--min-rate"
+    description: Minimum packets per second
+
+  output_normal:
+    type: string
+    flag: "-oN"
+    description: Output in normal format to file
+
+  output_xml:
+    type: string
+    flag: "-oX"
+    description: Output in XML format to file
+
+  output_grep:
+    type: string
+    flag: "-oG"
+    description: Output in grepable format to file
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Increase verbosity
+
+requires_root: true
+timeout: 600
+
+examples:
+  - "nmap -sS -sV -T4 192.168.1.1"
+  - "nmap -sC -sV -p- -T4 target.com"
+  - "nmap --script=vuln -Pn 10.0.0.0/24"
+  - "nmap -sU --top-ports 20 192.168.1.1"
+  - "nmap -A -T4 -p 80,443,8080 target.com"
+
+notes: |
+  Common NSE script categories:
+  - default: Safe scripts that run with -sC
+  - vuln: Check for vulnerabilities
+  - auth: Authentication-related scripts
+  - brute: Brute force attacks
+  - discovery: Additional discovery
+  - exploit: Attempt to exploit vulnerabilities
+
+  Output formats:
+  - -oN: Normal (human readable)
+  - -oX: XML (for parsing)
+  - -oG: Grepable
+  - -oA: All formats at once

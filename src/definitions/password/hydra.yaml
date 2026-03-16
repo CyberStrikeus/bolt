@@ -1,0 +1,168 @@
+name: hydra
+category: password
+description: Fast network login cracker supporting many protocols. Brute forces credentials.
+keywords:
+  - brute
+  - force
+  - password
+  - login
+  - crack
+  - ssh
+  - ftp
+  - http
+  - smb
+  - rdp
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: Target host
+
+  service:
+    type: enum
+    required: true
+    options:
+      - ssh
+      - ftp
+      - telnet
+      - http-get
+      - http-post
+      - http-post-form
+      - http-get-form
+      - https-get
+      - https-post
+      - https-post-form
+      - smb
+      - smbnt
+      - rdp
+      - mysql
+      - mssql
+      - postgres
+      - vnc
+      - pop3
+      - imap
+      - smtp
+      - ldap
+      - snmp
+      - cisco
+      - cisco-enable
+    description: Service/protocol to attack
+
+  username:
+    type: string
+    flag: "-l"
+    description: Single username
+
+  username_list:
+    type: string
+    flag: "-L"
+    description: File with list of usernames
+
+  password:
+    type: string
+    flag: "-p"
+    description: Single password
+
+  password_list:
+    type: string
+    flag: "-P"
+    description: File with list of passwords
+
+  combo_list:
+    type: string
+    flag: "-C"
+    description: "Colon-separated user:pass file"
+
+  port:
+    type: integer
+    flag: "-s"
+    description: Custom port number
+
+  ssl:
+    type: boolean
+    flag: "-S"
+    description: Use SSL
+
+  vhost:
+    type: string
+    flag: "-m"
+    description: Virtual host for HTTP
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 16
+    description: Number of parallel connections
+
+  wait:
+    type: integer
+    flag: "-W"
+    description: Wait time between connections
+
+  timeout:
+    type: integer
+    flag: "-w"
+    default: 32
+    description: Max wait time per response
+
+  attempts:
+    type: integer
+    flag: "-c"
+    description: Exit after N login attempts per thread
+
+  exit_on_success:
+    type: boolean
+    flag: "-f"
+    description: Exit when valid login found
+
+  verbose:
+    type: boolean
+    flag: "-V"
+    description: Show each attempt
+
+  debug:
+    type: boolean
+    flag: "-d"
+    description: Debug mode
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  http_form:
+    type: string
+    description: "For http-*-form: /path:user=^USER^&pass=^PASS^:F=failed_string"
+
+requires_root: false
+timeout: 600
+
+command_template: "hydra {username?} {username_list?} {password?} {password_list?} {combo_list?} {port?} {ssl?} {threads?} {wait?} {timeout?} {exit_on_success?} {verbose?} {output?} {target} {service} {http_form?}"
+
+examples:
+  - "hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://192.168.1.1"
+  - "hydra -L users.txt -P passwords.txt ftp://target.com"
+  - "hydra -l admin -P pass.txt target.com http-post-form '/login:user=^USER^&pass=^PASS^:F=incorrect'"
+  - "hydra -l root -P passwords.txt -s 2222 ssh://target.com"
+  - "hydra -C combos.txt rdp://target.com"
+
+notes: |
+  HTTP form syntax:
+  <path>:<form_params>:<failure_string>
+
+  Example:
+  "/login.php:username=^USER^&password=^PASS^:F=Login failed"
+
+  ^USER^ and ^PASS^ are replaced with actual values.
+  F= for failure string, S= for success string.
+
+  Common wordlists:
+  - /usr/share/wordlists/rockyou.txt
+  - /usr/share/seclists/Passwords/Common-Credentials/10k-most-common.txt
+
+  Performance tips:
+  - Start with small wordlist
+  - Use -t 4 for SSH (rate limited)
+  - Use -t 64 for HTTP (faster)
+  - Add -f to stop on first success

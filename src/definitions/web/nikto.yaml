@@ -1,0 +1,136 @@
+name: nikto
+category: web
+description: Web server scanner that checks for dangerous files, outdated software, and vulnerabilities.
+keywords:
+  - web
+  - scanner
+  - vulnerability
+  - server
+  - cgi
+  - apache
+  - nginx
+
+parameters:
+  host:
+    type: string
+    required: true
+    flag: "-h"
+    description: Target host or URL
+
+  port:
+    type: integer
+    flag: "-p"
+    description: Port to scan (default 80)
+
+  ssl:
+    type: boolean
+    flag: "-ssl"
+    description: Force SSL/HTTPS mode
+
+  no_ssl:
+    type: boolean
+    flag: "-nossl"
+    description: Disable SSL
+
+  root:
+    type: string
+    flag: "-root"
+    description: Prepend root value to all requests
+
+  vhost:
+    type: string
+    flag: "-vhost"
+    description: Virtual host for Host header
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  format:
+    type: enum
+    flag: "-Format"
+    options:
+      - csv
+      - htm
+      - txt
+      - xml
+      - json
+    description: Output format
+
+  tuning:
+    type: string
+    flag: "-Tuning"
+    description: "Scan tuning (1=Files, 2=Misconfig, 3=Info, 4=XSS, 5=SQLi, etc.)"
+
+  plugins:
+    type: string
+    flag: "-Plugins"
+    description: Plugins to run
+
+  timeout:
+    type: integer
+    flag: "-timeout"
+    default: 10
+    description: Request timeout in seconds
+
+  pause:
+    type: integer
+    flag: "-Pause"
+    description: Pause between requests (seconds)
+
+  useragent:
+    type: string
+    flag: "-useragent"
+    description: Custom User-Agent
+
+  evasion:
+    type: string
+    flag: "-evasion"
+    description: "IDS evasion techniques (1-8)"
+
+  no_cache:
+    type: boolean
+    flag: "-nocache"
+    description: Disable response caching
+
+  update:
+    type: boolean
+    flag: "-update"
+    description: Update databases and plugins
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "nikto -h http://target.com"
+  - "nikto -h https://target.com -ssl -o report.html -Format htm"
+  - "nikto -h target.com -p 8080 -Tuning 1234"
+  - "nikto -h target.com -evasion 1"
+
+notes: |
+  Tuning options:
+  1 - Interesting File / Seen in logs
+  2 - Misconfiguration / Default File
+  3 - Information Disclosure
+  4 - Injection (XSS/Script/HTML)
+  5 - Remote File Retrieval (web root)
+  6 - Denial of Service
+  7 - Remote File Retrieval (server)
+  8 - Command Execution / Shell
+  9 - SQL Injection
+  0 - File Upload
+  a - Authentication Bypass
+  b - Software Identification
+  c - Remote Source Inclusion
+  x - Reverse Tuning (exclude)
+
+  Evasion options:
+  1 - Random URI encoding
+  2 - Directory self-reference (/./)
+  3 - Premature URL ending
+  4 - Prepend long random string
+  5 - Fake parameter
+  6 - TAB as request spacer
+  7 - Change case of URL
+  8 - Windows directory separator (\)

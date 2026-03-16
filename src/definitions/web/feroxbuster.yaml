@@ -1,0 +1,122 @@
+name: feroxbuster
+category: web
+description: Fast, recursive content discovery tool written in Rust.
+keywords:
+  - directory
+  - brute
+  - recursive
+  - fast
+  - rust
+  - discovery
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: Target URL
+
+  wordlist:
+    type: string
+    flag: "-w"
+    description: Wordlist file
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 50
+    description: Number of threads
+
+  depth:
+    type: integer
+    flag: "-d"
+    default: 4
+    description: Recursion depth
+
+  timeout:
+    type: integer
+    flag: "-T"
+    default: 7
+    description: Request timeout
+
+  status_codes:
+    type: string
+    flag: "-s"
+    description: "Status codes to include (e.g., 200,301,302)"
+
+  filter_status:
+    type: string
+    flag: "-C"
+    description: "Status codes to exclude"
+
+  extensions:
+    type: string
+    flag: "-x"
+    description: "Extensions (e.g., php,html,js)"
+
+  headers:
+    type: string
+    flag: "-H"
+    description: "Custom header (Header: Value)"
+
+  cookies:
+    type: string
+    flag: "-b"
+    description: Cookie string
+
+  proxy:
+    type: string
+    flag: "-p"
+    description: Proxy URL
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  no_recursion:
+    type: boolean
+    flag: "-n"
+    description: Disable recursion
+
+  force_recursion:
+    type: boolean
+    flag: "-f"
+    description: Force recursion on all dirs
+
+  insecure:
+    type: boolean
+    flag: "-k"
+    description: Disable TLS verification
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "feroxbuster -u http://target.com"
+  - "feroxbuster -u http://target.com -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt"
+  - "feroxbuster -u http://target.com -x php,html -d 2"
+  - "feroxbuster -u http://target.com -t 100 -C 404,403"
+  - "feroxbuster -u http://target.com --proxy http://127.0.0.1:8080"
+
+notes: |
+  Advantages:
+  - Very fast (Rust-based)
+  - Auto-recursion
+  - Smart filtering
+  - Resume capability
+
+  vs other tools:
+  - Faster than gobuster
+  - Better recursion than ffuf
+  - More features than dirb
+
+  Wordlists:
+  - /usr/share/seclists/Discovery/Web-Content/
+  - raft-medium-directories.txt
+  - directory-list-2.3-medium.txt

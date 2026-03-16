@@ -1,0 +1,132 @@
+name: xsser
+category: web
+description: Automatic XSS vulnerability detector and exploitation framework.
+keywords:
+  - xss
+  - cross site
+  - scripting
+  - injection
+  - web
+  - exploit
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: "Target URL with XSS vector placeholder"
+
+  payload:
+    type: string
+    flag: "-p"
+    description: Custom payload to inject
+
+  auto:
+    type: boolean
+    flag: "--auto"
+    description: Automatic payload injection
+
+  cookie:
+    type: string
+    flag: "--cookie"
+    description: Cookie string
+
+  user_agent:
+    type: string
+    flag: "--user-agent"
+    description: Custom User-Agent
+
+  referer:
+    type: string
+    flag: "--referer"
+    description: Custom Referer header
+
+  data:
+    type: string
+    flag: "-d"
+    description: POST data
+
+  threads:
+    type: integer
+    flag: "--threads"
+    default: 5
+    description: Number of threads
+
+  timeout:
+    type: integer
+    flag: "--timeout"
+    default: 30
+    description: Connection timeout
+
+  proxy:
+    type: string
+    flag: "--proxy"
+    description: Proxy URL
+
+  crawl:
+    type: integer
+    flag: "-c"
+    description: Crawl depth
+
+  fuzzer:
+    type: boolean
+    flag: "--Fp"
+    description: Fuzz with permutations
+
+  dom:
+    type: boolean
+    flag: "--Dom"
+    description: DOM-based XSS mode
+
+  encoding:
+    type: string
+    flag: "--Enc"
+    description: "Encoding type (hex, base64, etc.)"
+
+  no_head:
+    type: boolean
+    flag: "--no-head"
+    description: Disable HEAD request check
+
+  reverse_check:
+    type: boolean
+    flag: "--reverse-check"
+    description: Reverse connection check
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+requires_root: false
+timeout: 300
+
+command_template: "xsser -u '{url}' {payload?} {auto?} {cookie?} {data?} {threads?} {timeout?} {proxy?} {crawl?} {fuzzer?} {dom?}"
+
+examples:
+  - "xsser -u 'http://target.com/page?param=XSS'"
+  - "xsser -u 'http://target.com/page?param=XSS' --auto"
+  - "xsser -u 'http://target.com/page' -c 3 --auto"
+  - "xsser -u 'http://target.com/page?param=XSS' --Fp --Dom"
+  - "xsser -u 'http://target.com/page' -d 'input=XSS' --auto"
+
+notes: |
+  XSS placeholder:
+  Use 'XSS' in the URL where you want to inject
+
+  Attack types:
+  - Reflected XSS
+  - Stored XSS (with crawl)
+  - DOM-based XSS (--Dom)
+
+  Encoding options:
+  - hex: Hexadecimal encoding
+  - base64: Base64 encoding
+  - unicode: Unicode encoding
+  - And more...
+
+  Tips:
+  - Use --auto for automatic testing
+  - Use -c to crawl for more injection points
+  - Use --Fp for advanced fuzzing
+  - Check DOM-based with --Dom

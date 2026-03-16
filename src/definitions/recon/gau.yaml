@@ -1,0 +1,76 @@
+name: gau
+category: recon
+description: Get All URLs from multiple sources (Wayback, Common Crawl, etc).
+keywords:
+  - urls
+  - wayback
+  - crawl
+  - archive
+  - osint
+
+parameters:
+  providers:
+    type: string
+    flag: "--providers"
+    description: "Providers (wayback,commoncrawl,otx,urlscan)"
+
+  blacklist:
+    type: string
+    flag: "--blacklist"
+    description: Extensions to skip
+
+  threads:
+    type: integer
+    flag: "--threads"
+    default: 2
+    description: Number of threads
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  json:
+    type: boolean
+    flag: "--json"
+    description: JSON output
+
+  subs:
+    type: boolean
+    flag: "--subs"
+    description: Include subdomains
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "echo target.com | gau"
+  - "gau target.com"
+  - "gau --subs target.com"
+  - "gau --providers wayback,otx target.com"
+  - "gau --blacklist png,jpg,gif target.com"
+
+notes: |
+  Providers:
+  - wayback: Wayback Machine
+  - commoncrawl: Common Crawl
+  - otx: AlienVault OTX
+  - urlscan: URLScan.io
+
+  vs waybackurls:
+  - More sources
+  - More features
+  - Blacklist support
+
+  Pipeline:
+  gau target.com | httpx | nuclei
+
+  Filter interesting:
+  - Parameters: grep '?'
+  - JS files: grep '\.js$'
+  - API: grep '/api/'

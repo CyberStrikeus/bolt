@@ -1,0 +1,89 @@
+name: ophcrack
+category: password
+description: Windows password cracker using rainbow tables.
+keywords:
+  - windows
+  - password
+  - rainbow
+  - tables
+  - lm
+  - ntlm
+  - crack
+
+parameters:
+  sam:
+    type: string
+    flag: "-s"
+    description: SAM file path
+
+  system:
+    type: string
+    flag: "-y"
+    description: SYSTEM file path
+
+  pwdump:
+    type: string
+    flag: "-f"
+    description: pwdump file
+
+  tables:
+    type: string
+    flag: "-t"
+    description: Rainbow tables directory
+
+  session:
+    type: string
+    flag: "-S"
+    description: Session file
+
+  display:
+    type: boolean
+    flag: "-d"
+    description: Display mode (GUI)
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  threads:
+    type: integer
+    flag: "-n"
+    description: Number of threads
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+requires_root: false
+timeout: 0
+interactive: true
+
+examples:
+  - "ophcrack -d"
+  - "ophcrack -f pwdump.txt -t /path/to/tables"
+  - "ophcrack -s SAM -y SYSTEM -t /path/to/tables"
+  - "ophcrack -f hashes.txt -t vista_free -o cracked.txt"
+
+notes: |
+  Rainbow tables:
+  - Download from ophcrack.sourceforge.io
+  - Different tables for LM/NTLM
+  - Free and paid versions
+
+  Table types:
+  - XP free: Basic XP tables
+  - Vista free: Basic Vista/7
+  - XP special: Extended XP
+  - Vista special: Extended Vista/7
+
+  Hash extraction:
+  - From live system: lsadump
+  - From SAM/SYSTEM files
+  - From pwdump output
+
+  Tips:
+  - LM hashes easier to crack
+  - NTLM requires larger tables
+  - Use GPU cracking for speed

@@ -1,0 +1,72 @@
+name: sqlninja
+category: web
+description: SQL injection tool focused on Microsoft SQL Server.
+keywords:
+  - sql
+  - injection
+  - mssql
+  - microsoft
+  - exploit
+
+parameters:
+  mode:
+    type: enum
+    required: true
+    flag: "-m"
+    options:
+      - value: "test"
+        description: "Test injection"
+      - value: "fingerprint"
+        description: "Fingerprint DB"
+      - value: "bruteforce"
+        description: "Brute force SA"
+      - value: "escalation"
+        description: "Privilege escalation"
+      - value: "resurrectxp"
+        description: "Recreate xp_cmdshell"
+      - value: "upload"
+        description: "Upload binary"
+      - value: "dirshell"
+        description: "Direct shell"
+      - value: "backscan"
+        description: "Reverse scan"
+      - value: "revshell"
+        description: "Reverse shell"
+    description: Attack mode
+
+  config:
+    type: string
+    flag: "-f"
+    description: Configuration file
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "sqlninja -m test -f config.conf"
+  - "sqlninja -m fingerprint -f config.conf"
+  - "sqlninja -m bruteforce -f config.conf"
+  - "sqlninja -m revshell -f config.conf"
+
+notes: |
+  Configuration file required:
+  - Host, port, page
+  - Injection point
+  - Method (GET/POST)
+
+  Attack flow:
+  1. test: Verify injection
+  2. fingerprint: Get DB info
+  3. bruteforce: Crack SA password
+  4. escalation: Get admin
+  5. revshell: Get shell
+
+  MSSQL specific:
+  - xp_cmdshell abuse
+  - Linked servers
+  - OLE automation

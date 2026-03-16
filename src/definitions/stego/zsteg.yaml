@@ -1,0 +1,78 @@
+name: zsteg
+category: stego
+description: PNG/BMP steganography analyzer.
+keywords:
+  - stego
+  - png
+  - bmp
+  - lsb
+  - hidden
+  - ctf
+
+parameters:
+  file:
+    type: string
+    required: true
+    description: Image file to analyze
+
+  all:
+    type: boolean
+    flag: "-a"
+    description: Try all methods
+
+  bits:
+    type: string
+    flag: "-b"
+    description: "Bits to extract (e.g., 1,2,3)"
+
+  order:
+    type: string
+    flag: "-o"
+    description: "Bit order (e.g., xy, yx)"
+
+  limit:
+    type: integer
+    flag: "-l"
+    description: Limit bytes to show
+
+  extract:
+    type: string
+    flag: "-E"
+    description: Extract to file
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 60
+
+examples:
+  - "zsteg image.png"
+  - "zsteg -a image.png"
+  - "zsteg -b 1 image.png"
+  - "zsteg -E 1b,lsb,xy image.png > output.txt"
+  - "zsteg -a -v image.bmp"
+
+notes: |
+  Methods:
+  - LSB extraction
+  - MSB analysis
+  - Multiple bit planes
+  - Row/column order
+
+  Detection:
+  - Hidden text
+  - Hidden files
+  - Steganographic patterns
+
+  CTF tips:
+  - Always run -a first
+  - Check multiple formats
+  - Combine with other tools
+
+  Similar tools:
+  - steghide (JPEG)
+  - stegsolve (visual)
+  - binwalk (embedded)

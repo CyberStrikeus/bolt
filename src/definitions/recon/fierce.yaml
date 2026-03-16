@@ -1,0 +1,98 @@
+name: fierce
+category: recon
+description: DNS reconnaissance tool for locating non-contiguous IP space.
+keywords:
+  - dns
+  - reconnaissance
+  - subdomain
+  - domain
+  - discovery
+  - ip
+
+parameters:
+  domain:
+    type: string
+    required: true
+    flag: "--domain"
+    description: Target domain
+
+  subdomains:
+    type: string
+    flag: "--subdomains"
+    description: Custom subdomain list file
+
+  dns_servers:
+    type: string
+    flag: "--dns-servers"
+    description: DNS servers to use
+
+  threads:
+    type: integer
+    flag: "--threads"
+    default: 5
+    description: Number of threads
+
+  traverse:
+    type: integer
+    flag: "--traverse"
+    default: 5
+    description: IPs to traverse on found networks
+
+  search:
+    type: string
+    flag: "--search"
+    description: Search filter for responses
+
+  range:
+    type: string
+    flag: "--range"
+    description: IP range for reverse lookup
+
+  delay:
+    type: string
+    flag: "--delay"
+    description: "Delay between queries (e.g., 0.5)"
+
+  connect:
+    type: boolean
+    flag: "--connect"
+    description: Attempt HTTP connections
+
+  wide:
+    type: boolean
+    flag: "--wide"
+    description: Scan entire class C
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "fierce --domain target.com"
+  - "fierce --domain target.com --subdomains subdomains.txt"
+  - "fierce --domain target.com --dns-servers 8.8.8.8"
+  - "fierce --domain target.com --traverse 10 --wide"
+  - "fierce --domain target.com --connect"
+
+notes: |
+  Attack flow:
+  1. Get SOA and NS records
+  2. Attempt zone transfer
+  3. Brute force subdomains
+  4. Traverse discovered IPs
+
+  Output info:
+  - Found subdomains
+  - IP addresses
+  - PTR records
+  - Network ranges
+
+  Use cases:
+  - Find attack surface
+  - Locate all IP ranges
+  - Identify servers
+  - Map infrastructure
+
+  Combine with:
+  - amass for more subdomains
+  - nmap for port scanning
+  - httpx for web discovery

@@ -1,0 +1,65 @@
+name: httprobe
+category: web
+description: Probe for working HTTP/HTTPS servers.
+keywords:
+  - http
+  - https
+  - probe
+  - alive
+  - web
+  - discovery
+
+parameters:
+  concurrency:
+    type: integer
+    flag: "-c"
+    default: 20
+    description: Concurrency level
+
+  timeout:
+    type: integer
+    flag: "-t"
+    default: 10000
+    description: Timeout in milliseconds
+
+  prefer_https:
+    type: boolean
+    flag: "-prefer-https"
+    description: Prefer HTTPS
+
+  skip_default:
+    type: boolean
+    flag: "-s"
+    description: Skip default ports
+
+  ports:
+    type: string
+    flag: "-p"
+    description: "Additional ports (e.g., 8080,8443)"
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "cat domains.txt | httprobe"
+  - "cat domains.txt | httprobe -c 50"
+  - "cat domains.txt | httprobe -p 8080,8443"
+  - "subfinder -d target.com | httprobe"
+  - "cat domains.txt | httprobe -prefer-https"
+
+notes: |
+  Input:
+  - Read domains from stdin
+  - One domain per line
+
+  Output:
+  - Working URLs
+  - http:// or https://
+
+  Pipeline usage:
+  subfinder | httprobe | nuclei
+
+  Use cases:
+  - Filter live hosts
+  - Find web servers
+  - Recon pipeline

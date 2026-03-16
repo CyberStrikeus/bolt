@@ -1,0 +1,90 @@
+name: volatility
+category: forensics
+description: Memory forensics framework for analyzing RAM dumps.
+keywords:
+  - memory
+  - forensics
+  - ram
+  - analysis
+  - malware
+  - incident
+
+parameters:
+  file:
+    type: string
+    required: true
+    flag: "-f"
+    description: Memory dump file
+
+  profile:
+    type: string
+    flag: "--profile"
+    description: OS profile
+
+  plugin:
+    type: string
+    description: Plugin to run
+
+  output:
+    type: string
+    flag: "--output"
+    description: Output format
+
+  output_file:
+    type: string
+    flag: "--output-file"
+    description: Output file
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  pid:
+    type: integer
+    flag: "-p"
+    description: Process ID filter
+
+  offset:
+    type: string
+    flag: "-o"
+    description: Physical offset
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "volatility -f memory.dmp imageinfo"
+  - "volatility -f memory.dmp --profile=Win7SP1x64 pslist"
+  - "volatility -f memory.dmp --profile=Win7SP1x64 pstree"
+  - "volatility -f memory.dmp --profile=Win7SP1x64 netscan"
+  - "volatility -f memory.dmp --profile=Win7SP1x64 filescan"
+  - "volatility -f memory.dmp --profile=Win7SP1x64 dumpfiles -p 1234 -D output/"
+
+notes: |
+  First step:
+  volatility -f dump.raw imageinfo
+
+  Common plugins:
+  - pslist/pstree: Process list
+  - netscan: Network connections
+  - filescan: Open files
+  - cmdline: Command lines
+  - consoles: Console history
+  - hashdump: Password hashes
+  - malfind: Injected code
+  - dlllist: Loaded DLLs
+  - handles: Open handles
+  - hivelist: Registry hives
+
+  Malware analysis:
+  - malfind: Detect injection
+  - apihooks: Hook detection
+  - svcscan: Service anomalies
+  - mutantscan: Mutex objects
+
+  Extraction:
+  - procdump: Dump process
+  - memdump: Dump memory
+  - dumpfiles: Dump files
+  - dumpregistry: Dump registry

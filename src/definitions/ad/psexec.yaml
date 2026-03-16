@@ -1,0 +1,82 @@
+name: psexec.py
+category: ad
+description: Impacket's PSExec implementation for remote command execution.
+keywords:
+  - psexec
+  - remote
+  - execution
+  - smb
+  - windows
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: "Target (domain/user:password@host)"
+
+  command:
+    type: string
+    flag: "-c"
+    description: Command to execute
+
+  hashes:
+    type: string
+    flag: "-hashes"
+    description: "NTLM hashes (LMHASH:NTHASH)"
+
+  no_pass:
+    type: boolean
+    flag: "-no-pass"
+    description: No password prompt
+
+  port:
+    type: integer
+    flag: "-port"
+    default: 445
+    description: SMB port
+
+  service_name:
+    type: string
+    flag: "-service-name"
+    description: Custom service name
+
+  file:
+    type: string
+    flag: "-file"
+    description: File to upload and execute
+
+  codec:
+    type: string
+    flag: "-codec"
+    description: Output encoding
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "psexec.py domain/admin:password@192.168.1.1"
+  - "psexec.py -hashes :ntlm_hash domain/admin@192.168.1.1"
+  - "psexec.py admin:password@192.168.1.1 'cmd /c whoami'"
+  - "psexec.py -c local_file.exe domain/admin:password@192.168.1.1"
+
+notes: |
+  Authentication:
+  - Password
+  - NTLM hash (pass-the-hash)
+  - Kerberos ticket
+
+  How it works:
+  1. Connects via SMB
+  2. Uploads service binary
+  3. Creates/starts service
+  4. Executes command
+  5. Cleans up
+
+  Similar tools:
+  - wmiexec.py: WMI based
+  - smbexec.py: SMB based
+  - atexec.py: Task scheduler
+
+  Detection:
+  - Creates PSEXECSVC service
+  - Visible in event logs

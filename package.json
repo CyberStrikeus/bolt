@@ -1,0 +1,59 @@
+{
+  "name": "@cyberstrike/bolt",
+  "version": "0.1.0",
+  "description": "Docker-based Kali Linux security tools via MCP — 100+ pre-installed penetration testing tools",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "bolt": "./dist/index.js",
+    "bolt-http": "./dist/http.js"
+  },
+  "files": [
+    "dist/",
+    "src/definitions/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "dev": "tsx src/index.ts",
+    "dev:http": "tsx src/http.ts",
+    "start": "node dist/index.js",
+    "start:http": "node dist/http.js",
+    "docker:build": "docker build -t bolt .",
+    "docker:run": "docker run -p 3001:3001 -e MCP_ADMIN_TOKEN=${MCP_ADMIN_TOKEN} -v bolt-data:/data bolt"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "winston": "3.19.0",
+    "winston-daily-rotate-file": "5.0.0",
+    "yaml": "^2.3.4",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "mcp",
+    "bolt",
+    "kali",
+    "linux",
+    "pentest",
+    "security",
+    "cyberstrike",
+    "docker"
+  ],
+  "author": "Orhan Yildirim <contact@cyberstrike.io>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CyberStrikeus/bolt"
+  },
+  "bugs": {
+    "url": "https://github.com/CyberStrikeus/bolt/issues"
+  },
+  "homepage": "https://bolt.cyberstrike.io",
+  "license": "AGPL-3.0-only"
+}

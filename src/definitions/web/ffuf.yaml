@@ -1,0 +1,205 @@
+name: ffuf
+category: web
+description: Fast web fuzzer for directory discovery, parameter fuzzing, and vhost enumeration.
+keywords:
+  - fuzz
+  - directory
+  - brute
+  - web
+  - discovery
+  - vhost
+  - parameter
+  - content
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: "Target URL with FUZZ keyword (e.g., http://target.com/FUZZ)"
+
+  wordlist:
+    type: string
+    required: true
+    flag: "-w"
+    description: Wordlist file path
+
+  method:
+    type: enum
+    flag: "-X"
+    options:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - HEAD
+      - OPTIONS
+    default: GET
+    description: HTTP method
+
+  data:
+    type: string
+    flag: "-d"
+    description: POST data
+
+  headers:
+    type: string
+    flag: "-H"
+    description: "Header (can use multiple -H flags, e.g., 'Content-Type: application/json')"
+
+  cookie:
+    type: string
+    flag: "-b"
+    description: Cookie data
+
+  filter_code:
+    type: string
+    flag: "-fc"
+    description: "Filter by HTTP status codes (e.g., 404,403,500)"
+
+  match_code:
+    type: string
+    flag: "-mc"
+    description: "Match by HTTP status codes (e.g., 200,301,302)"
+
+  filter_size:
+    type: string
+    flag: "-fs"
+    description: Filter by response size
+
+  match_size:
+    type: string
+    flag: "-ms"
+    description: Match by response size
+
+  filter_words:
+    type: string
+    flag: "-fw"
+    description: Filter by word count
+
+  match_words:
+    type: string
+    flag: "-mw"
+    description: Match by word count
+
+  filter_lines:
+    type: string
+    flag: "-fl"
+    description: Filter by line count
+
+  filter_regex:
+    type: string
+    flag: "-fr"
+    description: Filter by regex pattern
+
+  match_regex:
+    type: string
+    flag: "-mr"
+    description: Match by regex pattern
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 40
+    description: Number of concurrent threads
+
+  rate:
+    type: integer
+    flag: "-rate"
+    description: Requests per second limit
+
+  timeout:
+    type: integer
+    flag: "-timeout"
+    default: 10
+    description: Request timeout in seconds
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  output_format:
+    type: enum
+    flag: "-of"
+    options:
+      - json
+      - ejson
+      - html
+      - md
+      - csv
+      - all
+    description: Output format
+
+  extensions:
+    type: string
+    flag: "-e"
+    description: "File extensions to append (e.g., .php,.html,.txt)"
+
+  recursion:
+    type: boolean
+    flag: "-recursion"
+    description: Enable recursive scanning
+
+  recursion_depth:
+    type: integer
+    flag: "-recursion-depth"
+    description: Maximum recursion depth
+
+  mode:
+    type: enum
+    flag: "-mode"
+    options:
+      - clusterbomb
+      - pitchfork
+      - sniper
+    description: Multi-wordlist mode
+
+  auto_calibrate:
+    type: boolean
+    flag: "-ac"
+    description: Auto-calibrate filtering options
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  silent:
+    type: boolean
+    flag: "-s"
+    description: Silent mode (only results)
+
+  colors:
+    type: boolean
+    flag: "-c"
+    description: Colorize output
+
+requires_root: false
+timeout: 600
+
+examples:
+  - "ffuf -u http://target.com/FUZZ -w /usr/share/wordlists/dirb/common.txt"
+  - "ffuf -u http://target.com/FUZZ -w wordlist.txt -mc 200,301 -e .php,.html"
+  - "ffuf -u http://target.com/api?param=FUZZ -w params.txt -fc 404"
+  - "ffuf -u http://FUZZ.target.com -w subdomains.txt -H 'Host: FUZZ.target.com'"
+  - "ffuf -u http://target.com/login -X POST -d 'user=FUZZ&pass=FUZZ' -w users.txt:FUZZ"
+
+notes: |
+  FUZZ keyword positions:
+  - URL path: http://target.com/FUZZ
+  - Parameter value: http://target.com/page?id=FUZZ
+  - Header value: -H "Authorization: Bearer FUZZ"
+  - POST data: -d "username=FUZZ"
+  - Subdomain: http://FUZZ.target.com
+
+  Common wordlists:
+  - /usr/share/wordlists/dirb/common.txt
+  - /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+  - /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+
+  Filtering tips:
+  - Use -ac for auto-calibration
+  - Combine -fc and -mc for precise filtering
+  - Filter by size (-fs) when status codes vary

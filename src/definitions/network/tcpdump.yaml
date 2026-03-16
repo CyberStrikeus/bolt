@@ -1,0 +1,116 @@
+name: tcpdump
+category: network
+description: Command-line packet analyzer for network traffic capture and analysis.
+keywords:
+  - packet
+  - capture
+  - network
+  - sniff
+  - traffic
+  - pcap
+
+parameters:
+  interface:
+    type: string
+    flag: "-i"
+    description: Network interface to capture on
+
+  count:
+    type: integer
+    flag: "-c"
+    description: Number of packets to capture
+
+  write:
+    type: string
+    flag: "-w"
+    description: Write packets to pcap file
+
+  read:
+    type: string
+    flag: "-r"
+    description: Read packets from pcap file
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  very_verbose:
+    type: boolean
+    flag: "-vv"
+    description: Very verbose output
+
+  no_dns:
+    type: boolean
+    flag: "-n"
+    description: Don't resolve hostnames
+
+  no_port_names:
+    type: boolean
+    flag: "-nn"
+    description: Don't resolve hostnames or ports
+
+  ascii:
+    type: boolean
+    flag: "-A"
+    description: Print packets in ASCII
+
+  hex:
+    type: boolean
+    flag: "-X"
+    description: Print packets in hex and ASCII
+
+  snapshot_length:
+    type: integer
+    flag: "-s"
+    description: "Snapshot length (0 for full packet)"
+
+  filter:
+    type: string
+    description: "BPF filter expression (e.g., 'tcp port 80')"
+
+  timestamp:
+    type: boolean
+    flag: "-t"
+    description: Don't print timestamp
+
+requires_root: true
+timeout: 0
+interactive: true
+
+command_template: "tcpdump {interface?} {count?} {write?} {read?} {verbose?} {no_dns?} {no_port_names?} {ascii?} {hex?} {snapshot_length?} {filter?}"
+
+examples:
+  - "tcpdump -i eth0"
+  - "tcpdump -i eth0 -w capture.pcap"
+  - "tcpdump -i eth0 'tcp port 80'"
+  - "tcpdump -i eth0 -nn -X 'host 192.168.1.1'"
+  - "tcpdump -r capture.pcap -A"
+  - "tcpdump -i eth0 -c 100 'tcp port 443'"
+
+notes: |
+  Common BPF filters:
+  - host 192.168.1.1
+  - net 192.168.1.0/24
+  - port 80
+  - tcp, udp, icmp
+  - src host 192.168.1.1
+  - dst port 443
+  - tcp and port 80
+  - not port 22
+
+  Output options:
+  - -A: ASCII (good for HTTP)
+  - -X: Hex + ASCII
+  - -v: Verbose packet info
+  - -vv: More verbose
+
+  Capture to file:
+  tcpdump -i eth0 -w capture.pcap
+
+  Read from file:
+  tcpdump -r capture.pcap
+
+  Rotation:
+  tcpdump -i eth0 -w file.pcap -C 100 -W 10
+  (100MB files, max 10 files)

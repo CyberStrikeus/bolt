@@ -1,0 +1,134 @@
+name: smbmap
+category: network
+description: SMB share enumerator with drive listing and file search capabilities.
+keywords:
+  - smb
+  - shares
+  - windows
+  - samba
+  - file
+  - enumeration
+  - access
+
+parameters:
+  host:
+    type: string
+    required: true
+    flag: "-H"
+    description: Target host
+
+  host_file:
+    type: string
+    flag: "--host-file"
+    description: File containing hosts
+
+  username:
+    type: string
+    flag: "-u"
+    description: Username
+
+  password:
+    type: string
+    flag: "-p"
+    description: Password
+
+  domain:
+    type: string
+    flag: "-d"
+    description: Domain name
+
+  hash:
+    type: string
+    flag: "--pass-hash"
+    description: NTLM hash for authentication
+
+  port:
+    type: integer
+    flag: "-P"
+    default: 445
+    description: SMB port
+
+  share:
+    type: string
+    flag: "-s"
+    description: Specific share to enumerate
+
+  recursive:
+    type: boolean
+    flag: "-R"
+    description: Recursively list directories
+
+  depth:
+    type: integer
+    flag: "--depth"
+    description: Directory recursion depth
+
+  directory:
+    type: string
+    flag: "-r"
+    description: Directory to list
+
+  pattern:
+    type: string
+    flag: "-A"
+    description: File pattern to search
+
+  download:
+    type: string
+    flag: "--download"
+    description: Download a file
+
+  upload:
+    type: string
+    flag: "--upload"
+    description: Upload a file
+
+  delete:
+    type: string
+    flag: "--delete"
+    description: Delete a file
+
+  exec_command:
+    type: string
+    flag: "-x"
+    description: Execute command via WMI
+
+  skip:
+    type: boolean
+    flag: "--skip"
+    description: Skip share access check
+
+  no_banner:
+    type: boolean
+    flag: "-q"
+    description: Suppress banner
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "smbmap -H 192.168.1.100"
+  - "smbmap -H 192.168.1.100 -u user -p pass"
+  - "smbmap -H 192.168.1.100 -u user -p pass -R"
+  - "smbmap -H 192.168.1.100 -u user -p pass -A '*.txt' -R"
+  - "smbmap -H 192.168.1.100 -u user -p pass -x 'whoami'"
+
+notes: |
+  Access levels shown:
+  - READ ONLY
+  - READ, WRITE
+  - NO ACCESS
+
+  Common shares:
+  - ADMIN$ (Admin share)
+  - C$ (C drive share)
+  - IPC$ (Inter-process comm)
+  - SYSVOL, NETLOGON (DC shares)
+
+  Pass-the-hash:
+  smbmap -H target -u user --pass-hash HASH
+
+  File operations:
+  - Search: -A pattern
+  - Download: --download path
+  - Upload: --upload src dest

@@ -1,0 +1,54 @@
+name: waybackurls
+category: recon
+description: Fetch URLs from Wayback Machine for a domain.
+keywords:
+  - wayback
+  - archive
+  - urls
+  - history
+  - osint
+
+parameters:
+  dates:
+    type: boolean
+    flag: "-dates"
+    description: Show capture dates
+
+  no_subs:
+    type: boolean
+    flag: "-no-subs"
+    description: Exclude subdomains
+
+  get_versions:
+    type: boolean
+    flag: "-get-versions"
+    description: Get all versions
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "echo target.com | waybackurls"
+  - "cat domains.txt | waybackurls"
+  - "echo target.com | waybackurls -dates"
+  - "echo target.com | waybackurls | grep '\\.js$'"
+
+notes: |
+  Input:
+  - Domain from stdin
+  - Multiple domains supported
+
+  Use cases:
+  - Find hidden endpoints
+  - Discover old parameters
+  - Find JS files
+  - Historical analysis
+
+  Filter results:
+  - grep for extensions
+  - grep for parameters
+  - sort -u for unique
+
+  Similar tools:
+  - gau: More sources
+  - hakrawler: Active crawling

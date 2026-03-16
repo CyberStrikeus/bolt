@@ -1,0 +1,76 @@
+name: nmblookup
+category: network
+description: NetBIOS name lookup tool for Windows network discovery.
+keywords:
+  - netbios
+  - windows
+  - name
+  - lookup
+  - smb
+
+parameters:
+  name:
+    type: string
+    required: true
+    description: NetBIOS name to lookup
+
+  broadcast:
+    type: string
+    flag: "-B"
+    description: Broadcast address
+
+  unicast:
+    type: string
+    flag: "-U"
+    description: Unicast address
+
+  master:
+    type: boolean
+    flag: "-M"
+    description: Search for master browser
+
+  status:
+    type: boolean
+    flag: "-S"
+    description: Node status lookup
+
+  recursion:
+    type: boolean
+    flag: "-R"
+    description: Recursion desired
+
+  timeout:
+    type: integer
+    flag: "-T"
+    description: Timeout in seconds
+
+requires_root: false
+timeout: 30
+
+examples:
+  - "nmblookup -A 192.168.1.1"
+  - "nmblookup WORKGROUP"
+  - "nmblookup -M -- -"
+  - "nmblookup -S TARGETPC"
+  - "nmblookup -B 192.168.1.255 '*'"
+
+notes: |
+  Common uses:
+  - Resolve NetBIOS names
+  - Find master browser
+  - Enumerate domain
+  - Discover shares
+
+  Name types:
+  - <00> Workstation
+  - <20> Server
+  - <1B> Domain master
+  - <1D> Master browser
+
+  With nbtscan:
+  - nmblookup for single queries
+  - nbtscan for range scanning
+
+  Part of samba-common-bin:
+  - Often pre-installed
+  - Lightweight and fast

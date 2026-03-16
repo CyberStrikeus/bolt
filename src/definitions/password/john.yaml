@@ -1,0 +1,121 @@
+name: john
+category: password
+description: John the Ripper password cracker for offline hash cracking.
+keywords:
+  - password
+  - crack
+  - hash
+  - brute
+  - dictionary
+  - shadow
+
+parameters:
+  hash_file:
+    type: string
+    required: true
+    description: File containing password hashes
+
+  wordlist:
+    type: string
+    flag: "--wordlist"
+    description: Wordlist for dictionary attack
+
+  format:
+    type: string
+    flag: "--format"
+    description: "Hash format (e.g., raw-md5, sha512crypt, ntlm, bcrypt)"
+
+  rules:
+    type: string
+    flag: "--rules"
+    description: "Word mangling rules (e.g., best64, dive)"
+
+  incremental:
+    type: string
+    flag: "--incremental"
+    description: "Incremental mode (e.g., Digits, Alpha, All)"
+
+  mask:
+    type: string
+    flag: "--mask"
+    description: "Mask attack pattern (e.g., ?l?l?l?l?d?d)"
+
+  show:
+    type: boolean
+    flag: "--show"
+    description: Show cracked passwords
+
+  single:
+    type: boolean
+    flag: "--single"
+    description: Single crack mode
+
+  fork:
+    type: integer
+    flag: "--fork"
+    description: Number of processes
+
+  session:
+    type: string
+    flag: "--session"
+    description: Session name for restore
+
+  restore:
+    type: string
+    flag: "--restore"
+    description: Restore interrupted session
+
+  pot:
+    type: string
+    flag: "--pot"
+    description: Potfile to use
+
+  list_formats:
+    type: boolean
+    flag: "--list=formats"
+    description: List supported formats
+
+  list_rules:
+    type: boolean
+    flag: "--list=rules"
+    description: List available rules
+
+requires_root: false
+timeout: 0
+interactive: true
+
+examples:
+  - "john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt"
+  - "john --format=raw-md5 --wordlist=passwords.txt hashes.txt"
+  - "john --format=sha512crypt --rules=best64 --wordlist=words.txt shadow.txt"
+  - "john --incremental=Digits hashes.txt"
+  - "john --show hashes.txt"
+  - "john --mask='?l?l?l?l?d?d?d' hashes.txt"
+
+notes: |
+  Hash format examples:
+  - raw-md5, raw-sha1, raw-sha256
+  - sha512crypt ($6$), sha256crypt ($5$)
+  - bcrypt ($2a$, $2b$, $2y$)
+  - ntlm, netlm, netntlm
+  - krb5tgs, krb5asrep (Kerberoast)
+
+  Mask placeholders:
+  - ?l: lowercase
+  - ?u: uppercase
+  - ?d: digit
+  - ?s: special
+  - ?a: all
+
+  Attack modes:
+  1. Single: Username-based guessing
+  2. Wordlist: Dictionary attack
+  3. Incremental: Brute force
+  4. Mask: Pattern-based
+
+  Potfile location:
+  ~/.john/john.pot
+
+  Convert hashes:
+  - zip2john, rar2john, pdf2john
+  - ssh2john, gpg2john, keepass2john

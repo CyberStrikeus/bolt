@@ -1,0 +1,50 @@
+name: stegsolve
+category: stego
+description: Visual steganography analysis tool with bit plane viewer.
+keywords:
+  - stego
+  - visual
+  - analysis
+  - bit plane
+  - ctf
+
+parameters:
+  file:
+    type: string
+    description: Image file to open
+
+requires_root: false
+timeout: 0
+interactive: true
+
+examples:
+  - "java -jar stegsolve.jar"
+  - "java -jar stegsolve.jar image.png"
+
+notes: |
+  Features:
+  - Bit plane viewer
+  - Color channel analysis
+  - Frame browser (GIF)
+  - Image combiner
+  - Data extraction
+
+  Bit planes:
+  - Red, Green, Blue bits 0-7
+  - Alpha channel
+  - Random color map
+  - Gray bits
+
+  Analysis:
+  - Arrow keys to navigate
+  - Look for patterns
+  - Hidden in single plane
+
+  CTF usage:
+  1. Open image
+  2. Browse bit planes
+  3. Look for text/QR
+  4. Use data extractor
+
+  Requires:
+  - Java runtime

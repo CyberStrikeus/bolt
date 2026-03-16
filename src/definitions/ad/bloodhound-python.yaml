@@ -1,0 +1,129 @@
+name: bloodhound-python
+category: ad
+description: Python-based BloodHound collector for Active Directory enumeration.
+keywords:
+  - active directory
+  - ad
+  - bloodhound
+  - graph
+  - privilege
+  - escalation
+  - domain
+
+parameters:
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain
+
+  username:
+    type: string
+    required: true
+    flag: "-u"
+    description: Username for authentication
+
+  password:
+    type: string
+    flag: "-p"
+    description: Password
+
+  hashes:
+    type: string
+    flag: "--hashes"
+    description: "NTLM hashes (LM:NT format)"
+
+  collection:
+    type: string
+    flag: "-c"
+    default: "Default"
+    description: "Collection method (Default, All, DCOnly, Group, LocalAdmin, Session, Trusts, LoggedOn, Container, ACL, ObjectProps, RDP, DCOM, PSRemote)"
+
+  nameserver:
+    type: string
+    flag: "-ns"
+    description: DNS server IP
+
+  domain_controller:
+    type: string
+    flag: "-dc"
+    description: Domain controller hostname/IP
+
+  gc:
+    type: string
+    flag: "-gc"
+    description: Global catalog hostname/IP
+
+  workers:
+    type: integer
+    flag: "-w"
+    default: 10
+    description: Number of workers
+
+  output_directory:
+    type: string
+    flag: "-o"
+    description: Output directory for JSON files
+
+  compress:
+    type: boolean
+    flag: "--zip"
+    description: Compress output to ZIP file
+
+  computerfile:
+    type: string
+    flag: "-f"
+    description: File with computer names to query
+
+  ldap_filter:
+    type: string
+    flag: "--ldapfilter"
+    description: Custom LDAP filter
+
+  disable_pooling:
+    type: boolean
+    flag: "--disable-pooling"
+    description: Disable connection pooling
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: false
+timeout: 600
+
+command_template: "bloodhound-python -d {domain} -u {username} {password?} {hashes?} {collection?} {nameserver?} {domain_controller?} {workers?} {output_directory?} {compress?} {verbose?}"
+
+examples:
+  - "bloodhound-python -d domain.local -u user -p pass -c All"
+  - "bloodhound-python -d domain.local -u user -p pass -ns 10.0.0.1"
+  - "bloodhound-python -d domain.local -u user --hashes LM:NT -c DCOnly"
+  - "bloodhound-python -d domain.local -u user -p pass -c All --zip"
+
+notes: |
+  Collection methods:
+  - Default: Group, Trusts, LocalAdmin, Session
+  - All: Everything
+  - DCOnly: Only from DC, no computer enum
+  - Group: Group membership
+  - LocalAdmin: Local admin rights
+  - Session: Active sessions
+  - Trusts: Domain trusts
+  - LoggedOn: Logged on users
+  - ACL: ACL data
+  - ObjectProps: Object properties
+  - Container: Container data
+
+  Output:
+  - JSON files for BloodHound import
+  - computers.json, users.json, groups.json, etc.
+
+  Analysis:
+  1. Collect with bloodhound-python
+  2. Import JSON into BloodHound
+  3. Analyze attack paths
+
+  Requires:
+  - Domain credentials
+  - Network access to DC

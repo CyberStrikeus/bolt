@@ -1,0 +1,129 @@
+name: amass
+category: recon
+description: In-depth attack surface mapping and asset discovery using OSINT techniques.
+keywords:
+  - subdomain
+  - dns
+  - enumeration
+  - osint
+  - asset
+  - discovery
+  - attack surface
+
+parameters:
+  mode:
+    type: enum
+    required: true
+    options:
+      - enum
+      - intel
+      - viz
+      - track
+      - db
+    description: Amass subcommand mode
+
+  domain:
+    type: string
+    required: true
+    flag: "-d"
+    description: Target domain
+
+  passive:
+    type: boolean
+    flag: "-passive"
+    description: Passive mode only (no DNS resolution)
+
+  active:
+    type: boolean
+    flag: "-active"
+    description: Active mode with DNS brute force
+
+  brute:
+    type: boolean
+    flag: "-brute"
+    description: Perform brute force subdomain enumeration
+
+  wordlist:
+    type: string
+    flag: "-w"
+    description: Wordlist for brute forcing
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file for discovered names
+
+  output_dir:
+    type: string
+    flag: "-dir"
+    description: Output directory for all results
+
+  config:
+    type: string
+    flag: "-config"
+    description: Config file path
+
+  max_dns_queries:
+    type: integer
+    flag: "-max-dns-queries"
+    description: Maximum DNS queries per second
+
+  timeout:
+    type: integer
+    flag: "-timeout"
+    description: Minutes to run enumeration
+
+  include_unresolvable:
+    type: boolean
+    flag: "-include-unresolvable"
+    description: Include unresolved names in output
+
+  ip:
+    type: boolean
+    flag: "-ip"
+    description: Show IP addresses for names
+
+  ipv4:
+    type: boolean
+    flag: "-ipv4"
+    description: Show IPv4 addresses
+
+  ipv6:
+    type: boolean
+    flag: "-ipv6"
+    description: Show IPv6 addresses
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  silent:
+    type: boolean
+    flag: "-silent"
+    description: Disable all output
+
+requires_root: false
+timeout: 900
+
+command_template: "amass {mode} {passive?} {active?} {brute?} {wordlist?} {domain} {output?} {output_dir?} {config?} {max_dns_queries?} {timeout?} {ip?} {verbose?} {silent?}"
+
+examples:
+  - "amass enum -passive -d target.com"
+  - "amass enum -active -d target.com -o results.txt"
+  - "amass enum -brute -d target.com -w wordlist.txt"
+  - "amass intel -whois -d target.com"
+
+notes: |
+  Modes:
+  - enum: Perform DNS enumeration
+  - intel: Discover targets for enumeration
+  - viz: Visualize enumeration results
+  - track: Track differences between enumerations
+  - db: Manage the graph database
+
+  Data sources (configure in config file):
+  - APIs: Shodan, Censys, VirusTotal, etc.
+  - Certificate transparency logs
+  - DNS aggregators
+  - Web archives

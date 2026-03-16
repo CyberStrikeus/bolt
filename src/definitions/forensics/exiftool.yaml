@@ -1,0 +1,84 @@
+name: exiftool
+category: forensics
+description: Read, write, and manipulate file metadata.
+keywords:
+  - metadata
+  - exif
+  - image
+  - forensics
+  - analysis
+
+parameters:
+  file:
+    type: string
+    required: true
+    description: Target file
+
+  all:
+    type: boolean
+    flag: "-all"
+    description: Show all metadata
+
+  gps:
+    type: boolean
+    flag: "-gps:all"
+    description: Show GPS data
+
+  common:
+    type: boolean
+    flag: "-common"
+    description: Common tags only
+
+  json:
+    type: boolean
+    flag: "-json"
+    description: JSON output
+
+  remove_all:
+    type: boolean
+    flag: "-all="
+    description: Remove all metadata
+
+  recursive:
+    type: boolean
+    flag: "-r"
+    description: Recursive processing
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+requires_root: false
+timeout: 60
+
+examples:
+  - "exiftool image.jpg"
+  - "exiftool -gps:all image.jpg"
+  - "exiftool -json image.jpg"
+  - "exiftool -all= image.jpg"
+  - "exiftool -r /path/to/images/"
+
+notes: |
+  Metadata types:
+  - EXIF: Camera info
+  - GPS: Location data
+  - IPTC: Keywords, credits
+  - XMP: Adobe metadata
+  - ID3: Audio files
+
+  Forensic value:
+  - Camera model
+  - GPS coordinates
+  - Creation date
+  - Software used
+  - Author info
+
+  Privacy:
+  - Remove before sharing
+  - exiftool -all= file
+
+  Supported formats:
+  - Images (jpg, png, etc.)
+  - Documents (pdf, docx)
+  - Audio/video

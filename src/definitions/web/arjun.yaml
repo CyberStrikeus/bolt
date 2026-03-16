@@ -1,0 +1,123 @@
+name: arjun
+category: web
+description: HTTP parameter discovery tool for finding hidden GET/POST parameters.
+keywords:
+  - parameter
+  - discovery
+  - hidden
+  - web
+  - fuzz
+  - get
+  - post
+
+parameters:
+  url:
+    type: string
+    required: true
+    flag: "-u"
+    description: Target URL
+
+  url_list:
+    type: string
+    flag: "-i"
+    description: File with URLs
+
+  method:
+    type: enum
+    flag: "-m"
+    options: ["GET", "POST", "JSON", "XML"]
+    default: "GET"
+    description: HTTP method
+
+  headers:
+    type: string
+    flag: "--headers"
+    description: "Headers file or 'Header: Value'"
+
+  wordlist:
+    type: string
+    flag: "-w"
+    description: Custom wordlist
+
+  threads:
+    type: integer
+    flag: "-t"
+    default: 5
+    description: Number of threads
+
+  delay:
+    type: integer
+    flag: "-d"
+    description: Delay between requests (seconds)
+
+  timeout:
+    type: integer
+    flag: "--timeout"
+    default: 15
+    description: Request timeout
+
+  include:
+    type: string
+    flag: "--include"
+    description: String that must be in response
+
+  stable:
+    type: boolean
+    flag: "--stable"
+    description: Prefer stability over speed
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  output_format:
+    type: enum
+    flag: "-oT"
+    options: ["text", "json"]
+    description: Output format
+
+  passive:
+    type: boolean
+    flag: "--passive"
+    description: Passive mode (no active requests)
+
+  disable_redirects:
+    type: boolean
+    flag: "--disable-redirects"
+    description: Disable following redirects
+
+requires_root: false
+timeout: 300
+
+examples:
+  - "arjun -u http://target.com/page"
+  - "arjun -u http://target.com/api -m POST"
+  - "arjun -u http://target.com/api -m JSON"
+  - "arjun -i urls.txt -o params.json -oT json"
+  - "arjun -u http://target.com/page --headers 'Cookie: session=abc'"
+
+notes: |
+  Discovery methods:
+  1. Sends requests with parameter chunks
+  2. Compares response differences
+  3. Identifies reflective parameters
+
+  Use cases:
+  - Find hidden API parameters
+  - Discover debug parameters
+  - Identify injection points
+
+  Supported methods:
+  - GET: URL parameters
+  - POST: Form data
+  - JSON: JSON body
+  - XML: XML body
+
+  Default wordlist:
+  Built-in list of common parameter names
+
+  Tips:
+  - Use --stable for WAF-protected sites
+  - Use -d delay for rate limiting
+  - Check JSON endpoints with -m JSON

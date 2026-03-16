@@ -1,0 +1,19 @@
+services:
+  bolt:
+    image: ghcr.io/cyberstrikeus/bolt:latest
+    # build: .  # uncomment for local development
+    ports:
+      - "3001:3001"
+    environment:
+      - MCP_ADMIN_TOKEN=${MCP_ADMIN_TOKEN}
+      - DATA_DIR=/data
+      - PORT=3001
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - bolt-data:/data
+    restart: unless-stopped
+
+volumes:
+  bolt-data:

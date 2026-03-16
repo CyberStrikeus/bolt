@@ -1,0 +1,89 @@
+name: netdiscover
+category: network
+description: Active/passive ARP reconnaissance tool.
+keywords:
+  - arp
+  - discovery
+  - network
+  - scan
+  - passive
+  - active
+
+parameters:
+  interface:
+    type: string
+    flag: "-i"
+    description: Network interface
+
+  range:
+    type: string
+    flag: "-r"
+    description: IP range to scan
+
+  passive:
+    type: boolean
+    flag: "-p"
+    description: Passive mode (sniff only)
+
+  fast:
+    type: boolean
+    flag: "-f"
+    description: Fast mode
+
+  sleep:
+    type: integer
+    flag: "-s"
+    description: Sleep time between requests (ms)
+
+  count:
+    type: integer
+    flag: "-c"
+    description: Number of times to scan
+
+  node:
+    type: string
+    flag: "-N"
+    description: Last octet of source IP
+
+  suppress:
+    type: boolean
+    flag: "-S"
+    description: Suppress sleep on startup
+
+  file:
+    type: string
+    flag: "-l"
+    description: Read ranges from file
+
+requires_root: true
+timeout: 120
+
+examples:
+  - "netdiscover -i eth0"
+  - "netdiscover -r 192.168.1.0/24"
+  - "netdiscover -i eth0 -p"
+  - "netdiscover -r 192.168.1.0/24 -f"
+  - "netdiscover -i wlan0 -r 10.0.0.0/8"
+
+notes: |
+  Active mode (default):
+  - Sends ARP requests
+  - Fast discovery
+  - Detectable
+
+  Passive mode (-p):
+  - Only listens
+  - Stealthy
+  - Slower
+
+  Output columns:
+  - IP address
+  - MAC address
+  - Count
+  - Vendor
+
+  Use cases:
+  - Network inventory
+  - Rogue device detection
+  - MITM preparation
+  - Wireless network recon

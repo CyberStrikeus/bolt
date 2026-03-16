@@ -1,0 +1,95 @@
+name: zmap
+category: network
+description: Fast single-packet network scanner for internet-wide surveys.
+keywords:
+  - scan
+  - fast
+  - internet
+  - survey
+  - research
+
+parameters:
+  target:
+    type: string
+    flag: "-t"
+    description: Target subnets
+
+  port:
+    type: integer
+    required: true
+    flag: "-p"
+    description: Target port
+
+  bandwidth:
+    type: string
+    flag: "-B"
+    description: "Bandwidth limit (e.g., 10M, 1G)"
+
+  rate:
+    type: integer
+    flag: "-r"
+    description: Packets per second
+
+  interface:
+    type: string
+    flag: "-i"
+    description: Network interface
+
+  output:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  blacklist:
+    type: string
+    flag: "-b"
+    description: Blacklist file
+
+  whitelist:
+    type: string
+    flag: "-w"
+    description: Whitelist file
+
+  probe_module:
+    type: string
+    flag: "-M"
+    description: "Probe module (tcp_synscan, icmp_echoscan)"
+
+  output_module:
+    type: string
+    flag: "-O"
+    description: Output module
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+requires_root: true
+timeout: 600
+
+examples:
+  - "zmap -p 80 -o results.txt 192.168.0.0/16"
+  - "zmap -p 443 -B 10M 10.0.0.0/8"
+  - "zmap -p 22 -r 10000 192.168.1.0/24"
+  - "zmap -p 80 -b blacklist.txt 0.0.0.0/0"
+
+notes: |
+  Speed:
+  - Scan entire internet in 45 min
+  - Single packet per host
+  - Stateless scanning
+
+  Requirements:
+  - High bandwidth
+  - Proper blacklist
+  - Permission/authorization
+
+  Blacklist:
+  - Always use blacklist
+  - Exclude sensitive ranges
+  - Research ethics
+
+  Follow-up:
+  - Use zgrab2 for banners
+  - Combine with other tools

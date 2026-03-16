@@ -1,0 +1,115 @@
+name: whatweb
+category: recon
+description: Web scanner that identifies websites, CMS, frameworks, and technologies.
+keywords:
+  - fingerprint
+  - cms
+  - technology
+  - web
+  - identify
+  - framework
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: Target URL or hostname
+
+  aggression:
+    type: enum
+    flag: "-a"
+    options:
+      - value: "1"
+        description: "Stealthy - One HTTP request"
+      - value: "3"
+        description: "Aggressive - More requests"
+      - value: "4"
+        description: "Heavy - Lots of requests"
+    default: "1"
+    description: Aggression level
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+  color:
+    type: enum
+    flag: "--color"
+    options: ["always", "never", "auto"]
+    description: Color output
+
+  quiet:
+    type: boolean
+    flag: "-q"
+    description: Quiet mode
+
+  input_file:
+    type: string
+    flag: "-i"
+    description: File with list of targets
+
+  output_file:
+    type: string
+    flag: "-o"
+    description: Output file
+
+  log_format:
+    type: enum
+    flag: "--log-format"
+    options: ["brief", "verbose", "xml", "json", "mongo"]
+    description: Output format
+
+  user_agent:
+    type: string
+    flag: "-U"
+    description: Custom User-Agent
+
+  header:
+    type: string
+    flag: "-H"
+    description: Add HTTP header
+
+  cookie:
+    type: string
+    flag: "-c"
+    description: Cookie string
+
+  proxy:
+    type: string
+    flag: "--proxy"
+    description: Proxy URL
+
+  plugins:
+    type: string
+    flag: "-p"
+    description: Specific plugins to use
+
+  list_plugins:
+    type: boolean
+    flag: "-l"
+    description: List available plugins
+
+requires_root: false
+timeout: 120
+
+examples:
+  - "whatweb http://target.com"
+  - "whatweb -a 3 http://target.com"
+  - "whatweb -v http://target.com --log-format=json"
+  - "whatweb -i urls.txt -o results.json --log-format=json"
+
+notes: |
+  Aggression levels:
+  1 - Stealthy: One HTTP request per target
+  3 - Aggressive: Additional requests for plugins
+  4 - Heavy: Lots of requests, may be intrusive
+
+  Detects 1800+ plugins including:
+  - CMS: WordPress, Joomla, Drupal
+  - Frameworks: Django, Rails, Laravel
+  - Servers: Apache, Nginx, IIS
+  - Languages: PHP, ASP.NET, Java
+  - JavaScript libraries
+  - Analytics tools
+  - And much more

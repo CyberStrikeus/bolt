@@ -1,0 +1,81 @@
+name: unicornscan
+category: network
+description: Asynchronous stateless TCP/UDP scanner.
+keywords:
+  - port
+  - scan
+  - async
+  - stateless
+  - fast
+
+parameters:
+  target:
+    type: string
+    required: true
+    description: Target specification
+
+  ports:
+    type: string
+    flag: "-p"
+    description: Port specification
+
+  mode:
+    type: enum
+    flag: "-m"
+    options:
+      - value: "T"
+        description: "TCP scan"
+      - value: "U"
+        description: "UDP scan"
+      - value: "A"
+        description: "ARP scan"
+    description: Scan mode
+
+  rate:
+    type: integer
+    flag: "-r"
+    description: Packets per second
+
+  interface:
+    type: string
+    flag: "-i"
+    description: Interface to use
+
+  immediate:
+    type: boolean
+    flag: "-I"
+    description: Immediate mode
+
+  verbose:
+    type: boolean
+    flag: "-v"
+    description: Verbose output
+
+requires_root: true
+timeout: 300
+
+examples:
+  - "unicornscan 192.168.1.1:1-65535"
+  - "unicornscan -mT 192.168.1.0/24:80"
+  - "unicornscan -mU -p 53,161,500 192.168.1.1"
+  - "unicornscan -r 1000 192.168.1.1:1-1024"
+
+notes: |
+  Features:
+  - Asynchronous scanning
+  - User-land TCP/IP stack
+  - Banner grabbing
+  - OS fingerprinting
+
+  Syntax:
+  target:port or target:start-end
+
+  Speed:
+  - Adjust -r for rate
+  - Default is conservative
+  - Can go very fast
+
+  vs nmap:
+  - Faster on large scans
+  - Different approach
+  - Less features

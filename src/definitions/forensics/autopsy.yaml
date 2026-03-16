@@ -1,0 +1,61 @@
+name: autopsy
+category: forensics
+description: Digital forensics platform with GUI for disk analysis.
+keywords:
+  - forensics
+  - disk
+  - analysis
+  - gui
+  - investigation
+  - evidence
+
+parameters:
+  case:
+    type: string
+    description: Case directory
+
+  input:
+    type: string
+    description: Input image file
+
+requires_root: false
+timeout: 0
+interactive: true
+
+examples:
+  - "autopsy"
+
+notes: |
+  Web interface:
+  - Runs on localhost:9999
+  - Browser-based GUI
+
+  Features:
+  - Timeline analysis
+  - Hash filtering
+  - Keyword search
+  - File type sorting
+  - Registry analysis
+  - Email parsing
+  - EXIF extraction
+  - Browser artifacts
+
+  Image formats:
+  - E01 (EnCase)
+  - Raw/dd
+  - Virtual disks
+  - Physical devices
+
+  Workflow:
+  1. Create new case
+  2. Add data source
+  3. Run ingest modules
+  4. Analyze results
+  5. Generate report
+
+  Ingest modules:
+  - Hash lookup
+  - Keyword search
+  - File type detection
+  - Email parser
+  - Browser analyzer
