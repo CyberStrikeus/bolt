@@ -1,0 +1,23 @@
+{
+  "name": "@cyberstrike-io/bolt",
+  "version": "1.0.0",
+  "description": "Plugin-based security tool server via MCP",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/types.ts",
+    "./executor": "./src/executor.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/http.ts",
+    "dev:stdio": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "winston": "3.19.0",
+    "winston-daily-rotate-file": "5.0.0",
+    "zod": "^3.22.4"
+  },
+  "author": "Orhan Yildirim <contact@cyberstrike.io>",
+  "license": "AGPL-3.0-only"
+}

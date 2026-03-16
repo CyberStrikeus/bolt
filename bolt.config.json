@@ -1,0 +1,11 @@
+{
+  "port": 3001,
+  "plugins": [
+    "@cyberstrike-io/bolt-subfinder",
+    "@cyberstrike-io/bolt-nmap",
+    "@cyberstrike-io/bolt-nuclei",
+    "@cyberstrike-io/bolt-httpx",
+    "@cyberstrike-io/bolt-ffuf",
+    "@cyberstrike-io/bolt-run-command"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@cyberstrike-io/bolt-run-command",
+  "version": "0.1.0",
+  "description": "Bolt plugin — run arbitrary shell commands (escape hatch)",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@cyberstrike-io/bolt": "workspace:*",
+    "zod": "^3.22.4"
+  },
+  "license": "AGPL-3.0-only"
+}

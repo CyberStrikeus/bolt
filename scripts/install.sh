@@ -1,9 +1,9 @@
 #!/bin/sh
-# Bolt - Universal Installation Script
+# Bolt v2 - Universal Installation Script
 # Usage: curl -fsSL https://bolt.cyberstrike.io/install.sh | sudo sh
 # Platform: Linux (Debian/Ubuntu/Kali/RHEL/Alpine), macOS
 #
-# Auto-detects: Docker → container, no Docker → native (npm + tools)
+# Auto-detects: Docker → container, no Docker → native (Bun + tools)
 
 set -e
 
@@ -16,7 +16,7 @@ NC='\033[0m'
 
 BOLT_IMAGE="ghcr.io/cyberstrikeus/bolt:latest"
 BOLT_PORT="${BOLT_PORT:-3001}"
-BOLT_NPM="@cyberstrike-io/bolt"
+BOLT_REPO="https://github.com/CyberStrikeus/bolt.git"
 
 printf "${BLUE}"
 cat << 'BANNER'
@@ -29,7 +29,7 @@ cat << 'BANNER'
     \|_______|\|_______|\|_______|\|__|
 BANNER
 printf "${NC}\n"
-printf "${CYAN}Bolt — 100+ Kali tools via MCP${NC}\n\n"
+printf "${CYAN}Bolt v2 — Plugin-based security tool server${NC}\n\n"
 
 # ============================================================================
 # STEP 1: Detect environment
@@ -48,13 +48,11 @@ case "$ARCH" in
     *) printf "${RED}Unsupported architecture: $ARCH${NC}\n"; exit 1 ;;
 esac
 
-# --- Platform-specific setup ---
 if [ "$PLATFORM" = "Darwin" ]; then
     OS_NAME="macOS $(sw_vers -productVersion 2>/dev/null || echo '')"
     OS_ID="macos"
     BOLT_DATA="/usr/local/var/bolt"
 
-    # macOS: brew is the package manager
     if ! command -v brew >/dev/null 2>&1; then
         printf "${RED}Homebrew not found. Install it first:${NC}\n"
         printf "   ${CYAN}/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"${NC}\n"
@@ -64,11 +62,8 @@ if [ "$PLATFORM" = "Darwin" ]; then
     PKG_UPDATE="brew update"
     PKG_INSTALL="brew install"
 
-    # IP detection (macOS)
     PRIMARY_IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "127.0.0.1")
-
 else
-    # Linux
     BOLT_DATA="/var/lib/bolt"
 
     if [ -f /etc/os-release ]; then
@@ -77,7 +72,6 @@ else
         OS_ID=$ID
     fi
 
-    # Package manager
     if command -v apt-get >/dev/null 2>&1; then
         PKG="apt-get"
         PKG_UPDATE="apt-get update -qq"
@@ -95,18 +89,15 @@ else
         exit 1
     fi
 
-    # IP detection (Linux)
     PRIMARY_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "127.0.0.1")
 fi
 
-# Root check (macOS: allow non-root for brew path, Linux: require root for native)
 if [ "$PLATFORM" != "Darwin" ] && [ "$(id -u)" -ne 0 ]; then
     printf "${RED}Please run as root:${NC}\n"
     printf "   ${CYAN}curl -fsSL https://bolt.cyberstrike.io/install.sh | sudo sh${NC}\n"
     exit 1
 fi
 
-# Install method
 INSTALL_METHOD=""
 if command -v docker >/dev/null 2>&1; then
     INSTALL_METHOD="docker"
@@ -128,31 +119,24 @@ printf "${YELLOW}[2/5]${NC} Installing dependencies...\n"
 
 $PKG_UPDATE >/dev/null 2>&1 || true
 
-# Base deps
 if [ "$PLATFORM" = "Darwin" ]; then
     for dep in openssl curl; do
         command -v "$dep" >/dev/null 2>&1 || $PKG_INSTALL "$dep" >/dev/null 2>&1 || true
     done
 else
-    for dep in curl openssl ca-certificates; do
+    for dep in curl openssl ca-certificates git; do
         command -v "$dep" >/dev/null 2>&1 || $PKG_INSTALL "$dep" >/dev/null 2>&1 || true
     done
 fi
 
 printf "   ${GREEN}+${NC} Base dependencies ready\n"
 
-# Node.js for native path
-if [ "$INSTALL_METHOD" = "native" ] && ! command -v node >/dev/null 2>&1; then
-    printf "   ${CYAN}i${NC} Installing Node.js...\n"
-    if [ "$PKG" = "brew" ]; then
-        brew install node >/dev/null 2>&1
-    elif [ "$PKG" = "apt-get" ]; then
-        curl -fsSL https://deb.nodesource.com/setup_20.x | sh - >/dev/null 2>&1
-        $PKG_INSTALL nodejs >/dev/null 2>&1
-    else
-        $PKG_INSTALL nodejs npm >/dev/null 2>&1
-    fi
-    printf "   ${GREEN}+${NC} Node.js installed\n"
+# Bun for native path
+if [ "$INSTALL_METHOD" = "native" ] && ! command -v bun >/dev/null 2>&1; then
+    printf "   ${CYAN}i${NC} Installing Bun...\n"
+    curl -fsSL https://bun.sh/install | bash >/dev/null 2>&1
+    export PATH="$HOME/.bun/bin:$PATH"
+    printf "   ${GREEN}+${NC} Bun installed\n"
 fi
 
 printf "\n"
@@ -163,11 +147,10 @@ printf "\n"
 
 printf "${YELLOW}[3/5]${NC} Installing Bolt...\n"
 
-# Generate admin token
 ADMIN_TOKEN=$(openssl rand -hex 32 2>/dev/null || head -c 64 /dev/urandom | od -An -tx1 | tr -d ' \n' | head -c 64)
 
 if [ "$INSTALL_METHOD" = "docker" ]; then
-    # ===== DOCKER PATH (Linux + macOS) =====
+    # ===== DOCKER PATH =====
     docker rm -f bolt >/dev/null 2>&1 || true
 
     printf "   ${CYAN}i${NC} Pulling $BOLT_IMAGE...\n"
@@ -193,43 +176,57 @@ else
     printf "   ${CYAN}i${NC} Installing security tools...\n"
 
     if [ "$PLATFORM" = "Darwin" ]; then
-        # macOS: limited set via brew
-        TOOLS="nmap sqlmap nikto gobuster hydra john-jumbo hashcat"
+        TOOLS="nmap"
         for tool in $TOOLS; do
             brew install "$tool" >/dev/null 2>&1 || true
         done
-    else
-        # Linux: core tools
-        TOOLS="nmap nikto sqlmap dirb gobuster wfuzz whatweb sslscan socat"
-
-        # Kali: full tool set
-        if [ "$OS_ID" = "kali" ]; then
-            TOOLS="$TOOLS subfinder httpx-toolkit amass nuclei ffuf \
-                   john hashcat hydra medusa netexec impacket-scripts \
-                   enum4linux-ng responder bloodhound exploitdb \
-                   metasploit-framework testssl.sh"
+        # Go tools via brew
+        if ! command -v go >/dev/null 2>&1; then
+            brew install go >/dev/null 2>&1 || true
         fi
+    else
+        # Linux: base tools
+        $PKG_INSTALL nmap openssl socat dnsutils >/dev/null 2>&1 || true
 
-        for tool in $TOOLS; do
-            $PKG_INSTALL "$tool" >/dev/null 2>&1 || true
-        done
+        # Go for ProjectDiscovery tools
+        if ! command -v go >/dev/null 2>&1; then
+            $PKG_INSTALL golang-go >/dev/null 2>&1 || true
+        fi
+    fi
+
+    # Install Go-based security tools
+    if command -v go >/dev/null 2>&1; then
+        export GOPATH="${GOPATH:-$HOME/go}"
+        export PATH="$GOPATH/bin:$PATH"
+        printf "   ${CYAN}i${NC} Installing Go security tools...\n"
+        go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest >/dev/null 2>&1 || true
+        go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest >/dev/null 2>&1 || true
+        go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest >/dev/null 2>&1 || true
+        go install -v github.com/ffuf/ffuf/v2@latest >/dev/null 2>&1 || true
+        printf "   ${GREEN}+${NC} Go tools installed\n"
     fi
 
     printf "   ${GREEN}+${NC} Security tools installed\n"
 
-    # Install bolt npm package
-    printf "   ${CYAN}i${NC} Installing $BOLT_NPM...\n"
-    npm install -g "$BOLT_NPM" >/dev/null 2>&1
-    BOLT_BIN=$(command -v bolt-http 2>/dev/null || echo "$(npm root -g)/$BOLT_NPM/dist/http.js")
-    NODE_BIN=$(command -v node)
-    printf "   ${GREEN}+${NC} Bolt installed via npm\n"
-
-    # Create data directory
+    # Clone bolt repo
+    printf "   ${CYAN}i${NC} Installing Bolt from git...\n"
+    BOLT_INSTALL_DIR="$BOLT_DATA/bolt"
     mkdir -p "$BOLT_DATA"
 
-    if [ "$PLATFORM" = "Darwin" ]; then
-        # ===== macOS: launchd plist =====
+    if [ -d "$BOLT_INSTALL_DIR" ]; then
+        cd "$BOLT_INSTALL_DIR" && git pull --quiet
+    else
+        git clone --depth 1 "$BOLT_REPO" "$BOLT_INSTALL_DIR" >/dev/null 2>&1
+    fi
 
+    cd "$BOLT_INSTALL_DIR" && bun install --production >/dev/null 2>&1
+    printf "   ${GREEN}+${NC} Bolt installed\n"
+
+    BUN_BIN=$(command -v bun)
+    BOLT_ENTRY="$BOLT_INSTALL_DIR/packages/core/src/http.ts"
+
+    if [ "$PLATFORM" = "Darwin" ]; then
+        # ===== macOS: launchd =====
         PLIST_PATH="$HOME/Library/LaunchAgents/io.cyberstrike.bolt.plist"
         mkdir -p "$HOME/Library/LaunchAgents"
 
@@ -242,8 +239,9 @@ else
     <string>io.cyberstrike.bolt</string>
     <key>ProgramArguments</key>
     <array>
-        <string>$NODE_BIN</string>
-        <string>$BOLT_BIN</string>
+        <string>$BUN_BIN</string>
+        <string>run</string>
+        <string>$BOLT_ENTRY</string>
     </array>
     <key>EnvironmentVariables</key>
     <dict>
@@ -265,29 +263,26 @@ else
     <key>StandardErrorPath</key>
     <string>$BOLT_DATA/bolt.err</string>
     <key>WorkingDirectory</key>
-    <string>$BOLT_DATA</string>
+    <string>$BOLT_INSTALL_DIR</string>
 </dict>
 </plist>
 PLIST
 
         launchctl unload "$PLIST_PATH" 2>/dev/null || true
         launchctl load "$PLIST_PATH"
-
         printf "   ${GREEN}+${NC} launchd service started\n"
 
     else
         # ===== Linux: systemd =====
 
-        # Create service user
         if ! id "bolt" >/dev/null 2>&1; then
             useradd -r -s /bin/bash -m -d "$BOLT_DATA" bolt 2>/dev/null || \
             useradd -r -s /bin/sh -m -d "$BOLT_DATA" bolt 2>/dev/null || true
         fi
         chown -R bolt:bolt "$BOLT_DATA" 2>/dev/null || true
 
-        # Linux capabilities for tools
         if command -v setcap >/dev/null 2>&1; then
-            for tool in nmap tcpdump; do
+            for tool in nmap; do
                 TOOL_PATH=$(command -v "$tool" 2>/dev/null || true)
                 if [ -n "$TOOL_PATH" ] && [ -f "$TOOL_PATH" ]; then
                     setcap cap_net_raw,cap_net_admin+eip "$TOOL_PATH" 2>/dev/null || true
@@ -295,14 +290,12 @@ PLIST
             done
         fi
 
-        # Sudoers
         cat > /etc/sudoers.d/bolt << 'SUDOERS'
 bolt ALL=(ALL) NOPASSWD: ALL
 Defaults:bolt !requiretty
 SUDOERS
         chmod 0440 /etc/sudoers.d/bolt
 
-        # Systemd service
         cat > /etc/systemd/system/bolt.service << SERVICE
 [Unit]
 Description=Bolt MCP Server
@@ -313,18 +306,18 @@ Wants=network-online.target
 Type=simple
 User=bolt
 Group=bolt
-WorkingDirectory=$BOLT_DATA
+WorkingDirectory=$BOLT_INSTALL_DIR
 Environment=DATA_DIR=$BOLT_DATA
 Environment=PORT=$BOLT_PORT
 Environment=MCP_ADMIN_TOKEN=$ADMIN_TOKEN
 Environment=NODE_ENV=production
-ExecStart=$NODE_BIN $BOLT_BIN
+Environment=PATH=$GOPATH/bin:$HOME/.bun/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=$BUN_BIN run $BOLT_ENTRY
 Restart=always
 RestartSec=10
 CapabilityBoundingSet=CAP_NET_RAW CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
 PrivateTmp=true
-ProtectHome=true
 ReadWritePaths=$BOLT_DATA
 
 [Install]
@@ -375,7 +368,7 @@ printf "\n"
 # ============================================================================
 
 printf "${GREEN}=======================================================${NC}\n"
-printf "${GREEN}  Bolt installed successfully${NC}\n"
+printf "${GREEN}  Bolt v2 installed successfully${NC}\n"
 printf "${GREEN}=======================================================${NC}\n"
 printf "\n"
 printf "  ${CYAN}Server URL:${NC}    http://$PRIMARY_IP:$BOLT_PORT\n"
