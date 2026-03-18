@@ -220,9 +220,11 @@ else
     mkdir -p "$BOLT_DATA"
 
     if [ -d "$BOLT_INSTALL_DIR" ]; then
+        git config --global --add safe.directory "$BOLT_INSTALL_DIR"
         cd "$BOLT_INSTALL_DIR" && git pull --quiet
     else
         git clone --depth 1 "$BOLT_REPO" "$BOLT_INSTALL_DIR" >/dev/null 2>&1
+        git config --global --add safe.directory "$BOLT_INSTALL_DIR"
     fi
 
     cd "$BOLT_INSTALL_DIR" && bun install --production >/dev/null 2>&1
