@@ -9,165 +9,23 @@
     "@cyberstrike-io/bolt-run-command"
   ],
   "mcpServers": {
-    "cero": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/cero/build/index.js",
-        "/go/bin/cero"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "gowitness-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/gowitness-mcp/build/index.js",
-        "/go/bin/gowitness"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "alterx-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/alterx-mcp/build/index.js",
-        "/go/bin/alterx"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "amass-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/amass-mcp/build/index.js",
-        "/go/bin/amass"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "arjun-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/arjun-mcp/build/index.js",
-        "/opt/venv/bin/arjun"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "assetfinder-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/assetfinder-mcp/build/index.js",
-        "/go/bin/assetfinder"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "commix-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/commix-mcp/build/index.js",
-        "/opt/venv/bin/python3",
-        "/opt/commix/commix.py"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "crtsh-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/crtsh-mcp/build/index.js"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "ffuf-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/ffuf-mcp/build/index.js",
-        "/go/bin/ffuf"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "http-headers-security-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/http-headers-security-mcp/build/index.js"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "httpx-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/httpx-mcp/build/index.js",
-        "/go/bin/httpx"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "katana-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/katana-mcp/build/index.js",
-        "/go/bin/katana"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "masscan-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/masscan-mcp/build/index.js",
-        "/usr/bin/masscan"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "nmap-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/nmap-mcp/build/index.js",
-        "/usr/bin/nmap"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "nuclei-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/nuclei-mcp/build/index.js",
-        "/go/bin/nuclei"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "scoutsuite-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/scoutsuite-mcp/build/index.js",
-        "/opt/venv/bin/scout"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "smuggler-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/smuggler-mcp/build/index.js",
-        "/opt/venv/bin/python3",
-        "/opt/smuggler/smuggler.py"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "sqlmap-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/sqlmap-mcp/build/index.js",
-        "sqlmap"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "waybackurls-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/waybackurls-mcp/build/index.js",
-        "waybackurls"
-      ],
-      "dockerContainer": "pensive_cerf"
-    },
-    "wpscan-mcp": {
-      "command": "node",
-      "args": [
-        "/Users/serhatcicek/Documents/coding/mcp-for-security/wpscan-mcp/build/index.js",
-        "wpscan"
-      ],
-      "dockerContainer": "pensive_cerf"
-    }
+    "alterx":          { "command": "node", "args": ["/app/packages/mcp-servers/alterx-mcp/build/index.js",          "/usr/local/bin/alterx"] },
+    "amass":           { "command": "node", "args": ["/app/packages/mcp-servers/amass-mcp/build/index.js",           "/usr/local/bin/amass"] },
+    "arjun":           { "command": "node", "args": ["/app/packages/mcp-servers/arjun-mcp/build/index.js",           "/opt/venv/bin/arjun"] },
+    "assetfinder":     { "command": "node", "args": ["/app/packages/mcp-servers/assetfinder-mcp/build/index.js",     "/usr/local/bin/assetfinder"] },
+    "cero":            { "command": "node", "args": ["/app/packages/mcp-servers/cero/build/index.js",                "/usr/local/bin/cero"] },
+    "commix":          { "command": "node", "args": ["/app/packages/mcp-servers/commix-mcp/build/index.js",          "/opt/venv/bin/python3", "/opt/commix/commix.py"] },
+    "crtsh":           { "command": "node", "args": ["/app/packages/mcp-servers/crtsh-mcp/build/index.js"] },
+    "gowitness":       { "command": "node", "args": ["/app/packages/mcp-servers/gowitness-mcp/build/index.js",       "/usr/local/bin/gowitness"] },
+    "http-headers":    { "command": "node", "args": ["/app/packages/mcp-servers/http-headers-security-mcp/build/index.js"] },
+    "katana":          { "command": "node", "args": ["/app/packages/mcp-servers/katana-mcp/build/index.js",          "/usr/local/bin/katana"] },
+    "masscan":         { "command": "node", "args": ["/app/packages/mcp-servers/masscan-mcp/build/index.js",         "/usr/bin/masscan"] },
+    "shuffledns":      { "command": "node", "args": ["/app/packages/mcp-servers/shuffledns-mcp/build/index.js",      "/usr/local/bin/shuffledns", "/usr/local/bin/massdns"] },
+    "smuggler":        { "command": "node", "args": ["/app/packages/mcp-servers/smuggler-mcp/build/index.js",        "/opt/venv/bin/python3", "/opt/smuggler/smuggler.py"] },
+    "sqlmap":          { "command": "node", "args": ["/app/packages/mcp-servers/sqlmap-mcp/build/index.js",          "/opt/sqlmap/sqlmap.py"] },
+    "sslscan":         { "command": "node", "args": ["/app/packages/mcp-servers/sslscan-mcp/build/index.js",         "/usr/bin/sslscan"] },
+    "waybackurls":     { "command": "node", "args": ["/app/packages/mcp-servers/waybackurls-mcp/build/index.js",     "/usr/local/bin/waybackurls"] },
+    "wpscan":          { "command": "node", "args": ["/app/packages/mcp-servers/wpscan-mcp/build/index.js",          "/usr/local/bin/wpscan"] },
+    "scoutsuite":      { "command": "node", "args": ["/app/packages/mcp-servers/scoutsuite-mcp/build/index.js",      "/opt/venv/bin/scout"] }
   }
 }

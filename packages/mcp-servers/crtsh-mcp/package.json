@@ -1,0 +1,20 @@
+{
+  "name": "crtsh-mcp",
+  "version": "1.0.0",
+  "description": "> Certificate Search MCP is a bridge that connects crt.sh, a tool for discovering subdomains using SSL certificate logs, with the Model Context Protocol (MCP) ecosystem.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  }
+}

@@ -3,3 +3,6 @@ dist
 .git
 data
 *.log
+packages/mcp-servers/**/node_modules
+packages/mcp-servers/**/build
+packages/plugins/**/node_modules
