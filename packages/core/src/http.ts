@@ -9,6 +9,7 @@ import { fileURLToPath } from "url"
 import { execSync } from "node:child_process"
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js"
 import { loadPlugins, loadConfig } from "./plugin-loader.js"
+import { loadMcpServers } from "./mcp-client.js"
 import { createBoltServer } from "./server.js"
 import type { Server } from "@modelcontextprotocol/sdk/server/index.js"
 import type { PluginDef, ToolDef } from "./types.js"
@@ -502,6 +503,7 @@ interface Session {
 
 const sessions = new Map<string, Session>()
 let loadedPlugins: PluginDef[] = []
+let externalTools: ToolDef[] = []
 let allTools: ToolDef[] = []
 
 // Initialize middleware pipeline
@@ -553,7 +555,7 @@ function getClientIp(req: http.IncomingMessage): string {
 }
 
 function createSession(): Session {
-  const { server } = createBoltServer(loadedPlugins)
+  const { server } = createBoltServer(loadedPlugins, externalTools)
 
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: () => crypto.randomUUID(),
@@ -1060,7 +1062,10 @@ async function main(): Promise<void> {
   // Load plugins
   const config = loadConfig()
   loadedPlugins = await loadPlugins(config)
-  allTools = loadedPlugins.flatMap((p) => p.tools)
+  if (config.mcpServers && Object.keys(config.mcpServers).length > 0) {
+    externalTools = await loadMcpServers(config.mcpServers)
+  }
+  allTools = [...loadedPlugins.flatMap((p) => p.tools), ...externalTools]
   logger.info("Plugins loaded", {
     metadata: {
       plugins: loadedPlugins.length,

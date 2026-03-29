@@ -7,8 +7,8 @@ import { zodToJsonSchema } from "./schema.js"
 import { exec } from "./executor.js"
 import type { ToolDef, ToolContext, PluginDef } from "./types.js"
 
-export function createBoltServer(plugins: PluginDef[]) {
-  const allTools = plugins.flatMap((p) => p.tools)
+export function createBoltServer(plugins: PluginDef[], extraTools: ToolDef[] = []) {
+  const allTools = [...plugins.flatMap((p) => p.tools), ...extraTools]
   const toolMap = new Map<string, ToolDef>()
   for (const tool of allTools) {
     toolMap.set(tool.name, tool)
@@ -23,7 +23,7 @@ export function createBoltServer(plugins: PluginDef[]) {
     tools: allTools.map((t) => ({
       name: t.name,
       description: t.description,
-      inputSchema: zodToJsonSchema(t.schema),
+      inputSchema: t.inputSchema ?? zodToJsonSchema(t.schema),
     })),
   }))
 

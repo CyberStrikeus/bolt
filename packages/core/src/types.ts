@@ -4,6 +4,7 @@ export interface ToolDef {
   name: string
   description: string
   schema: Record<string, z.ZodType>
+  inputSchema?: object
   execute: (args: any, ctx: ToolContext) => Promise<ToolResult>
   timeout?: number
   requiresRoot?: boolean
@@ -42,9 +43,23 @@ export interface PluginDef {
   install?: () => Promise<{ ok: boolean; error?: string }>
 }
 
+export interface StdioMcpServerConfig {
+  command: string
+  args?: string[]
+  env?: Record<string, string>
+}
+
+export interface HttpMcpServerConfig {
+  url: string
+  headers?: Record<string, string>
+}
+
+export type McpServerConfig = StdioMcpServerConfig | HttpMcpServerConfig
+
 export interface BoltConfig {
   port: number
   plugins: string[]
+  mcpServers?: Record<string, McpServerConfig>
 }
 
 export function text(t: string): ToolResult {

@@ -7,5 +7,167 @@
     "@cyberstrike-io/bolt-httpx",
     "@cyberstrike-io/bolt-ffuf",
     "@cyberstrike-io/bolt-run-command"
-  ]
+  ],
+  "mcpServers": {
+    "cero": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/cero/build/index.js",
+        "/go/bin/cero"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "gowitness-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/gowitness-mcp/build/index.js",
+        "/go/bin/gowitness"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "alterx-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/alterx-mcp/build/index.js",
+        "/go/bin/alterx"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "amass-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/amass-mcp/build/index.js",
+        "/go/bin/amass"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "arjun-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/arjun-mcp/build/index.js",
+        "/opt/venv/bin/arjun"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "assetfinder-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/assetfinder-mcp/build/index.js",
+        "/go/bin/assetfinder"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "commix-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/commix-mcp/build/index.js",
+        "/opt/venv/bin/python3",
+        "/opt/commix/commix.py"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "crtsh-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/crtsh-mcp/build/index.js"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "ffuf-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/ffuf-mcp/build/index.js",
+        "/go/bin/ffuf"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "http-headers-security-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/http-headers-security-mcp/build/index.js"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "httpx-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/httpx-mcp/build/index.js",
+        "/go/bin/httpx"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "katana-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/katana-mcp/build/index.js",
+        "/go/bin/katana"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "masscan-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/masscan-mcp/build/index.js",
+        "/usr/bin/masscan"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "nmap-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/nmap-mcp/build/index.js",
+        "/usr/bin/nmap"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "nuclei-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/nuclei-mcp/build/index.js",
+        "/go/bin/nuclei"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "scoutsuite-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/scoutsuite-mcp/build/index.js",
+        "/opt/venv/bin/scout"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "smuggler-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/smuggler-mcp/build/index.js",
+        "/opt/venv/bin/python3",
+        "/opt/smuggler/smuggler.py"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "sqlmap-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/sqlmap-mcp/build/index.js",
+        "sqlmap"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "waybackurls-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/waybackurls-mcp/build/index.js",
+        "waybackurls"
+      ],
+      "dockerContainer": "pensive_cerf"
+    },
+    "wpscan-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/serhatcicek/Documents/coding/mcp-for-security/wpscan-mcp/build/index.js",
+        "wpscan"
+      ],
+      "dockerContainer": "pensive_cerf"
+    }
+  }
 }
