@@ -4,22 +4,23 @@
 # Stage 2: Runtime (Ubuntu 24.04)
 # ============================================================
 
-FROM golang:1.24-bullseye AS go-builder
+FROM golang:latest AS go-builder
 
-RUN go install -v \
-    github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest \
-    github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest \
-    github.com/projectdiscovery/httpx/cmd/httpx@latest \
-    github.com/ffuf/ffuf/v2@latest \
-    github.com/projectdiscovery/alterx/cmd/alterx@latest \
-    github.com/owasp-amass/amass/v4/cmd/amass@latest \
-    github.com/tomnomnom/assetfinder@latest \
-    github.com/glebarez/cero@latest \
-    github.com/sensepost/gowitness@latest \
-    github.com/projectdiscovery/katana/cmd/katana@latest \
-    github.com/tomnomnom/waybackurls@latest \
-    github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest \
-  && rm -rf /go/pkg /root/.cache/go-build
+ENV GOTOOLCHAIN=auto
+
+RUN go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest && \
+    go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest && \
+    go install github.com/projectdiscovery/httpx/cmd/httpx@latest && \
+    go install github.com/ffuf/ffuf/v2@latest && \
+    go install github.com/projectdiscovery/alterx/cmd/alterx@latest && \
+    go install github.com/owasp-amass/amass/v4/cmd/amass@latest && \
+    go install github.com/tomnomnom/assetfinder@latest && \
+    go install github.com/glebarez/cero@latest && \
+    go install github.com/sensepost/gowitness@latest && \
+    go install github.com/projectdiscovery/katana/cmd/katana@latest && \
+    go install github.com/tomnomnom/waybackurls@latest && \
+    go install github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest && \
+    rm -rf /go/pkg /root/.cache/go-build
 
 # ============================================================
 
@@ -27,15 +28,16 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# System tools + build deps for node-pty native modules
+# System tools + Node.js 22 (LTS) from NodeSource
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates git unzip \
     nmap openssl socat dnsutils \
     masscan sslscan \
     python3 python3-pip python3-venv \
     ruby-full \
-    nodejs npm \
     build-essential python3-dev \
+  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+  && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/*
 
 # massdns (required by shuffledns, not in apt)
@@ -68,11 +70,11 @@ WORKDIR /app
 COPY package.json bolt.config.json ./
 COPY packages/ ./packages/
 
-# Build Node.js MCP servers
+# Build Node.js MCP servers (include=dev needed for TypeScript compiler)
 RUN for dir in packages/mcp-servers/*/; do \
       [ -f "$dir/package.json" ] && \
       echo "[bolt] building $dir..." && \
-      (cd "$dir" && npm install --silent && npm run build --silent) || true; \
+      (cd "$dir" && npm install --include=dev --silent && npm run build --silent) || true; \
     done
 
 # Bolt dependencies

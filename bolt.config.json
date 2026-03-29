@@ -16,7 +16,6 @@
     "cero":            { "command": "node", "args": ["/app/packages/mcp-servers/cero/build/index.js",                "/usr/local/bin/cero"] },
     "commix":          { "command": "node", "args": ["/app/packages/mcp-servers/commix-mcp/build/index.js",          "/opt/venv/bin/python3", "/opt/commix/commix.py"] },
     "crtsh":           { "command": "node", "args": ["/app/packages/mcp-servers/crtsh-mcp/build/index.js"] },
-    "gowitness":       { "command": "node", "args": ["/app/packages/mcp-servers/gowitness-mcp/build/index.js",       "/usr/local/bin/gowitness"] },
     "http-headers":    { "command": "node", "args": ["/app/packages/mcp-servers/http-headers-security-mcp/build/index.js"] },
     "katana":          { "command": "node", "args": ["/app/packages/mcp-servers/katana-mcp/build/index.js",          "/usr/local/bin/katana"] },
     "masscan":         { "command": "node", "args": ["/app/packages/mcp-servers/masscan-mcp/build/index.js",         "/usr/bin/masscan"] },
