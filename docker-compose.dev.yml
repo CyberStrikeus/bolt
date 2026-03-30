@@ -1,0 +1,23 @@
+services:
+  bolt:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: bolt:dev
+    ports:
+      - "3001:3001"
+    environment:
+      - MCP_ADMIN_TOKEN=${MCP_ADMIN_TOKEN:-}
+      - DATA_DIR=/data
+      - PORT=3001
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - ./packages/mcp-servers:/app/packages/mcp-servers
+      - ./bolt.config.json:/app/bolt.config.json
+      - bolt-dev-data:/data
+    restart: "no"
+
+volumes:
+  bolt-dev-data:
