@@ -18,25 +18,35 @@ const RECORD_FLAG = {
     PTR: "-ptr",
 };
 const server = new McpServer({ name: "dnsx", version: "1.0.0" });
-server.tool("dnsx_resolve", "Resolve DNS records for one or more domains. Supports A, AAAA, MX, NS, TXT, CNAME and PTR record types.", {
-    targets: z.string().describe("Domains to resolve — newline or comma separated. Example: 'example.com,test.com'"),
+server.tool("dnsx_resolve", "Resolve DNS records for one or more domains using dnsx. " +
+    "Use this to find IP addresses, mail servers, name servers, SPF/DKIM records, or CNAME aliases for a domain. " +
+    "Useful for recon, infrastructure mapping, and verifying DNS configuration. " +
+    "Can process a single domain or a large list (e.g. output from subfinder or amass).", {
+    targets: z.string().describe("One or more domains to resolve. " +
+        "Can be a single domain (e.g. 'tesla.com'), a comma-separated list (e.g. 'tesla.com,spacex.com'), " +
+        "or a newline-separated list for bulk resolution (e.g. output from subfinder)."),
     record_types: z
         .array(z.enum(["A", "AAAA", "MX", "NS", "TXT", "CNAME", "PTR"]))
         .optional()
-        .describe("Record types to query. Defaults to ['A']"),
+        .describe("DNS record types to query. Defaults to ['A']. " +
+        "A: IPv4 address of the domain. " +
+        "AAAA: IPv6 address. " +
+        "MX: Mail servers — useful for email security research. " +
+        "NS: Name servers — useful for DNS takeover and delegation analysis. " +
+        "TXT: Text records — contains SPF, DKIM, domain verification tokens. " +
+        "CNAME: Canonical name alias — useful for subdomain takeover detection. " +
+        "PTR: Reverse DNS — resolves an IP back to a hostname."),
     resolvers: z
         .string()
         .optional()
-        .describe("Custom DNS resolver IPs, comma separated. Example: '1.1.1.1,8.8.8.8'"),
+        .describe("Custom DNS resolver IPs, comma separated. " +
+        "Use when default resolvers are rate-limited or you want to test against a specific DNS server. " +
+        "Example: '1.1.1.1,8.8.8.8'"),
     json_output: z
         .boolean()
         .optional()
-        .describe("Return results in JSON format. Default: false"),
-    threads: z
-        .number()
-        .optional()
-        .describe("Concurrency level. Default: 100"),
-}, async ({ targets, record_types, resolvers, json_output, threads }) => {
+        .describe("Return results in JSON format. Useful when output will be parsed programmatically. Default: false"),
+}, async ({ targets, record_types, resolvers, json_output }) => {
     const types = record_types && record_types.length > 0 ? record_types : ["A"];
     const domains = targets
         .split(/[\n,]+/)
@@ -54,9 +64,6 @@ server.tool("dnsx_resolve", "Resolve DNS records for one or more domains. Suppor
     }
     if (json_output) {
         cmdArgs.push("-json");
-    }
-    if (threads) {
-        cmdArgs.push("-t", String(threads));
     }
     return new Promise((resolve) => {
         const proc = spawn(binaryPath, cmdArgs);
