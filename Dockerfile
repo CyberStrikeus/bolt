@@ -20,6 +20,7 @@ RUN go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest && 
     go install github.com/projectdiscovery/katana/cmd/katana@latest && \
     go install github.com/tomnomnom/waybackurls@latest && \
     go install github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest && \
+    go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest && \
     rm -rf /go/pkg /root/.cache/go-build
 
 # ============================================================

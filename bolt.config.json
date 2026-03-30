@@ -9,6 +9,7 @@
     "@cyberstrike-io/bolt-run-command"
   ],
   "mcpServers": {
+    "dnsx":            { "command": "node", "args": ["/app/packages/mcp-servers/dnsx-mcp/build/index.js",            "/usr/local/bin/dnsx"] },
     "alterx":          { "command": "node", "args": ["/app/packages/mcp-servers/alterx-mcp/build/index.js",          "/usr/local/bin/alterx"] },
     "amass":           { "command": "node", "args": ["/app/packages/mcp-servers/amass-mcp/build/index.js",           "/usr/local/bin/amass"] },
     "arjun":           { "command": "node", "args": ["/app/packages/mcp-servers/arjun-mcp/build/index.js",           "/opt/venv/bin/arjun"] },
