@@ -1,49 +1,94 @@
 # ============================================================
-# Bolt v2 — Plugin-based security tool server
-# Ubuntu 24.04 + Bun + Go tools (~800MB vs ~5GB Kali)
+# Bolt — MCP Security Tool Server
+# Stage 1: Go tools builder
+# Stage 2: Runtime (Ubuntu 24.04)
+# ============================================================
+
+FROM golang:latest AS go-builder
+
+ENV GOTOOLCHAIN=auto
+
+RUN go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest && \
+    go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest && \
+    go install github.com/projectdiscovery/httpx/cmd/httpx@latest && \
+    go install github.com/ffuf/ffuf/v2@latest && \
+    go install github.com/projectdiscovery/alterx/cmd/alterx@latest && \
+    go install github.com/owasp-amass/amass/v4/cmd/amass@latest && \
+    go install github.com/tomnomnom/assetfinder@latest && \
+    go install github.com/glebarez/cero@latest && \
+    go install github.com/sensepost/gowitness@latest && \
+    go install github.com/projectdiscovery/katana/cmd/katana@latest && \
+    go install github.com/tomnomnom/waybackurls@latest && \
+    go install github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest && \
+    go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest && \
+    rm -rf /go/pkg /root/.cache/go-build
+
 # ============================================================
 
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# System dependencies
+# System tools + Node.js 22 (LTS) from NodeSource
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates git unzip \
     nmap openssl socat dnsutils \
-    golang-go \
+    masscan sslscan \
+    python3 python3-pip python3-venv \
+    ruby-full \
+    build-essential python3-dev \
+  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+  && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/*
+
+# massdns (required by shuffledns, not in apt)
+RUN git clone --depth=1 https://github.com/blechschmidt/massdns /tmp/massdns \
+  && make -C /tmp/massdns \
+  && cp /tmp/massdns/bin/massdns /usr/local/bin/massdns \
+  && rm -rf /tmp/massdns
+
+# Go binaries
+COPY --from=go-builder /go/bin/ /usr/local/bin/
 
 # Bun
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:$PATH"
 
-# Go tools (ProjectDiscovery suite + ffuf)
-ENV GOPATH=/root/go
-ENV PATH="/root/go/bin:$PATH"
+# Python tools
+RUN python3 -m venv /opt/venv \
+  && /opt/venv/bin/pip install --no-cache-dir arjun scoutsuite \
+  && git clone --depth=1 https://github.com/commixproject/commix /opt/commix \
+  && git clone --depth=1 https://github.com/defparam/smuggler /opt/smuggler \
+  && git clone --depth=1 https://github.com/sqlmapproject/sqlmap /opt/sqlmap
 
-RUN go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest && \
-    go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest && \
-    go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest && \
-    go install -v github.com/ffuf/ffuf/v2@latest && \
-    rm -rf /root/go/pkg /root/.cache/go-build
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Ruby tools
+RUN gem install wpscan --no-document
 
 # App
 WORKDIR /app
 COPY package.json bolt.config.json ./
 COPY packages/ ./packages/
+
+# Build Node.js MCP servers (include=dev needed for TypeScript compiler)
+RUN for dir in packages/mcp-servers/*/; do \
+      [ -f "$dir/package.json" ] && \
+      echo "[bolt] building $dir..." && \
+      (cd "$dir" && npm install --include=dev --silent && npm run build --silent) || true; \
+    done
+
+# Bolt dependencies
 RUN bun install --production
 
 # Data volume
 RUN mkdir -p /data
 VOLUME ["/data"]
 
-# Environment
 ENV PORT=3001
 ENV HOST=0.0.0.0
 ENV DATA_DIR=/data
 ENV NODE_ENV=production
-ENV DOCKER_CONTAINER=true
 
 EXPOSE 3001
 

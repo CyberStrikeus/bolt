@@ -1,0 +1,86 @@
+# ============================================================
+# Bolt — Dev Base Image
+# All binaries pre-installed, MCP servers mounted as volume.
+# Build once: docker build -f Dockerfile.dev -t bolt:dev .
+# Then use docker-compose.dev.yml for fast iteration.
+# ============================================================
+
+FROM golang:latest AS go-builder
+
+ENV GOTOOLCHAIN=auto
+
+RUN go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest && \
+    go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest && \
+    go install github.com/projectdiscovery/httpx/cmd/httpx@latest && \
+    go install github.com/ffuf/ffuf/v2@latest && \
+    go install github.com/projectdiscovery/alterx/cmd/alterx@latest && \
+    go install github.com/owasp-amass/amass/v4/cmd/amass@latest && \
+    go install github.com/tomnomnom/assetfinder@latest && \
+    go install github.com/glebarez/cero@latest && \
+    go install github.com/sensepost/gowitness@latest && \
+    go install github.com/projectdiscovery/katana/cmd/katana@latest && \
+    go install github.com/tomnomnom/waybackurls@latest && \
+    go install github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest && \
+    go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest && \
+    rm -rf /go/pkg /root/.cache/go-build
+
+# ============================================================
+
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates git unzip \
+    nmap openssl socat dnsutils \
+    masscan sslscan \
+    python3 python3-pip python3-venv \
+    ruby-full \
+    build-essential python3-dev \
+  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+  && apt-get install -y nodejs \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --depth=1 https://github.com/blechschmidt/massdns /tmp/massdns \
+  && make -C /tmp/massdns \
+  && cp /tmp/massdns/bin/massdns /usr/local/bin/massdns \
+  && rm -rf /tmp/massdns
+
+COPY --from=go-builder /go/bin/ /usr/local/bin/
+
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="/root/.bun/bin:$PATH"
+
+RUN python3 -m venv /opt/venv \
+  && /opt/venv/bin/pip install --no-cache-dir arjun scoutsuite \
+  && git clone --depth=1 https://github.com/commixproject/commix /opt/commix \
+  && git clone --depth=1 https://github.com/defparam/smuggler /opt/smuggler \
+  && git clone --depth=1 https://github.com/sqlmapproject/sqlmap /opt/sqlmap
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN gem install wpscan --no-document
+
+# Bolt source (mcp-servers excluded — mounted as volume)
+WORKDIR /app
+COPY package.json bolt.config.json ./
+COPY packages/core ./packages/core
+COPY packages/plugins ./packages/plugins
+RUN bun install --production
+
+RUN mkdir -p /app/packages/mcp-servers /data
+VOLUME ["/data"]
+
+ENV PORT=3001
+ENV HOST=0.0.0.0
+ENV DATA_DIR=/data
+ENV NODE_ENV=production
+
+EXPOSE 3001
+
+COPY docker-entrypoint.sh /entrypoint.sh
+COPY docker-entrypoint.dev.sh /entrypoint.dev.sh
+RUN chmod +x /entrypoint.sh /entrypoint.dev.sh
+
+ENTRYPOINT ["/entrypoint.dev.sh"]
+CMD ["bun", "run", "packages/core/src/http.ts"]

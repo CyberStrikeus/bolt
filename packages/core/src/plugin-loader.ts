@@ -115,11 +115,12 @@ export function loadConfig(path?: string): BoltConfig {
       return {
         port: raw.port ?? 3001,
         plugins: raw.plugins ?? [],
+        mcpServers: raw.mcpServers ?? {},
       }
     } catch {
       continue
     }
   }
 
-  return { port: 3001, plugins: [] }
+  return { port: 3001, plugins: [], mcpServers: {} }
 }

@@ -7,5 +7,25 @@
     "@cyberstrike-io/bolt-httpx",
     "@cyberstrike-io/bolt-ffuf",
     "@cyberstrike-io/bolt-run-command"
-  ]
+  ],
+  "mcpServers": {
+    "dnsx":            { "command": "node", "args": ["/app/packages/mcp-servers/dnsx-mcp/build/index.js",            "/usr/local/bin/dnsx"] },
+    "alterx":          { "command": "node", "args": ["/app/packages/mcp-servers/alterx-mcp/build/index.js",          "/usr/local/bin/alterx"] },
+    "amass":           { "command": "node", "args": ["/app/packages/mcp-servers/amass-mcp/build/index.js",           "/usr/local/bin/amass"] },
+    "arjun":           { "command": "node", "args": ["/app/packages/mcp-servers/arjun-mcp/build/index.js",           "/opt/venv/bin/arjun"] },
+    "assetfinder":     { "command": "node", "args": ["/app/packages/mcp-servers/assetfinder-mcp/build/index.js",     "/usr/local/bin/assetfinder"] },
+    "cero":            { "command": "node", "args": ["/app/packages/mcp-servers/cero/build/index.js",                "/usr/local/bin/cero"] },
+    "commix":          { "command": "node", "args": ["/app/packages/mcp-servers/commix-mcp/build/index.js",          "/opt/venv/bin/python3", "/opt/commix/commix.py"] },
+    "crtsh":           { "command": "node", "args": ["/app/packages/mcp-servers/crtsh-mcp/build/index.js"] },
+    "http-headers":    { "command": "node", "args": ["/app/packages/mcp-servers/http-headers-security-mcp/build/index.js"] },
+    "katana":          { "command": "node", "args": ["/app/packages/mcp-servers/katana-mcp/build/index.js",          "/usr/local/bin/katana"] },
+    "masscan":         { "command": "node", "args": ["/app/packages/mcp-servers/masscan-mcp/build/index.js",         "/usr/bin/masscan"] },
+    "shuffledns":      { "command": "node", "args": ["/app/packages/mcp-servers/shuffledns-mcp/build/index.js",      "/usr/local/bin/shuffledns", "/usr/local/bin/massdns"] },
+    "smuggler":        { "command": "node", "args": ["/app/packages/mcp-servers/smuggler-mcp/build/index.js",        "/opt/venv/bin/python3", "/opt/smuggler/smuggler.py"] },
+    "sqlmap":          { "command": "node", "args": ["/app/packages/mcp-servers/sqlmap-mcp/build/index.js",          "/opt/sqlmap/sqlmap.py"] },
+    "sslscan":         { "command": "node", "args": ["/app/packages/mcp-servers/sslscan-mcp/build/index.js",         "/usr/bin/sslscan"] },
+    "waybackurls":     { "command": "node", "args": ["/app/packages/mcp-servers/waybackurls-mcp/build/index.js",     "/usr/local/bin/waybackurls"] },
+    "wpscan":          { "command": "node", "args": ["/app/packages/mcp-servers/wpscan-mcp/build/index.js",          "/usr/local/bin/wpscan"] },
+    "scoutsuite":      { "command": "node", "args": ["/app/packages/mcp-servers/scoutsuite-mcp/build/index.js",      "/opt/venv/bin/scout"] }
+  }
 }
