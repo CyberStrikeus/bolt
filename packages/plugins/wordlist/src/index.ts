@@ -34,29 +34,29 @@ type Intensity = "light" | "medium" | "heavy"
 
 const RECOMMENDATIONS: Record<string, Record<Intensity, { path: string; rationale: string }[]>> = {
     "directory brute force": {
-        light:  [{ path: "/usr/share/wordlists/dirb/common.txt",                                                       rationale: "~4k entries — fast scan, covers the most common web paths" }],
+        light:  [{ path: "/usr/share/seclists/Discovery/Web-Content/common.txt",                                       rationale: "~4.7k entries — fast scan, covers the most common web paths" }],
         medium: [{ path: "/usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt",                            rationale: "~63k entries — good balance of coverage and speed" }],
         heavy:  [{ path: "/usr/share/seclists/Discovery/Web-Content/raft-large-words.txt",                             rationale: "~119k entries — thorough, slower" }],
     },
     "file extension brute force": {
         light:  [{ path: "/usr/share/seclists/Discovery/Web-Content/web-extensions.txt",                               rationale: "common file extensions for quick discovery" }],
         medium: [{ path: "/usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt",                            rationale: "combine with extensions list for medium coverage" }],
-        heavy:  [{ path: "/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt",                    rationale: "OWASP DirBuster medium list — classic heavy wordlist" }],
+        heavy:  [{ path: "/usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-medium.txt",      rationale: "OWASP DirBuster medium list — classic heavy wordlist" }],
     },
     "subdomain enumeration": {
         light:  [{ path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt",                          rationale: "top 5k subdomains — fast, catches most common ones" }],
         medium: [{ path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt",                         rationale: "top 20k subdomains — good coverage for most targets" }],
-        heavy:  [{ path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million.txt",                               rationale: "full 1M subdomain list — comprehensive but slow" }],
+        heavy:  [{ path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt",                        rationale: "top 110k subdomains — comprehensive coverage" }],
     },
     "dns brute force": {
         light:  [{ path: "/usr/share/seclists/Discovery/DNS/dns-Jhaddix.txt",                                          rationale: "Jhaddix curated DNS list — high signal to noise ratio" }],
         medium: [{ path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt",                         rationale: "top 20k subdomains for medium-depth DNS brute force" }],
-        heavy:  [{ path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million.txt",                               rationale: "full 1M list for exhaustive DNS enumeration" }],
+        heavy:  [{ path: "/usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt",                        rationale: "top 110k subdomains — exhaustive DNS enumeration" }],
     },
     "password attack": {
-        light:  [{ path: "/usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-100.txt",      rationale: "top 100 passwords — catches weak credentials instantly" }],
-        medium: [{ path: "/usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-1000.txt",     rationale: "top 1k passwords — covers most reused passwords" }],
-        heavy:  [{ path: "/usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-10000.txt",    rationale: "top 10k passwords — thorough credential testing" }],
+        light:  [{ path: "/usr/share/seclists/Passwords/Common-Credentials/xato-net-10-million-passwords-100.txt",     rationale: "top 100 passwords — catches weak credentials instantly" }],
+        medium: [{ path: "/usr/share/seclists/Passwords/Common-Credentials/xato-net-10-million-passwords-1000.txt",    rationale: "top 1k passwords — covers most reused passwords" }],
+        heavy:  [{ path: "/usr/share/seclists/Passwords/Common-Credentials/xato-net-10-million-passwords-10000.txt",   rationale: "top 10k passwords — thorough credential testing" }],
     },
     "username enumeration": {
         light:  [{ path: "/usr/share/seclists/Usernames/top-usernames-shortlist.txt",                                  rationale: "short curated list of the most common usernames" }],
