@@ -66,7 +66,7 @@ ENV PATH="/root/.bun/bin:$PATH"
 
 # Python tools
 RUN python3 -m venv /opt/venv \
-  && /opt/venv/bin/pip install --no-cache-dir arjun scoutsuite \
+  && /opt/venv/bin/pip install --no-cache-dir arjun scoutsuite impacket \
   && git clone --depth=1 https://github.com/commixproject/commix /opt/commix \
   && git clone --depth=1 https://github.com/defparam/smuggler /opt/smuggler \
   && git clone --depth=1 https://github.com/sqlmapproject/sqlmap /opt/sqlmap

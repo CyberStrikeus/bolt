@@ -34,6 +34,7 @@
     "medusa":          { "command": "node", "args": ["/app/packages/mcp-servers/medusa-mcp/build/index.js",          "/usr/bin/medusa"] },
     "kerbrute":        { "command": "node", "args": ["/app/packages/mcp-servers/kerbrute-mcp/build/index.js",        "/usr/local/bin/kerbrute"] },
     "hashcat":         { "command": "node", "args": ["/app/packages/mcp-servers/hashcat-mcp/build/index.js",         "/usr/bin/hashcat"] },
-    "john":            { "command": "node", "args": ["/app/packages/mcp-servers/john-mcp/build/index.js",            "/usr/sbin/john"] }
+    "john":            { "command": "node", "args": ["/app/packages/mcp-servers/john-mcp/build/index.js",            "/usr/sbin/john"] },
+    "impacket":        { "command": "node", "args": ["/app/packages/mcp-servers/impacket-mcp/build/index.js",        "/opt/venv/bin"] }
   }
 }

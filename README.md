@@ -70,7 +70,7 @@ bolt.config.json
 
 Tool names are automatically namespaced as `{serverName}_{toolName}` to avoid conflicts.
 
-## Tools (32)
+## Tools (37)
 
 | Tool | Category | Type | Description |
 |------|----------|------|-------------|
@@ -103,6 +103,7 @@ Tool names are automatically namespaced as `{serverName}_{toolName}` to avoid co
 | `kerbrute` | Credential Attacks | MCP | kerbrute MCP server — Active Directory username enumeration and password spraying via Kerberos pre-authentication |
 | `hashcat` | Password Cracking | MCP | hashcat MCP server — world's fastest password cracker supporting 300+ hash types with dictionary, mask, and rule-based attacks |
 | `john` | Password Cracking | MCP | john MCP server — John the Ripper password cracker with auto hash-type detection for /etc/shadow, Windows SAM, zip files, and SSH keys |
+| `impacket` | Active Directory | MCP | impacket MCP server — AD attack suite: secretsdump, Kerberoasting, AS-REP Roasting, remote execution, and RID enumeration |
 | `cero` | TLS Recon | MCP | cero MCP server — extract subdomains from TLS certificate Subject Alternative Names |
 | `scoutsuite` | Cloud Security | MCP | scoutsuite MCP server — multi-cloud security posture audit for AWS, GCP, and Azure |
 | `run_command` | Utilities | Plugin | run-command MCP server — execute any shell command inside the container |
