@@ -33,9 +33,9 @@ Supported modules: ssh, ftp, http, rdp, smb, telnet, vnc, mysql, mssql, postgres
         host: z.string().optional().describe("Single target host IP or hostname. Use hosts_file for multiple targets."),
         hosts_file: z.string().optional().describe("Path to file with one target host per line. Medusa scans all hosts in parallel — ideal for subnet-wide attacks."),
         username: z.string().optional().describe("Single username to test (e.g., 'root', 'admin')."),
-        username_file: z.string().optional().describe("Path to username list file (e.g., /usr/share/seclists/Usernames/top-usernames-shortlist.txt)."),
+        username_file: z.string().optional().describe("Path to username list file. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='username enumeration') for a recommended path, wordlist_search to find specific lists."),
         password: z.string().optional().describe("Single password to test."),
-        password_file: z.string().optional().describe("Path to password wordlist (e.g., /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-1000.txt)."),
+        password_file: z.string().optional().describe("Path to password wordlist. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='password attack') for a recommended path, wordlist_search to find specific lists."),
         module: z.enum([
             "ssh", "ftp", "http", "rdp", "smb", "smbnt", "telnet", "vnc",
             "mysql", "mssql", "postgres", "imap", "smtp", "pop3", "web-form",

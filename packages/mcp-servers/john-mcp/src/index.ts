@@ -50,7 +50,7 @@ Compared to hashcat:
 Common formats: auto (default), md5crypt, sha512crypt, bcrypt, nt, lm, raw-md5, raw-sha1, raw-sha256, zip, ssh`,
     {
         hash_file: z.string().describe("Path to hash file to crack. Can be /etc/shadow directly, or output from *2john tools (zip2john, ssh2john, pdf2john, etc.)."),
-        wordlist: z.string().optional().describe("Path to wordlist for dictionary attack (e.g., /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-10000.txt). If omitted, John uses incremental mode."),
+        wordlist: z.string().optional().describe("Path to wordlist for dictionary attack. If omitted, John uses incremental mode. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='password attack') for a recommended path, wordlist_search to find specific lists."),
         format: z.string().optional().describe("Force a specific hash format (e.g., 'md5crypt', 'sha512crypt', 'bcrypt', 'nt', 'raw-md5', 'zip', 'ssh'). Leave empty for auto-detection."),
         rules: z.string().optional().describe("Rule set name to apply to wordlist entries (e.g., 'best64', 'jumbo', 'KoreLogic'). Rules mutate passwords: append numbers, l33tspeak, capitalize, etc."),
         incremental: z.boolean().optional().describe("Use incremental (brute force) mode instead of wordlist. Tries all character combinations up to a length. Slow but thorough."),

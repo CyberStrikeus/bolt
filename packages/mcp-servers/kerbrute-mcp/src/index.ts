@@ -41,7 +41,7 @@ This is a low-noise technique — Kerberos AS-REQ enumeration does not trigger l
     {
         dc: z.string().describe("Domain Controller IP or hostname (e.g., '10.0.0.1' or 'dc01.corp.local')."),
         domain: z.string().describe("Active Directory domain name (e.g., 'corp.local', 'company.com')."),
-        wordlist: z.string().describe("Path to username wordlist inside the container (e.g., /usr/share/seclists/Usernames/top-usernames-shortlist.txt)."),
+        wordlist: z.string().describe("Path to username wordlist inside the container. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='username enumeration') for a recommended path, wordlist_search to find specific lists."),
         threads: z.number().optional().describe("Number of concurrent Kerberos requests (default: 10). Keep low to avoid detection."),
         output_file: z.string().optional().describe("Save valid usernames to this file path (e.g., /data/valid_users.txt)."),
         safe: z.boolean().optional().describe("Enable safe mode — abort on account lockout detection to avoid locking accounts."),

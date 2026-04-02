@@ -32,7 +32,7 @@ Use this tool when you need to:
 - Enumerate a web application's surface area before vulnerability testing
 `, {
     url: zod_1.z.string().describe("Target URL including scheme (e.g., https://example.com or http://10.0.0.1:8080). Must be reachable from the container."),
-    wordlist: zod_1.z.string().optional().describe("Absolute path to wordlist file inside the container. Default: /usr/share/seclists/Discovery/Web-Content/common.txt (4.7k entries, fast). Better options: /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt (63k), /usr/share/seclists/Discovery/Web-Content/raft-large-words.txt (119k)."),
+    wordlist: zod_1.z.string().optional().describe("Absolute path to wordlist file inside the container. Default: /usr/share/seclists/Discovery/Web-Content/common.txt (4.7k entries, fast). If unsure, use the wordlist plugin's tools — wordlist_recommend for purpose-based suggestions, wordlist_search to find technology-specific lists."),
     extensions: zod_1.z.array(zod_1.z.string()).optional().describe("File extensions to append to each wordlist entry (e.g., ['php', 'html', 'txt', 'bak', 'zip']). Do not include dots. Significantly increases scan time but finds more files. Tip: match extensions to the target stack (php for PHP apps, aspx for .NET, jsp for Java)."),
     threads: zod_1.z.number().optional().describe("Concurrent threads (default: 10). Higher = faster but more detectable and may trigger rate limiting. Recommended: 10–50 for stealth, up to 200 for speed on permissive targets."),
     status_codes: zod_1.z.string().optional().describe("Comma-separated HTTP status codes to include in results (default: all non-404). Example: '200,301,302,403'. Use to filter noise or focus on accessible paths."),
@@ -98,7 +98,7 @@ Compared to other subdomain tools:
 - gobuster_dns: simpler, reliable for small-medium wordlists up to ~100k entries
 `, {
     domain: zod_1.z.string().describe("Target apex domain to brute force subdomains against (e.g., example.com). Do not include scheme or www prefix."),
-    wordlist: zod_1.z.string().optional().describe("Absolute path to subdomain wordlist inside the container. Default: /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt (5k entries, fast). Larger options: subdomains-top1million-20000.txt (20k, balanced), subdomains-top1million-110000.txt (110k, thorough)."),
+    wordlist: zod_1.z.string().optional().describe("Absolute path to subdomain wordlist inside the container. Default: /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt (5k entries, fast). If unsure, use the wordlist plugin's tools — wordlist_recommend for purpose-based suggestions, wordlist_search to find specific lists."),
     threads: zod_1.z.number().optional().describe("Concurrent DNS resolution threads (default: 10). Safe to increase significantly — DNS is lightweight. Recommended: 50–100 for speed."),
     resolver: zod_1.z.string().optional().describe("Custom DNS resolver IP (e.g., 8.8.8.8 for Google, 1.1.1.1 for Cloudflare). Useful when the default resolver returns inaccurate results or for testing against a specific nameserver."),
     show_ips: zod_1.z.boolean().optional().describe("Include resolved IP addresses alongside each discovered subdomain. Useful for quickly identifying cloud-hosted vs on-prem assets."),

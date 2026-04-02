@@ -60,7 +60,7 @@ Note: GPU acceleration is not available in Docker without --gpus flag. CPU crack
         hash_file: z.string().describe("Path to file containing hashes to crack, one per line (e.g., /data/hashes.txt). Supports single hash values too — just put the hash in the file."),
         hash_type: z.number().describe("Hash type code (-m). Common: 0=MD5, 100=SHA1, 1000=NTLM, 1800=sha512crypt, 3200=bcrypt, 5600=NetNTLMv2, 13100=Kerberoast, 18200=AS-REP. Use hashcat --help for full list."),
         attack_mode: z.enum(["dictionary", "brute-force", "combinator", "hybrid-wordlist-mask", "hybrid-mask-wordlist"]).describe("Attack mode: dictionary (wordlist), brute-force (mask pattern), combinator (two wordlists), or hybrid variants."),
-        wordlist: z.string().optional().describe("Path to wordlist for dictionary/hybrid attacks (e.g., /usr/share/seclists/Passwords/Common-Credentials/10-million-password-list-top-10000.txt)."),
+        wordlist: z.string().optional().describe("Path to wordlist for dictionary/hybrid attacks. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='password attack') for a recommended path, wordlist_search to find specific lists."),
         mask: z.string().optional().describe("Mask pattern for brute-force/hybrid attacks. Charsets: ?l=lowercase, ?u=uppercase, ?d=digit, ?s=special, ?a=all. Example: '?u?l?l?l?d?d?d' = Capital + 3 lower + 3 digits."),
         rules_file: z.string().optional().describe("Path to rules file for dictionary attack augmentation (e.g., /usr/share/hashcat/rules/best64.rule). Rules mutate wordlist entries (l33tspeak, append numbers, etc.)."),
         output_file: z.string().optional().describe("Save cracked hash:password pairs to this file (e.g., /data/cracked.txt)."),
