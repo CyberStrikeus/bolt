@@ -15,6 +15,7 @@ services:
       - NET_ADMIN
     volumes:
       - ./packages/mcp-servers:/app/packages/mcp-servers
+      - ./packages/plugins:/app/packages/plugins
       - ./bolt.config.json:/app/bolt.config.json
       - bolt-dev-data:/data
     restart: "no"
