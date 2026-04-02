@@ -23,8 +23,7 @@ const CATEGORY_PATHS: Record<string, string[]> = {
         "/usr/share/seclists/Fuzzing",
     ],
     "misc": [
-        "/usr/share/wordlists/dirb",
-        "/usr/share/wordlists/dirbuster",
+        "/usr/share/dirb/wordlists",
     ],
 }
 
@@ -184,11 +183,11 @@ function scanDir(dirPath: string, maxDepth = 2, depth = 0): WordlistEntry[] {
 
 const wordlistList = {
     name: "wordlist_list",
-    description: "wordlist plugin — list all available wordlists on the system, grouped by category (web-content, dns, passwords, usernames, fuzzing). Use this before calling tools like gobuster, ffuf, hydra, or shuffledns to discover valid wordlist paths.",
+    description: "wordlist plugin — browse all wordlists installed on the system, grouped by category. Use this to explore what's available when you don't have a specific attack type in mind. For targeted lookups, prefer wordlist_search (keyword/technology) or wordlist_recommend (attack type + intensity).",
     schema: {
         category: z.enum(["web-content", "dns", "passwords", "usernames", "fuzzing", "misc", "all"])
             .optional()
-            .describe("Filter by category. Omit or use 'all' to list everything. Options: web-content, dns, passwords, usernames, fuzzing, misc"),
+            .describe("Category to browse. Options: web-content, dns, passwords, usernames, fuzzing, misc, all. Omit for all."),
     },
     execute: async (args: { category?: string }): Promise<ToolResult> => {
         const selected = (!args.category || args.category === "all")
@@ -216,13 +215,13 @@ const wordlistList = {
 
 const wordlistSearch = {
     name: "wordlist_search",
-    description: "wordlist plugin — search available wordlists by intent or keyword. Understands natural language queries like 'ssh brute force', 'wordpress paths', 'active directory users', 'api endpoints'. Also searches filenames directly for technology-specific lists (e.g., 'iis', 'php', 'tomcat', 'oracle').",
+    description: "wordlist plugin — find wordlists by keyword or attack intent. Scans the real filesystem (SecLists + dirb) and returns only paths that actually exist. Supports natural language ('wordpress directory brute force', 'active directory users') and technology keywords ('php', 'iis', 'tomcat', 'oracle'). Use this when wordlist_recommend doesn't cover your use case or you want to browse options before choosing.",
     schema: {
-        query: z.string().describe("What you're looking for — use natural language (e.g., 'ssh brute force passwords', 'wordpress directory scan', 'active directory username list', 'api endpoint fuzzing') or a technology keyword (e.g., 'php', 'tomcat', 'oracle', 'wordpress')."),
+        query: z.string().describe("Keyword or intent describing what you need (e.g., 'wordpress', 'php', 'ssh brute force', 'active directory usernames', 'api endpoints', 'tomcat'). All returned paths are verified to exist on disk."),
     },
     execute: async (args: { query: string }): Promise<ToolResult> => {
         const keyword = args.query.toLowerCase()
-        const allRoots = ["/usr/share/seclists", "/usr/share/wordlists"]
+        const allRoots = ["/usr/share/seclists", "/usr/share/dirb/wordlists"]
 
         // 1. Scan filesystem for all wordlists
         const allEntries: WordlistEntry[] = []
@@ -281,12 +280,12 @@ const wordlistSearch = {
 
 const wordlistRecommend = {
     name: "wordlist_recommend",
-    description: "wordlist plugin — recommend the best wordlist for a given attack type and intensity. Accepts natural language descriptions like 'ssh password attack', 'wordpress directory brute force', 'active directory user enumeration'. Use before calling gobuster, ffuf, shuffledns, hydra, medusa, kerbrute, or hashcat.",
+    description: "wordlist plugin — get a single curated wordlist recommendation for a known attack type and intensity. Returns the path with a ✓ (exists) or ✗ NOT FOUND indicator so you know immediately whether it's usable. Covers: directory brute force, file extension brute force, subdomain enumeration, dns brute force, password attack, username enumeration, api fuzzing, vhost discovery. For unlisted attack types or technology-specific lists, use wordlist_search instead.",
     schema: {
-        purpose: z.string().describe("Describe what you need the wordlist for in plain language (e.g., 'ssh brute force', 'directory scanning', 'subdomain enumeration', 'active directory users', 'api fuzzing', 'smb credential attack'). Does not need to be an exact phrase."),
+        purpose: z.string().describe("Attack type in plain language (e.g., 'ssh brute force', 'directory scanning', 'subdomain enumeration', 'active directory users', 'kerberoasting', 'api fuzzing', 'smb credential attack'). Does not need to be an exact phrase."),
         intensity: z.enum(["light", "medium", "heavy"])
             .optional()
-            .describe("Scan intensity: 'light' (fast, small list), 'medium' (balanced, default), 'heavy' (thorough, slow). Default: medium"),
+            .describe("'light' = fast/small list, 'medium' = balanced (default), 'heavy' = thorough/slow."),
     },
     execute: async (args: { purpose: string; intensity?: string }): Promise<ToolResult> => {
         const intensity = (args.intensity ?? "medium") as Intensity
