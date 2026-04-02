@@ -70,7 +70,7 @@ bolt.config.json
 
 Tool names are automatically namespaced as `{serverName}_{toolName}` to avoid conflicts.
 
-## Tools (37)
+## Tools (33)
 
 | Tool | Category | Type | Description |
 |------|----------|------|-------------|
