@@ -1,7 +1,13 @@
 # ============================================================
 # Bolt — MCP Security Tool Server
-# Stage 1: Go tools builder
-# Stage 2: Runtime (Ubuntu 24.04)
+# Stage 1: Rust tools builder
+# Stage 2: Go tools builder
+# Stage 3: Runtime (Ubuntu 24.04)
+# ============================================================
+
+FROM rust:latest AS rust-builder
+RUN cargo install rustscan
+
 # ============================================================
 
 FROM golang:latest AS go-builder
@@ -21,6 +27,8 @@ RUN go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest && 
     go install github.com/tomnomnom/waybackurls@latest && \
     go install github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest && \
     go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest && \
+    go install github.com/OJ/gobuster/v3@latest && \
+    go install github.com/ropnop/kerbrute@latest && \
     rm -rf /go/pkg /root/.cache/go-build
 
 # ============================================================
@@ -33,7 +41,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates git unzip \
     nmap openssl socat dnsutils \
-    masscan sslscan \
+    masscan sslscan dirb \
+    hydra medusa hashcat john \
     python3 python3-pip python3-venv \
     ruby-full \
     build-essential python3-dev \
@@ -49,6 +58,7 @@ RUN git clone --depth=1 https://github.com/blechschmidt/massdns /tmp/massdns \
 
 # Go binaries
 COPY --from=go-builder /go/bin/ /usr/local/bin/
+COPY --from=rust-builder /usr/local/cargo/bin/rustscan /usr/local/bin/rustscan
 
 # Bun
 RUN curl -fsSL https://bun.sh/install | bash
@@ -65,6 +75,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Ruby tools
 RUN gem install wpscan --no-document
+
+# Wordlists
+RUN git clone --depth 1 https://github.com/danielmiessler/SecLists.git /usr/share/seclists
 
 # App
 WORKDIR /app
