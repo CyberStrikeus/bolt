@@ -6,7 +6,8 @@
     "@cyberstrike-io/bolt-nuclei",
     "@cyberstrike-io/bolt-httpx",
     "@cyberstrike-io/bolt-ffuf",
-    "@cyberstrike-io/bolt-run-command"
+    "@cyberstrike-io/bolt-run-command",
+    "@cyberstrike-io/bolt-wordlist"
   ],
   "mcpServers": {
     "dnsx":            { "command": "node", "args": ["/app/packages/mcp-servers/dnsx-mcp/build/index.js",            "/usr/local/bin/dnsx"] },
@@ -26,6 +27,14 @@
     "sslscan":         { "command": "node", "args": ["/app/packages/mcp-servers/sslscan-mcp/build/index.js",         "/usr/bin/sslscan"] },
     "waybackurls":     { "command": "node", "args": ["/app/packages/mcp-servers/waybackurls-mcp/build/index.js",     "/usr/local/bin/waybackurls"] },
     "wpscan":          { "command": "node", "args": ["/app/packages/mcp-servers/wpscan-mcp/build/index.js",          "/usr/local/bin/wpscan"] },
-    "scoutsuite":      { "command": "node", "args": ["/app/packages/mcp-servers/scoutsuite-mcp/build/index.js",      "/opt/venv/bin/scout"] }
+    "scoutsuite":      { "command": "node", "args": ["/app/packages/mcp-servers/scoutsuite-mcp/build/index.js",      "/opt/venv/bin/scout"] },
+    "gobuster":        { "command": "node", "args": ["/app/packages/mcp-servers/gobuster-mcp/build/index.js",        "/usr/local/bin/gobuster"] },
+    "rustscan":        { "command": "node", "args": ["/app/packages/mcp-servers/rustscan-mcp/build/index.js",        "/usr/local/bin/rustscan"] },
+    "hydra":           { "command": "node", "args": ["/app/packages/mcp-servers/hydra-mcp/build/index.js",           "/usr/bin/hydra"] },
+    "medusa":          { "command": "node", "args": ["/app/packages/mcp-servers/medusa-mcp/build/index.js",          "/usr/bin/medusa"] },
+    "kerbrute":        { "command": "node", "args": ["/app/packages/mcp-servers/kerbrute-mcp/build/index.js",        "/usr/local/bin/kerbrute"] },
+    "hashcat":         { "command": "node", "args": ["/app/packages/mcp-servers/hashcat-mcp/build/index.js",         "/usr/bin/hashcat"] },
+    "john":            { "command": "node", "args": ["/app/packages/mcp-servers/john-mcp/build/index.js",            "/usr/sbin/john"] },
+    "impacket":        { "command": "node", "args": ["/app/packages/mcp-servers/impacket-mcp/build/index.js",        "/opt/venv/bin"] }
   }
 }

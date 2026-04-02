@@ -4,14 +4,14 @@ import type { PluginDef, ToolContext, ToolResult } from "@cyberstrike-io/bolt"
 const ffuf = {
   name: "ffuf",
   description:
-    "Fast web fuzzer for directory/file discovery, parameter fuzzing, and vhost enumeration. Use FUZZ keyword as placeholder.",
+    "ffuf MCP server — fast web fuzzer for directory/file discovery, parameter fuzzing, and vhost enumeration. Use FUZZ as the placeholder in the URL, header, or POST data. Compared to gobuster: ffuf is more flexible (fuzzes any part of the request), gobuster is simpler for pure directory brute force.",
   schema: {
     url: z
       .string()
-      .describe("Target URL with FUZZ keyword (e.g. https://example.com/FUZZ)"),
+      .describe("Target URL with FUZZ keyword as the placeholder (e.g. https://example.com/FUZZ for directories, https://example.com/?id=FUZZ for parameters, https://FUZZ.example.com for vhosts)."),
     wordlist: z
       .string()
-      .describe("Path to wordlist file (e.g. /usr/share/wordlists/dirb/common.txt)"),
+      .describe("Path to wordlist file (e.g. /usr/share/wordlists/dirb/common.txt). If unsure, use the wordlist plugin's tools — wordlist_recommend for purpose-based suggestions, wordlist_search to find technology-specific lists."),
     method: z
       .enum(["GET", "POST", "PUT", "DELETE", "PATCH"])
       .optional()

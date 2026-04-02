@@ -29,7 +29,7 @@ server.tool(
             - active: Includes DNS resolution and potential network interactions with target
             - passive: Only uses information from third-party sources without direct target interaction`),
         enum_brute: z.boolean().optional().describe("Whether to perform brute force subdomain discovery (true/false)"),
-        enum_brute_wordlist: z.string().optional().describe("Path to custom wordlist file for brute force operations (e.g., '/path/to/wordlist.txt')")
+        enum_brute_wordlist: z.string().optional().describe("Path to wordlist file for brute force subdomain enumeration. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='dns brute force') for a recommended path, wordlist_search to find specific lists.")
 
 
     },

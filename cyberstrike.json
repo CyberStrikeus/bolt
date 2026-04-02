@@ -1,8 +1,0 @@
-{
-  "$schema": "https://cyberstrike.io/config.json",
-  "bolt": {
-    "local-bolt": {
-      "url": "http://localhost:3001"
-    }
-  }
-}

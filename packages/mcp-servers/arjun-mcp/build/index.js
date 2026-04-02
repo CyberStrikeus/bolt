@@ -17,7 +17,7 @@ const server = new mcp_js_1.McpServer({
 server.tool("do-arjun", "Run Arjun to discover hidden HTTP parameters", {
     url: zod_1.z.string().url().describe("Target URL to scan for hidden parameters"),
     textFile: zod_1.z.string().optional().describe("Path to file containing multiple URLs"),
-    wordlist: zod_1.z.string().optional().describe("Path to custom wordlist file"),
+    wordlist: zod_1.z.string().optional().describe("Path to custom parameter wordlist file. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='api fuzzing') for a recommended path, wordlist_search to find specific lists."),
     method: zod_1.z.enum(["GET", "POST", "JSON", "HEADERS"]).optional().describe("HTTP method to use for scanning (default: GET)"),
     rateLimit: zod_1.z.number().optional().describe("Maximum requests per second (default: 9999)"),
     chunkSize: zod_1.z.number().optional().describe("Chunk size. The number of parameters to be sent at once"),

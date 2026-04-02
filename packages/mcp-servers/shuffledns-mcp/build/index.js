@@ -18,7 +18,7 @@ server.tool("shuffledns", "DNS Brute force", {
     target: zod_1.z.string().describe("A list of domain names (e.g., example.com) to scan for HTTP and HTTPS services."),
     resolver: zod_1.z.string().describe("Resolver file path"),
     mode: zod_1.z.enum(["bruteforce", "resolve", "filter"]).describe("Mode"),
-    wordlist: zod_1.z.string().describe("wordlist"),
+    wordlist: zod_1.z.string().describe("Path to subdomain wordlist inside the container. If unsure, use the wordlist plugin's tools — wordlist_recommend(purpose='dns brute force') for a recommended path, wordlist_search to find specific lists."),
     rateLimit: zod_1.z.number().optional().describe("ratelimit")
 }, async ({ target, resolver, mode, wordlist, rateLimit }) => {
     const shufflednsArgs = ["-d", target, "-r", resolver, "-mode", mode, "-w", wordlist, "-m", args[1], "-silent"];
