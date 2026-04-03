@@ -1,7 +1,7 @@
 {
   "name": "bolt",
   "private": true,
-  "workspaces": ["packages/*", "packages/plugins/*"],
+  "workspaces": ["packages/*", "packages/plugins/*", "packages/mcp-servers/*"],
   "scripts": {
     "dev": "bun run packages/core/src/http.ts",
     "dev:stdio": "bun run packages/core/src/index.ts",
