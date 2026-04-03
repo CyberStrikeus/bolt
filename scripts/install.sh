@@ -227,7 +227,7 @@ else
         git config --global --add safe.directory "$BOLT_INSTALL_DIR"
     fi
 
-    cd "$BOLT_INSTALL_DIR" && bun install --production >/dev/null 2>&1
+    cd "$BOLT_INSTALL_DIR" && bun install >/dev/null 2>&1
     printf "   ${GREEN}+${NC} Bolt installed\n"
 
     BUN_BIN=$(command -v bun)
