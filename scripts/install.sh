@@ -223,11 +223,16 @@ else
         git config --global --add safe.directory "$BOLT_INSTALL_DIR"
         cd "$BOLT_INSTALL_DIR" && git pull --quiet
     else
-        git clone --depth 1 "$BOLT_REPO" "$BOLT_INSTALL_DIR" >/dev/null 2>&1
+        git clone --depth 1 "$BOLT_REPO" "$BOLT_INSTALL_DIR" 2>&1 | tail -1
         git config --global --add safe.directory "$BOLT_INSTALL_DIR"
     fi
 
-    cd "$BOLT_INSTALL_DIR" && bun install >/dev/null 2>&1
+    cd "$BOLT_INSTALL_DIR"
+    printf "   ${CYAN}i${NC} Installing dependencies (this may take a minute)...\n"
+    if ! bun install --no-save 2>&1 | tail -3; then
+        printf "   ${RED}!${NC} bun install failed. Check output above.\n"
+        exit 1
+    fi
     printf "   ${GREEN}+${NC} Bolt installed\n"
 
     BUN_BIN=$(command -v bun)
