@@ -12,7 +12,7 @@ import { loadPlugins, loadConfig } from "./plugin-loader.js"
 import { loadMcpServers } from "./mcp-client.js"
 import { createBoltServer } from "./server.js"
 import type { Server } from "@modelcontextprotocol/sdk/server/index.js"
-import type { PluginDef, ToolDef } from "./types.js"
+import type { PluginDef, ToolDef, McpServerConfig, BoltConfig } from "./types.js"
 import {
   MiddlewarePipeline,
   errorHandler,
@@ -505,6 +505,8 @@ const sessions = new Map<string, Session>()
 let loadedPlugins: PluginDef[] = []
 let externalTools: ToolDef[] = []
 let allTools: ToolDef[] = []
+let boltConfig: BoltConfig = { port: 3001, plugins: [], mcpServers: {} }
+let configFilePath = ""
 
 // Initialize middleware pipeline
 const middlewareEnabled = process.env.MIDDLEWARE_ENABLED !== "false"
@@ -915,6 +917,138 @@ async function handleRoutes(
   // Ed25519 signature verification for every request.
   // =================================================================
 
+  // --- Tool discovery (Ed25519 signature or admin token required) ---
+  if (pathname === "/tools" && req.method === "GET") {
+    const bodyStr = ""
+    const auth = authenticateMcpRequest(req, bodyStr)
+    if (!auth.authenticated) {
+      jsonResponse(res, 401, { error: "Unauthorized", message: auth.error })
+      return
+    }
+
+    const plugins = loadedPlugins.map((p) => ({
+      name: p.name,
+      type: "plugin",
+      version: p.version,
+      tools: p.tools.map((t) => ({ name: t.name, description: t.description })),
+    }))
+
+    const mcpServers = Object.keys(boltConfig.mcpServers ?? {}).map((name) => ({
+      name,
+      type: "mcp-server",
+      tools: externalTools
+        .filter((t) => t.name.startsWith(`${name}_`))
+        .map((t) => ({ name: t.name, description: t.description })),
+    }))
+
+    jsonResponse(res, 200, { plugins, mcpServers })
+    return
+  }
+
+  // --- MCP server management (admin token required) ---
+  if (pathname === "/mcp-servers" && req.method === "GET") {
+    if (!authenticateAdmin(req)) {
+      jsonResponse(res, 401, { error: "Unauthorized", message: "Admin token required" })
+      return
+    }
+
+    const servers = Object.entries(boltConfig.mcpServers ?? {}).map(([name, cfg]) => ({
+      name,
+      config: cfg,
+      tools: externalTools
+        .filter((t) => t.name.startsWith(`${name}_`))
+        .map((t) => ({ name: t.name, description: t.description })),
+    }))
+
+    jsonResponse(res, 200, { servers })
+    return
+  }
+
+  if (pathname === "/mcp-servers" && req.method === "POST") {
+    if (!authenticateAdmin(req)) {
+      jsonResponse(res, 401, { error: "Unauthorized", message: "Admin token required" })
+      return
+    }
+
+    const bodyStr = ctx?.bodyStr || (await readBody(req))
+    let body: { name?: string; command?: string; args?: string[]; env?: Record<string, string>; url?: string; headers?: Record<string, string> }
+    try {
+      body = JSON.parse(bodyStr)
+    } catch {
+      jsonResponse(res, 400, { error: "Invalid JSON" })
+      return
+    }
+
+    if (!body.name) {
+      jsonResponse(res, 400, { error: "Missing required field: name" })
+      return
+    }
+    if (!body.command && !body.url) {
+      jsonResponse(res, 400, { error: "Missing required field: command or url" })
+      return
+    }
+
+    const serverConfig: McpServerConfig = body.url
+      ? { url: body.url, headers: body.headers }
+      : { command: body.command!, args: body.args, env: body.env }
+
+    if (!boltConfig.mcpServers) boltConfig.mcpServers = {}
+    boltConfig.mcpServers[body.name] = serverConfig
+
+    try {
+      await fs.writeFile(configFilePath, JSON.stringify(boltConfig, null, 2))
+    } catch {
+      jsonResponse(res, 500, { error: "Failed to save config" })
+      return
+    }
+
+    // Hot-load the new server
+    try {
+      const newTools = await loadMcpServers({ [body.name]: serverConfig })
+      externalTools.push(...newTools)
+      allTools = [...loadedPlugins.flatMap((p) => p.tools), ...externalTools]
+      jsonResponse(res, 200, {
+        added: body.name,
+        tools: newTools.map((t) => ({ name: t.name, description: t.description })),
+      })
+    } catch {
+      jsonResponse(res, 200, {
+        added: body.name,
+        tools: [],
+        warning: "Saved to config but could not connect. Restart Bolt to retry.",
+      })
+    }
+    return
+  }
+
+  if (pathname.startsWith("/mcp-servers/") && req.method === "DELETE") {
+    if (!authenticateAdmin(req)) {
+      jsonResponse(res, 401, { error: "Unauthorized", message: "Admin token required" })
+      return
+    }
+
+    const name = pathname.slice("/mcp-servers/".length)
+    if (!name || !boltConfig.mcpServers?.[name]) {
+      jsonResponse(res, 404, { error: "MCP server not found" })
+      return
+    }
+
+    delete boltConfig.mcpServers[name]
+
+    try {
+      await fs.writeFile(configFilePath, JSON.stringify(boltConfig, null, 2))
+    } catch {
+      jsonResponse(res, 500, { error: "Failed to save config" })
+      return
+    }
+
+    externalTools = externalTools.filter((t) => !t.name.startsWith(`${name}_`))
+    allTools = [...loadedPlugins.flatMap((p) => p.tools), ...externalTools]
+
+    jsonResponse(res, 200, { removed: name })
+    return
+  }
+
   // --- MCP endpoint (Ed25519 signature required) ---
   // This is where tool execution happens. Protected by:
   //   1. Middleware (rate limiting, connection throttling, request validation)
@@ -1061,6 +1195,8 @@ async function main(): Promise<void> {
 
   // Load plugins
   const config = loadConfig()
+  boltConfig = config
+  configFilePath = path.join(process.cwd(), "bolt.config.json")
   loadedPlugins = await loadPlugins(config)
   if (config.mcpServers && Object.keys(config.mcpServers).length > 0) {
     externalTools = await loadMcpServers(config.mcpServers)
