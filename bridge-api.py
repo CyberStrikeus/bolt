@@ -32,7 +32,23 @@ POST /scan body (JSON):
   }
 
 Response 200:
-  { "ok": true, "output": "...", "duration_ms": 12345, "model": "..." }
+  {
+    "ok":          true,
+    "output":      "...final assistant message...",
+    "tool_calls":  [
+      {
+        "seq":    1,
+        "tool":   "bolt__crtsh_crtsh",
+        "args":   "domain:example.com",
+        "status": "ok",                 # or "error"
+        "result": "first ~500 chars of tool output…"
+      },
+      ...
+    ],
+    "duration_ms": 12345,
+    "model":       "qwen2.5:7b-bolt"
+    # if verbose: "raw_transcript": "...full ANSI-stripped mcphost output..."
+  }
 
 Response 4xx/5xx:
   { "ok": false, "error": "..." }
@@ -60,10 +76,138 @@ HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8080"))
 DEFAULT_TIMEOUT = int(os.environ.get("DEFAULT_TIMEOUT", "900"))
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*[a-zA-Z]")
+# mcphost --compact transcript markers:
+#   single-line:   "[ bolt__nmap target:x ] Result <text>"
+#   multi-line:    "[ bolt__nmap target:x"   then later "] Result <text>"
+#   assistant:     "< model <streamed-token-running-buffer>"
+TOOL_FULL_RE  = re.compile(r"^\s*\[\s+(bolt__\S+)\s+(.*?)\s+\]\s+(\S+)\s*(.*?)\s*$")
+TOOL_OPEN_RE  = re.compile(r"^\s*\[\s+(bolt__\S+)\s*(.*?)\s*$")
+TOOL_CLOSE_RE = re.compile(r"^\s*\]\s+(\S+)\s*(.*?)\s*$")
+ASSISTANT_RE  = re.compile(r"^\s*<\s+\S+\s+(.*)$")
+NOISE_RE      = re.compile(r"(Thinking\.\.\.|Executing\s+bolt__\S+\.\.\.|Loading Ollama model\.\.\.)")
+RESULT_PREVIEW_CHARS = 500
 
 
 def strip_ansi(s: str) -> str:
-    return ANSI_RE.sub("", s).replace("\r", "")
+    # mcphost uses bare CR to overwrite the same TUI line per token. Replacing
+    # CR with LF turns each redraw into its own line so the parser can see
+    # markers that would otherwise be glued onto the end of a long spinner row.
+    return ANSI_RE.sub("", s).replace("\r", "\n")
+
+
+def _status_of(kind: str) -> str:
+    return "error" if kind.lower().startswith("err") else "ok"
+
+
+def _is_marker(line: str) -> bool:
+    return bool(TOOL_FULL_RE.match(line) or TOOL_OPEN_RE.match(line)
+                or TOOL_CLOSE_RE.match(line) or ASSISTANT_RE.match(line))
+
+
+def _dewrap(lines: list) -> str:
+    """Join word-wrapped lines from mcphost's TUI back into a single string.
+    Heuristic: a line that ends with a hyphen followed by a line that starts
+    with lowercase letters is a wrap split — fuse them. Otherwise keep the
+    newline (preserves intentional markdown breaks).
+    """
+    if not lines:
+        return ""
+    out = [lines[0]]
+    for nxt in lines[1:]:
+        prev = out[-1]
+        if prev.endswith("-") and nxt and nxt[0].islower():
+            out[-1] = prev[:-1] + nxt        # fuse: "hello-from-" + "bridge"
+        elif prev and not prev.endswith((".", "!", "?", ":", ";", ",", ")", "]", "}", "*", "`")) \
+                and nxt and nxt[0].islower():
+            out[-1] = prev + " " + nxt        # fuse: "responded with" + "hello"
+        else:
+            out.append(nxt)
+    return "\n".join(out).strip()
+
+
+def parse_mcphost_output(raw: str) -> Tuple[str, list, str]:
+    """Walk mcphost's --compact transcript and pull out:
+      - final assistant message (str)
+      - structured list of tool calls
+      - cleaned-up transcript (noise stripped) for verbose mode
+
+    Real-world quirks handled:
+      - mcphost token-streams assistant messages: each "< model …" line
+        is a re-print of the running buffer.
+      - the running buffer is word-wrapped to terminal width, so any frame
+        spans multiple raw lines — the trailing lines have NO "<" prefix.
+      - fast tools render open + close on a SINGLE line ("[ … ] Result …").
+    """
+    text = strip_ansi(raw)
+    cleaned_lines = [l.rstrip() for l in text.split("\n") if not NOISE_RE.search(l)]
+    cleaned = "\n".join(cleaned_lines)
+
+    # ---- pass 1: tool_calls (also reset on each new "<") ----
+    tool_calls: list = []
+    state = "idle"
+    cur: Optional[dict] = None
+    seq = 0
+    for line in cleaned_lines:
+        m = TOOL_FULL_RE.match(line)
+        if m:
+            seq += 1
+            tc = {"seq": seq, "tool": m.group(1), "args": m.group(2).strip(),
+                  "status": _status_of(m.group(3)), "result": m.group(4).strip()}
+            tool_calls.append(tc)
+            cur = tc; state = "tool_result"; continue
+        m = TOOL_OPEN_RE.match(line)
+        if m and "]" not in line:
+            seq += 1
+            cur = {"seq": seq, "tool": m.group(1), "args": m.group(2).strip(),
+                   "status": "pending", "result": ""}
+            tool_calls.append(cur)
+            state = "tool_open"; continue
+        m = TOOL_CLOSE_RE.match(line)
+        if m and cur is not None and state in ("tool_open", "tool_result"):
+            cur["status"] = _status_of(m.group(1))
+            extra = m.group(2).strip()
+            cur["result"] = (cur["result"] + " " + extra).strip() if cur["result"] else extra
+            state = "tool_result"; continue
+        if ASSISTANT_RE.match(line):
+            state = "assistant"; cur = None; continue
+        bare = line.strip()
+        if not bare:
+            continue
+        if state == "tool_open" and cur is not None:
+            cur["args"] = (cur["args"] + " " + bare).strip()
+        elif state == "tool_result" and cur is not None:
+            cur["result"] = (cur["result"] + " " + bare).strip()
+
+    # ---- pass 2: final assistant message ----
+    # Walk from the end backwards; the LAST "<" line is the start of the
+    # final streamed frame. Everything after it (until the next marker, which
+    # there shouldn't be) is wrap continuation of that same frame.
+    final_message = ""
+    last_idx = None
+    for i in range(len(cleaned_lines) - 1, -1, -1):
+        if ASSISTANT_RE.match(cleaned_lines[i]):
+            last_idx = i
+            break
+    if last_idx is not None:
+        m = ASSISTANT_RE.match(cleaned_lines[last_idx])
+        parts = [m.group(1).rstrip()]
+        for j in range(last_idx + 1, len(cleaned_lines)):
+            ln = cleaned_lines[j]
+            if _is_marker(ln):
+                break
+            stripped = ln.strip()
+            if stripped:
+                parts.append(stripped)
+            elif parts and parts[-1]:
+                parts.append("")  # preserve paragraph breaks
+        final_message = _dewrap(parts)
+
+    # truncate giant tool results so the response stays sane
+    for c in tool_calls:
+        if len(c["result"]) > RESULT_PREVIEW_CHARS:
+            c["result"] = c["result"][:RESULT_PREVIEW_CHARS] + "…"
+
+    return final_message, tool_calls, cleaned.strip()
 
 
 def build_prompt(body: dict) -> str:
@@ -101,7 +245,7 @@ def build_prompt(body: dict) -> str:
 
 def run_bridge(prompt: str, model: Optional[str], max_steps: Optional[int],
                verbose: bool, timeout: int,
-               system_prompt: Optional[str]) -> Tuple[bool, str, int, str]:
+               system_prompt: Optional[str]) -> Tuple[bool, str, int, str, list, str]:
     env = os.environ.copy()
     if model:
         env["MODEL"] = model
@@ -119,9 +263,9 @@ def run_bridge(prompt: str, model: Optional[str], max_steps: Optional[int],
         sp_file.close()
         env["SYSTEM_PROMPT"] = sp_file.name
 
+    # We always capture the full transcript so we can extract tool_calls.
+    # `verbose` controls only whether the raw transcript is returned to the client.
     cmd = [BRIDGE, "--compact", "-p", prompt]
-    if not verbose:
-        cmd.append("--quiet")
 
     started = time.monotonic()
     try:
@@ -132,17 +276,17 @@ def run_bridge(prompt: str, model: Optional[str], max_steps: Optional[int],
     except subprocess.TimeoutExpired:
         if sp_file:
             os.unlink(sp_file.name)
-        return False, "", int((time.monotonic() - started) * 1000), f"timeout after {timeout}s"
+        return False, "", int((time.monotonic() - started) * 1000), f"timeout after {timeout}s", [], ""
     finally:
         if sp_file and os.path.exists(sp_file.name):
             os.unlink(sp_file.name)
 
     duration_ms = int((time.monotonic() - started) * 1000)
-    out = strip_ansi(proc.stdout).strip()
+    final, tool_calls, transcript = parse_mcphost_output(proc.stdout)
     err = strip_ansi(proc.stderr).strip()
     if proc.returncode != 0:
-        return False, out, duration_ms, err or f"exit {proc.returncode}"
-    return True, out, duration_ms, ""
+        return False, final, duration_ms, err or f"exit {proc.returncode}", tool_calls, transcript
+    return True, final, duration_ms, "", tool_calls, transcript
 
 
 def health() -> Tuple[bool, dict]:
@@ -197,20 +341,26 @@ class H(BaseHTTPRequestHandler):
 
         prompt = raw_prompt or build_prompt(body)
         timeout = int(body.get("timeout") or DEFAULT_TIMEOUT)
-        ok, out, ms, err = run_bridge(
+        verbose = bool(body.get("verbose", False))
+        ok, out, ms, err, tool_calls, transcript = run_bridge(
             prompt=prompt,
             model=body.get("model"),
             max_steps=body.get("max_steps"),
-            verbose=bool(body.get("verbose", False)),
+            verbose=verbose,
             timeout=timeout,
             system_prompt=body.get("system_prompt"),
         )
-        return self._json(
-            200 if ok else 500,
-            {"ok": ok, "output": out, "duration_ms": ms,
-             "model": body.get("model") or os.environ.get("MODEL", "default"),
-             "error": err if not ok else None},
-        )
+        resp = {
+            "ok": ok,
+            "output": out,
+            "tool_calls": tool_calls,
+            "duration_ms": ms,
+            "model": body.get("model") or os.environ.get("MODEL", "default"),
+            "error": err if not ok else None,
+        }
+        if verbose:
+            resp["raw_transcript"] = transcript
+        return self._json(200 if ok else 500, resp)
 
 
 def main():
