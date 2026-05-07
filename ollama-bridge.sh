@@ -11,7 +11,7 @@ MODEL="${MODEL:-qwen2.5:7b-bolt}"
 BOLT_CONTAINER="${BOLT_CONTAINER:-bolt}"
 BOLT_URL="${BOLT_URL:-http://localhost:3001/mcp}"
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$DIR/prompts/recon-agent.md}"
-MAX_STEPS="${MAX_STEPS:-30}"
+MAX_STEPS="${MAX_STEPS:-50}"
 TEMPERATURE="${TEMPERATURE:-0.2}"
 
 if [ -z "${BOLT_ADMIN_TOKEN:-}" ]; then

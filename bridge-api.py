@@ -428,20 +428,26 @@ def build_prompt(body: dict) -> str:
         parts.append(f"Target (single host, string form): {target}")
     if targets:
         parts.append("Targets (list form, JSON array): " + json.dumps(targets))
-    if target and targets:
-        parts.append(
-            "Note: when calling a tool whose schema takes a single host "
-            "(e.g. nmap, httpx, sslscan, nuclei), pass the string form. "
-            "When calling a tool whose schema takes a list, pass the array form. "
-            "Match the tool's parameter type — do not coerce."
-        )
+    # Always include the type guidance — the model needs it on every request,
+    # not only when the caller happens to set both fields.
+    parts.append(
+        "When calling a tool whose schema takes a single host "
+        "(nmap, httpx, sslscan, nuclei, wpscan, http-headers), pass a STRING. "
+        "When calling a tool whose schema takes a list (dnsx_resolve.hosts), "
+        "pass an ARRAY. Match the schema exactly — do not coerce."
+    )
     if iocs:
         parts.append("IoCs: " + ", ".join(str(i) for i in iocs))
     if infra:
         parts.append(f"Infrastructure context: {infra}")
     if extra:
         parts.append(f"Additional instructions: {extra}")
-    parts.append("Recon this target now. Begin with a tool call.")
+    parts.append(
+        "Begin the engagement now. Your first message must be a tool call. "
+        "Run the full pipeline for this target's branch (enumerate → resolve "
+        "→ probe → vuln-scan), not just enumeration. Do not stop after the "
+        "first phase."
+    )
     return "\n".join(parts)
 
 
