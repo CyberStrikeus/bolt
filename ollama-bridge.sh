@@ -7,7 +7,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MODEL="${MODEL:-qwen2.5:7b-bolt}"
+MODEL="${MODEL:-qwen2.5:14b-bolt}"
 BOLT_CONTAINER="${BOLT_CONTAINER:-bolt}"
 BOLT_URL="${BOLT_URL:-http://localhost:3001/mcp}"
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$DIR/prompts/recon-agent.md}"
