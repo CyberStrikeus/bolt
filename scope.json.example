@@ -1,0 +1,18 @@
+{
+  "_comment": "Server-side scope enforcement for bridge-api.py. Copy to scope.json (no '.example' suffix) to activate. If scope.json is missing OR all three arrays are empty, scope checks are SKIPPED — useful for local dev. Once any rule is present, every /scan and /scan/stream request must have its target(s) match at least one allow rule, otherwise the bridge returns 403.",
+
+  "allowed_domain_patterns": [
+    "^(.*\\.)?acme\\.com$",
+    "^(.*\\.)?example\\.com$",
+    "^scanme\\.nmap\\.org$"
+  ],
+
+  "allowed_cidrs": [
+    "192.0.2.0/24",
+    "198.51.100.0/24"
+  ],
+
+  "disabled_tools": [
+    "bolt__run_command"
+  ]
+}

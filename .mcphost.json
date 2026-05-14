@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "bolt": {
+      "type": "remote",
+      "url": "${env://BOLT_URL:-http://localhost:3001/mcp}",
+      "headers": ["Authorization: Bearer ${env://BOLT_ADMIN_TOKEN}"]
+    }
+  }
+}
