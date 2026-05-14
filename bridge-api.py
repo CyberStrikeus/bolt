@@ -66,6 +66,7 @@ Run:
 
 Stdlib only. No extra deps.
 """
+import ipaddress
 import json
 import os
 import re
@@ -76,13 +77,80 @@ import tempfile
 import time
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from typing import Iterator, Optional, Tuple
+from typing import Iterator, List, Optional, Tuple
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BRIDGE = os.path.join(HERE, "ollama-bridge.sh")
+SCOPE_FILE = os.environ.get("SCOPE_FILE", os.path.join(HERE, "scope.json"))
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8080"))
 DEFAULT_TIMEOUT = int(os.environ.get("DEFAULT_TIMEOUT", "900"))
+
+
+def _load_scope() -> dict:
+    """Load scope.json once at startup. Missing/empty rules => scope checks
+    are skipped (dev-friendly). Compiled patterns/networks are cached.
+    """
+    out = {
+        "domain_patterns": [],   # list[re.Pattern]
+        "cidrs": [],             # list[ipaddress.ip_network]
+        "disabled_tools": [],    # list[str]
+        "active": False,
+    }
+    if not os.path.exists(SCOPE_FILE):
+        return out
+    try:
+        with open(SCOPE_FILE, encoding="utf-8") as f:
+            cfg = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        sys.stderr.write(f"warning: could not read {SCOPE_FILE}: {e}\n")
+        return out
+    for p in cfg.get("allowed_domain_patterns") or []:
+        try:
+            out["domain_patterns"].append(re.compile(p, re.IGNORECASE))
+        except re.error as e:
+            sys.stderr.write(f"warning: bad regex {p!r}: {e}\n")
+    for c in cfg.get("allowed_cidrs") or []:
+        try:
+            out["cidrs"].append(ipaddress.ip_network(c, strict=False))
+        except ValueError as e:
+            sys.stderr.write(f"warning: bad cidr {c!r}: {e}\n")
+    for t in cfg.get("disabled_tools") or []:
+        if isinstance(t, str) and t.strip():
+            out["disabled_tools"].append(t.strip())
+    out["active"] = bool(out["domain_patterns"] or out["cidrs"])
+    return out
+
+
+SCOPE = _load_scope()
+
+
+def _target_in_scope(t: str) -> bool:
+    """Return True iff t matches any allowed domain pattern OR falls inside
+    any allowed CIDR. When scope is inactive (no rules), everything is allowed.
+    """
+    if not SCOPE["active"]:
+        return True
+    if not t:
+        return False
+    s = t.strip()
+    # Strip scheme/path so we can match the hostname or IP.
+    s = re.sub(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", "", s)   # scheme
+    s = s.split("/", 1)[0]                              # path
+    s = s.split("?", 1)[0]
+    host = s.split(":", 1)[0]                           # port
+    # IP / CIDR check
+    try:
+        ip = ipaddress.ip_address(host)
+        return any(ip in net for net in SCOPE["cidrs"])
+    except ValueError:
+        pass
+    # Domain regex check
+    return any(p.fullmatch(host) or p.search(host) for p in SCOPE["domain_patterns"])
+
+
+def _out_of_scope(targets: List[str]) -> List[str]:
+    return [t for t in targets if not _target_in_scope(t)]
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*[a-zA-Z]")
 # mcphost --compact transcript markers:
 #   single-line:   "[ bolt__nmap target:x ] Result <text>"
@@ -442,6 +510,13 @@ def build_prompt(body: dict) -> str:
         parts.append(f"Infrastructure context: {infra}")
     if extra:
         parts.append(f"Additional instructions: {extra}")
+    if SCOPE["disabled_tools"]:
+        parts.append(
+            "DISABLED tools for this engagement (must NOT be called under "
+            "any circumstances; if you need their capability, pick a "
+            "different tool or report the gap in the final summary): "
+            + ", ".join(SCOPE["disabled_tools"])
+        )
     parts.append(
         "Begin the engagement now. Your first message must be a tool call. "
         "Run the full pipeline for this target's branch (enumerate → resolve "
@@ -548,6 +623,25 @@ class H(BaseHTTPRequestHandler):
         if not raw_prompt and not body.get("target") and not has_targets:
             self._json(400, {"ok": False, "error": "either 'prompt', 'target', or 'targets' is required"})
             return None
+
+        # Scope enforcement. When SCOPE["active"] is False (no rules loaded)
+        # this is a no-op. When active, every explicit target/targets entry
+        # must be in-scope. Raw `prompt`-only requests are allowed through
+        # because we can't reliably extract targets from free text — Rails
+        # callers SHOULD prefer structured fields when scope matters.
+        if SCOPE["active"]:
+            to_check = []
+            if body.get("target"):
+                to_check.append(str(body["target"]).strip())
+            if has_targets:
+                to_check.extend(str(t).strip() for t in body["targets"])
+            bad = _out_of_scope(to_check)
+            if bad:
+                self._json(403, {"ok": False,
+                                 "error": "target out of scope",
+                                 "out_of_scope": bad})
+                return None
+
         prompt = raw_prompt or build_prompt(body)
         timeout = int(body.get("timeout") or DEFAULT_TIMEOUT)
         return body, prompt, timeout
@@ -625,6 +719,13 @@ def main():
     print(f"  POST /scan         – run a recon job (sync, returns final JSON)", flush=True)
     print(f"  POST /scan/stream  – same body, NDJSON event stream", flush=True)
     print(f"  GET  /health       – reachability check", flush=True)
+    if SCOPE["active"]:
+        print(f"scope: {SCOPE_FILE} — "
+              f"{len(SCOPE['domain_patterns'])} domain rule(s), "
+              f"{len(SCOPE['cidrs'])} CIDR(s), "
+              f"{len(SCOPE['disabled_tools'])} disabled tool(s)", flush=True)
+    else:
+        print(f"scope: DISABLED (no {SCOPE_FILE} or empty rules) — all targets allowed", flush=True)
     try:
         srv.serve_forever()
     except KeyboardInterrupt:
